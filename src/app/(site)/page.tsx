@@ -1,5 +1,6 @@
 import { Hero } from "@/components/site/hero";
 import { MissionVision } from "@/components/site/landing/mission-vision";
+import { Objectives } from "@/components/site/landing/objectives";
 import { getEvents, getPublicStats } from "@/lib/data";
 import { isUpcoming } from "@/lib/utils";
 
@@ -12,6 +13,7 @@ export default async function HomePage() {
     <>
       <Hero stats={{ events: stats.events, batches: stats.batches }} nextEvent={next ? { title: next.title, slug: next.slug } : null} />
       <MissionVision />
+      <Objectives />
     </>
   );
 }
