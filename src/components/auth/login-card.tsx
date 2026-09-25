@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { AnimatePresence, motion, useAnimationControls } from "framer-motion";
 import { ArrowRight, CheckCircle2, Eye, EyeOff, Loader2, Lock, Mail, ShieldCheck } from "lucide-react";
@@ -12,7 +11,6 @@ import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 
 export function LoginCard({ mode, next, notice }: { mode: "student" | "admin"; next?: string; notice?: string }) {
-  const router = useRouter();
   const shake = useAnimationControls();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -44,10 +42,8 @@ export function LoginCard({ mode, next, notice }: { mode: "student" | "admin"; n
     }
     setSuccess(true);
     const dest = next && next.startsWith("/") && !next.startsWith("//") ? next : profile?.role === "admin" ? "/admin" : "/dashboard";
-    setTimeout(() => {
-      router.push(dest);
-      router.refresh();
-    }, 900);
+    // Full page load rather than a client transition, so the first request carries the new session cookie
+    setTimeout(() => window.location.assign(dest), 900);
   }
 
   const isAdmin = mode === "admin";
