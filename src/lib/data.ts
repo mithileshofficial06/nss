@@ -11,6 +11,7 @@ import {
   fallbackOfficeBearers,
   fallbackSettings,
 } from "./fallback";
+import { NSS_HOUR } from "./utils";
 import type { Batch, EventItem, GalleryItem, LeaderboardRow, OfficeBearer, Profile, SiteSettings } from "./types";
 
 export async function getBatches(): Promise<Batch[]> {
@@ -23,7 +24,7 @@ export async function getBatches(): Promise<Batch[]> {
 export async function getEvents(): Promise<EventItem[]> {
   if (!isSupabaseConfigured) return [...fallbackEvents].sort((a, b) => b.event_date.localeCompare(a.event_date));
   const supabase = await createClient();
-  const { data } = await supabase.from("events").select("*").eq("is_published", true).order("event_date", { ascending: false });
+  const { data } = await supabase.from("events").select("*").eq("is_published", true).neq("category", NSS_HOUR).order("event_date", { ascending: false });
   return data ?? [];
 }
 

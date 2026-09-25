@@ -4,7 +4,7 @@ import { toggleSetting } from "../actions";
 import { Card, LiveSwitch, PageTitle } from "@/components/admin/ui";
 import { getSettings } from "@/lib/data";
 import { createClient } from "@/lib/supabase/server";
-import { formatDate } from "@/lib/utils";
+import { NSS_HOUR, formatDate } from "@/lib/utils";
 
 export default async function AdminOverview() {
   const supabase = await createClient();
@@ -12,7 +12,7 @@ export default async function AdminOverview() {
   const head = { count: "exact", head: true } as const;
   const [students, events, attendance, recent] = await Promise.all([
     supabase.from("profiles").select("*", head).eq("role", "student"),
-    supabase.from("events").select("*", head),
+    supabase.from("events").select("*", head).neq("category", NSS_HOUR),
     supabase.from("attendance").select("*", head),
     supabase.from("profiles").select("id, full_name, department, register_no, created_at, batches(label)").eq("role", "student").order("created_at", { ascending: false }).limit(6),
   ]);

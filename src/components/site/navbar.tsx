@@ -29,7 +29,7 @@ export function Navbar({ user }: { user: { name: string; role: "student" | "admi
   const [pastMasthead, setPastMasthead] = useState(false);
   const [open, setOpen] = useState(false);
 
-  useMotionValueEvent(scrollY, "change", (y) => setPastMasthead(y > 620));
+  useMotionValueEvent(scrollY, "change", (y) => setPastMasthead(y > 700));
 
   const visible = !isHome || pastMasthead || open;
   const account = user ? { href: user.role === "admin" ? "/admin" : "/dashboard", label: user.role === "admin" ? "Admin" : "Dashboard" } : null;

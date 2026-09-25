@@ -65,9 +65,14 @@ export function Masthead({ nextEvent, signedIn, stats }: { nextEvent: NextEvent;
           Not me, <span className="text-nss-red">but you</span>
         </motion.p>
 
+        {/* College name, centred under the wordmark */}
+        <motion.p variants={rise(0.85)} className="mt-6 text-center font-serif text-[clamp(1.6rem,3vw,2.75rem)] leading-tight text-ink">
+          Loyola-ICAM College of Engineering <em className="text-navy-600">&amp;</em> Technology
+        </motion.p>
+
         {/* Dateline */}
-        <motion.div variants={rise(0.9, 0)} className="mt-8 grid grid-cols-1 items-center gap-2 font-display text-[14px] text-ink/70 sm:grid-cols-3">
-          <span>Loyola-ICAM College of Engineering &amp; Technology</span>
+        <motion.div variants={rise(0.9, 0)} className="mt-6 grid grid-cols-1 items-center gap-2 font-display text-[14px] text-ink/70 sm:grid-cols-3">
+          <span>Loyola Campus, Nungambakkam</span>
           <span className="hidden sm:block sm:text-center">Chennai, Tamil Nadu</span>
           <span className="tabular-nums sm:text-right">
             <LiveTime /> &nbsp;<LiveDate />

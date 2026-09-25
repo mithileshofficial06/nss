@@ -6,9 +6,9 @@ import { ExternalLink, Link2, Plus } from "lucide-react";
 import { deleteEvent, saveEvent } from "../../actions";
 import { ActionForm, Card, ConfirmButton, ImageField, SubmitButton, Switch, input, label } from "@/components/admin/ui";
 import type { EventItem } from "@/lib/types";
-import { cn, formatDate, isUpcoming } from "@/lib/utils";
+import { NSS_HOUR, cn, formatDate, isUpcoming } from "@/lib/utils";
 
-const CATEGORIES = ["Environment", "Health", "Awareness", "Outreach", "Volunteering", "Orientation", "Ceremony", "Sports", "Community"];
+const CATEGORIES = ["Environment", "Health", "Awareness", "Outreach", "Volunteering", "Orientation", "Ceremony", "Sports", "Competition", "Community", NSS_HOUR];
 
 export function EventsManager({ events }: { events: EventItem[] }) {
   const [editing, setEditing] = useState<EventItem | "new" | null>(null);

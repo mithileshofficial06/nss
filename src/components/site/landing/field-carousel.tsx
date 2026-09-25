@@ -8,7 +8,8 @@ import { AnimatePresence, motion, useScroll, useTransform } from "framer-motion"
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
-export type Slide = { src: string; title: string; meta: string };
+/** `word` is set huge and faint behind the photo stack. */
+export type Slide = { src: string; title: string; meta: string; word: string };
 
 /**
  * Framed, stacked photo carousel: a white panel inset over the full-bleed current photo,
@@ -59,21 +60,38 @@ export function FieldCarousel({ slides }: { slides: Slide[] }) {
         </motion.div>
 
         <motion.div style={{ padding: inset }} className="relative">
-          <div className="flex min-h-[640px] flex-col bg-white px-5 py-4 font-display text-[15px] font-medium text-ink sm:min-h-[760px] sm:px-6 lg:h-[calc(100svh-64px)] lg:max-h-[900px]">
-            <div className="flex items-center justify-between">
+          <div className="relative flex min-h-[640px] flex-col overflow-hidden bg-white px-5 py-4 font-display text-[15px] font-medium text-ink sm:min-h-[760px] sm:px-6 lg:h-[calc(100svh-64px)] lg:max-h-[900px]">
+            {/* Backdrop word for the current photo */}
+            <div aria-hidden className="pointer-events-none absolute inset-0 flex items-center justify-center overflow-hidden">
+              <AnimatePresence mode="wait">
+                <motion.span
+                  key={cur.word}
+                  initial={{ opacity: 0, y: 60 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -60 }}
+                  transition={{ duration: 0.8, ease }}
+                  className="whitespace-nowrap font-poster text-[clamp(7rem,33vw,34rem)] uppercase leading-none tracking-[0.02em] text-navy-600/[0.09]"
+                >
+                  {cur.word}
+                </motion.span>
+              </AnimatePresence>
+            </div>
+
+            <div className="relative flex items-center justify-between">
               <span>Photo stories</span>
               <Link href="/gallery" className="transition-colors hover:text-nss-red">
                 Gallery ↗
               </Link>
             </div>
 
-            <div className="grid flex-1 grid-cols-1 items-center gap-6 py-4 lg:grid-cols-[1fr_minmax(0,3.2fr)_1fr]">
+            <div className="relative grid flex-1 grid-cols-1 items-center gap-6 py-4 lg:grid-cols-[1fr_minmax(0,3.2fr)_1fr]">
               {/* Caption */}
               <div className="order-2 min-h-[3.5rem] lg:order-none">
                 <AnimatePresence mode="wait">
                   <motion.div key={cur.title} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.45, ease }}>
-                    <p className="text-[17px] font-semibold">{cur.title}</p>
-                    <p className="text-ink/50">{cur.meta}</p>
+                    <span className="mb-3 block h-[3px] w-10 bg-nss-red" />
+                    <p className="font-serif text-[clamp(2rem,3vw,3.2rem)] font-normal leading-[0.95] text-ink">{cur.title}</p>
+                    <p className="mt-3 text-[14px] font-semibold uppercase tracking-[0.1em] text-nss-red">{cur.meta}</p>
                   </motion.div>
                 </AnimatePresence>
               </div>
@@ -91,17 +109,17 @@ export function FieldCarousel({ slides }: { slides: Slide[] }) {
               </button>
 
               {/* Counter */}
-              <p className="order-3 tabular-nums lg:order-none lg:text-right">
+              <p className="order-3 font-poster tabular-nums leading-none text-navy-600 lg:order-none lg:text-right">
                 <AnimatePresence mode="wait">
-                  <motion.span key={index} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} className="inline-block">
+                  <motion.span key={index} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -16 }} className="inline-block text-[clamp(3.5rem,6vw,6rem)]">
                     {String(index + 1).padStart(2, "0")}
                   </motion.span>
                 </AnimatePresence>
-                /{String(n).padStart(2, "0")}
+                <span className="text-[clamp(1.4rem,2vw,2rem)] text-ink/35">/{String(n).padStart(2, "0")}</span>
               </p>
             </div>
 
-            <div className="flex items-end justify-between gap-4">
+            <div className="relative flex items-end justify-between gap-4">
               <span>Est. 1969 · Government of India</span>
               <span className="flex items-center gap-4">
                 <button onClick={() => go(-1)} className="transition-colors hover:text-nss-red">
@@ -115,7 +133,7 @@ export function FieldCarousel({ slides }: { slides: Slide[] }) {
               <span className="hidden text-right sm:block">Volunteer-run in Chennai.</span>
             </div>
             {/* Autoplay progress */}
-            <div className="mt-3 h-px bg-ink/10">
+            <div className="relative mt-3 h-px bg-ink/10">
               <motion.div key={`${index}-${paused}`} className="h-full origin-left bg-nss-red" initial={{ scaleX: 0 }} animate={{ scaleX: paused ? 0 : 1 }} transition={{ duration: paused ? 0.2 : 4.5, ease: "linear" }} />
             </div>
           </div>

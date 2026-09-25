@@ -45,7 +45,8 @@ export type GalleryItem = {
 export type Profile = {
   id: string;
   full_name: string;
-  email: string;
+  /** null for volunteers imported from the NSS registers who haven't signed up yet */
+  email: string | null;
   register_no: string | null;
   department: string | null;
   section: string | null;

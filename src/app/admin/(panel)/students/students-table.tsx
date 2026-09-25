@@ -23,7 +23,7 @@ export function StudentsTable({ students, batches }: { students: Row[]; batches:
       (r) =>
         (batch === "all" || r.batch_id === batch) &&
         (dept === "all" || r.department === dept) &&
-        (!s || [r.full_name, r.email, r.register_no ?? ""].some((v) => v.toLowerCase().includes(s))),
+        (!s || [r.full_name, r.email ?? "", r.register_no ?? ""].some((v) => v.toLowerCase().includes(s))),
     );
   }, [students, q, batch, dept]);
 
@@ -98,7 +98,7 @@ export function StudentsTable({ students, batches }: { students: Row[]; batches:
                 <td className="py-3 pr-3">
                   <p className="font-bold text-ink">{r.full_name}</p>
                   <p className="text-xs text-ink/50">
-                    {r.email}
+                    {r.email ?? <span className="text-nss-red/80">Not signed up yet</span>}
                     {r.phone && ` · ${r.phone}`}
                   </p>
                 </td>

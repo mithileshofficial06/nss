@@ -33,4 +33,7 @@ export function slugify(s: string) {
     .replace(/(^-|-$)/g, "");
 }
 
+/** Category of the weekly NSS-hour sessions: tracked for attendance, kept out of public event lists. */
+export const NSS_HOUR = "NSS Hour";
+
 export const DEPARTMENTS = ["AIDS", "CSE", "CSA", "IT", "ECE", "EEE", "MECH", "Other"] as const;

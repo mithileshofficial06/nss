@@ -8,7 +8,7 @@ import { CountUp, Reveal, SplitWords } from "@/components/ui/motion";
 import { getBatches, getEvents, getLeaderboard, getSettings, requireStudent } from "@/lib/data";
 import { createClient } from "@/lib/supabase/server";
 import type { EventItem } from "@/lib/types";
-import { formatDate, initials, isUpcoming } from "@/lib/utils";
+import { NSS_HOUR, formatDate, initials, isUpcoming } from "@/lib/utils";
 
 export const metadata: Metadata = { title: "My dashboard" };
 
@@ -42,14 +42,24 @@ export default async function DashboardPage() {
     revealed.points ? supabase.from("points_ledger").select("id, points, reason, created_at").eq("student_id", profile.id).order("created_at", { ascending: false }) : Promise.resolve({ data: null }),
   ]);
 
-  const activities = ((attendance ?? []) as unknown as Activity[])
+  const marked = ((attendance ?? []) as unknown as Activity[])
     .filter((a) => a.events)
     .sort((a, b) => b.events!.event_date.localeCompare(a.events!.event_date));
+  // Weekly NSS hours drive the attendance percentage; everything else is an activity
+  const activities = marked.filter((a) => a.events!.category !== NSS_HOUR);
   const present = activities.filter((a) => a.status === "present");
+  const hoursPresent = marked.filter((a) => a.events!.category === NSS_HOUR && a.status === "present").length;
   const batch = batches.find((b) => b.id === profile.batch_id);
   const since = batch ? `${batch.start_year}-07-01` : profile.created_at.slice(0, 10);
-  const heldSinceJoining = events.filter((e) => !isUpcoming(e.event_date) && e.event_date >= since).length;
-  const attendancePct = heldSinceJoining ? Math.round((present.length / heldSinceJoining) * 100) : 0;
+  const today = new Date().toISOString().slice(0, 10);
+  const { count: hoursHeld } = await supabase
+    .from("events")
+    .select("id", { count: "exact", head: true })
+    .eq("category", NSS_HOUR)
+    .gte("event_date", since)
+    .lte("event_date", today);
+  const eventsHeld = events.filter((e) => !isUpcoming(e.event_date) && e.event_date >= since).length;
+  const attendancePct = hoursHeld ? Math.round((hoursPresent / hoursHeld) * 100) : eventsHeld ? Math.round((present.length / eventsHeld) * 100) : 0;
   const totalPoints = (ledger ?? []).reduce((s, l) => s + l.points, 0);
 
   let rank: number | null = null;
@@ -110,7 +120,7 @@ export default async function DashboardPage() {
                 <Row k="Register no." v={profile.register_no ?? "—"} />
                 <Row k="Department" v={[profile.department, profile.section].filter(Boolean).join(" · ") || "—"} />
                 <Row k="Batch" v={batch?.label ?? "—"} />
-                <Row k="Email" v={profile.email} />
+                <Row k="Email" v={profile.email ?? "—"} />
                 <Row k="Phone" v={profile.phone ?? "—"} />
               </dl>
             </Panel>
