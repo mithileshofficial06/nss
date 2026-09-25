@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { PersonCard } from "./home-sections";
+import { PersonCard } from "./person-card";
 import type { Batch, OfficeBearer } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
