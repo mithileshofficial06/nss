@@ -23,9 +23,8 @@ export function OfficeBearers({ people, batchLabels }: { people: OfficeBearer[];
         <SectionTitle index="04" title="Team" caption="Office bearers & media team" />
         <div className="mt-10 flex flex-wrap items-end justify-between gap-6">
           <h2 className="font-serif text-[clamp(3rem,7vw,6.5rem)] leading-[0.9] tracking-[-0.03em] text-ink">
-            <MaskLine>The people</MaskLine>
             <MaskLine delay={0.1}>
-              behind it, <em className="text-nss-red">{tenure}.</em>
+              The people behind it, <em className="text-nss-red">{tenure}.</em>
             </MaskLine>
           </h2>
           <Link href="/team" className="group font-display text-[17px] font-medium text-ink transition-colors hover:text-nss-red">
