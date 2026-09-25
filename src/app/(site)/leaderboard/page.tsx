@@ -28,7 +28,6 @@ export default async function LeaderboardIndex() {
                 <li>
                   <Link
                     href={`/leaderboard/${b.label}`}
-                    data-cursor="Rank"
                     className="group grid grid-cols-[3rem_1fr_auto] items-baseline gap-4 border-b border-ink/15 py-6 transition-colors hover:text-nss-red sm:grid-cols-[4rem_1fr_12rem_auto]"
                   >
                     <span className="font-display text-[14px] font-medium text-ink/40 group-hover:text-nss-red">{String(i + 1).padStart(2, "0")}</span>

@@ -29,7 +29,7 @@ export function RegisterButton({ event, className }: { event: EventItem; classNa
 export function EventCard({ event, upcoming, index = 0 }: { event: EventItem; upcoming: boolean; index?: number }) {
   return (
     <article className="group flex h-full flex-col gap-4">
-      <Link href={`/events/${event.slug}`} data-cursor="View" className="relative block aspect-[4/3] overflow-hidden bg-paper">
+      <Link href={`/events/${event.slug}`} className="relative block aspect-[4/3] overflow-hidden bg-paper">
         {event.cover_url && (
           <Image
             src={event.cover_url}

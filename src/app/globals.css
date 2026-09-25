@@ -73,14 +73,6 @@ body {
   color: white;
 }
 
-/* Hide the native cursor only on fine pointers where the custom cursor is active */
-@media (pointer: fine) {
-  html.has-custom-cursor,
-  html.has-custom-cursor * {
-    cursor: none !important;
-  }
-}
-
 /* Grain overlay used on dark sections */
 .grain::after {
   content: "";

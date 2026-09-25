@@ -40,7 +40,6 @@ export function GalleryGrid({ items }: { items: GalleryItem[] }) {
             viewport={{ once: true, margin: "-40px" }}
             transition={{ duration: 0.6, delay: (i % 4) * 0.06 }}
             onClick={() => setOpen(i)}
-            data-cursor="Open"
             className="group relative block w-full break-inside-avoid overflow-hidden bg-paper"
           >
             <Image

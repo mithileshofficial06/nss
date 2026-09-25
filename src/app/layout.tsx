@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Anton, Archivo_Narrow, Inter, Instrument_Serif } from "next/font/google";
 import localFont from "next/font/local";
-import { CustomCursor } from "@/components/ui/custom-cursor";
 import "./globals.css";
 
 const display = Archivo_Narrow({ variable: "--font-archivo-narrow", subsets: ["latin"] });
@@ -22,7 +21,6 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${display.variable} ${serif.variable} ${body.variable} ${poster.variable} ${karrik.variable} h-full`}>
       <body className="flex min-h-full flex-col">
-        <CustomCursor />
         {children}
       </body>
     </html>

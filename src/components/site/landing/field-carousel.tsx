@@ -98,7 +98,6 @@ export function FieldCarousel({ slides }: { slides: Slide[] }) {
               {/* Stacked strips */}
               <button
                 onClick={() => go(1)}
-                data-cursor="Next"
                 aria-label={`Show next photo: ${next.title}`}
                 className="order-1 mx-auto flex h-full w-full max-w-[760px] flex-col items-center justify-center gap-3 lg:order-none"
               >
