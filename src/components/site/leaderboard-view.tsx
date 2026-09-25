@@ -7,7 +7,7 @@ import type { LeaderboardRow } from "@/lib/types";
 import { cn, initials } from "@/lib/utils";
 
 const podiumStyle = [
-  { order: "order-2", height: "h-44", ring: "ring-saffron", bg: "bg-saffron", label: "1st" },
+  { order: "order-2", height: "h-44", ring: "ring-accent", bg: "bg-accent", label: "1st" },
   { order: "order-1", height: "h-32", ring: "ring-navy-200", bg: "bg-navy-200", label: "2nd" },
   { order: "order-3", height: "h-24", ring: "ring-orange-300", bg: "bg-orange-300", label: "3rd" },
 ];
@@ -39,7 +39,7 @@ export function LeaderboardView({ rows, highlightId }: { rows: LeaderboardRow[];
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 + (2 - i) * 0.15, type: "spring", stiffness: 120, damping: 14 }}
             >
-              {i === 0 && <Crown className="mb-1 text-saffron" size={30} />}
+              {i === 0 && <Crown className="mb-1 text-accent" size={30} />}
               <div className={cn("grid h-16 w-16 place-items-center rounded-full bg-navy-900 font-display text-xl font-extrabold text-white ring-4 sm:h-20 sm:w-20", s.ring)}>
                 {initials(r.full_name)}
               </div>
@@ -79,7 +79,7 @@ export function LeaderboardView({ rows, highlightId }: { rows: LeaderboardRow[];
               transition={{ delay: Math.min(i, 10) * 0.03 }}
               className={cn(
                 "grid grid-cols-[3rem_1fr_auto] items-center gap-4 border-b border-navy-900/5 px-5 py-3.5 last:border-0 sm:grid-cols-[3rem_1fr_12rem_5rem]",
-                r.student_id === highlightId && "bg-saffron/15",
+                r.student_id === highlightId && "bg-accent/15",
               )}
             >
               <span className={cn("grid h-9 w-9 place-items-center rounded-full font-display text-sm font-extrabold", r.rank <= 3 ? "bg-navy-900 text-white" : "bg-navy-100 text-navy-900")}>
@@ -95,7 +95,7 @@ export function LeaderboardView({ rows, highlightId }: { rows: LeaderboardRow[];
               </div>
               <div className="hidden h-2 overflow-hidden rounded-full bg-navy-100 sm:block">
                 <motion.div
-                  className="h-full rounded-full bg-gradient-to-r from-nss-red to-saffron"
+                  className="h-full rounded-full bg-gradient-to-r from-nss-red to-accent"
                   initial={{ width: 0 }}
                   whileInView={{ width: `${(r.points / max) * 100}%` }}
                   viewport={{ once: true }}

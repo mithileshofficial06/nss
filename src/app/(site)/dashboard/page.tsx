@@ -68,7 +68,7 @@ export default async function DashboardPage() {
         <div className="absolute -left-20 bottom-0 h-72 w-72 rounded-full bg-nss-red/25 blur-[120px]" />
         <div className="relative mx-auto flex max-w-7xl flex-wrap items-end justify-between gap-6">
           <Reveal className="flex items-center gap-5">
-            <span className="grid h-20 w-20 place-items-center rounded-3xl bg-gradient-to-br from-nss-red to-saffron font-display text-3xl font-extrabold shadow-xl">
+            <span className="grid h-20 w-20 place-items-center rounded-3xl bg-gradient-to-br from-nss-red to-accent font-display text-3xl font-extrabold shadow-xl">
               {initials(profile.full_name)}
             </span>
             <div>
@@ -90,7 +90,7 @@ export default async function DashboardPage() {
       <div className="relative mx-auto -mt-16 max-w-7xl space-y-8 px-6">
         {/* Stats */}
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <StatCard icon={Award} label="Total points" locked={!revealed.points} value={totalPoints} accent="from-saffron to-orange-400" />
+          <StatCard icon={Award} label="Total points" locked={!revealed.points} value={totalPoints} accent="from-accent to-orange-400" />
           <StatCard icon={Trophy} label="Batch rank" locked={!revealed.points} value={rank ?? 0} prefix="#" empty={!rank} accent="from-navy-600 to-navy-800" />
           <StatCard icon={CalendarCheck2} label="Events attended" locked={!revealed.activities} value={present.length} accent="from-nss-red to-ember" />
           <StatCard icon={TrendingUp} label="Attendance" locked={!revealed.attendance} value={attendancePct} suffix="%" accent="from-emerald-500 to-teal-600" />
@@ -240,7 +240,7 @@ function ActivityList({ items }: { items: Activity[] }) {
     <ol className="relative space-y-4 border-l-2 border-dashed border-navy-900/10 pl-6">
       {items.map((a) => (
         <li key={a.id} className="relative">
-          <span className={`absolute -left-[31px] top-1.5 h-3.5 w-3.5 rounded-full ring-4 ring-white ${a.status === "present" ? "bg-emerald-500" : a.status === "excused" ? "bg-saffron" : "bg-nss-red"}`} />
+          <span className={`absolute -left-[31px] top-1.5 h-3.5 w-3.5 rounded-full ring-4 ring-white ${a.status === "present" ? "bg-emerald-500" : a.status === "excused" ? "bg-accent" : "bg-nss-red"}`} />
           <div className="flex flex-wrap items-center justify-between gap-2 rounded-2xl bg-paper px-4 py-3">
             <div>
               <Link href={`/events/${a.events!.slug}`} className="font-bold text-navy-900 hover:text-nss-red">

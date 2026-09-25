@@ -38,7 +38,7 @@ export default async function AdminOverview() {
       <div className="grid gap-4 sm:grid-cols-3">
         {stats.map((s) => (
           <Link key={s.label} href={s.href} className="group rounded-3xl bg-navy-900 p-6 text-white transition hover:-translate-y-0.5 hover:shadow-xl">
-            <s.icon className="text-saffron" />
+            <s.icon className="text-accent" />
             <p className="mt-4 font-display text-4xl font-extrabold">{s.value}</p>
             <p className="mt-1 flex items-center justify-between text-sm text-white/60">
               {s.label} <ArrowRight size={16} className="opacity-0 transition group-hover:opacity-100" />

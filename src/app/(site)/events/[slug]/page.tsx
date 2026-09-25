@@ -32,7 +32,7 @@ export default async function EventPage({ params }: PageProps<"/events/[slug]">)
             <ArrowLeft size={16} /> All events
           </Link>
           <Reveal>
-            <p className="mt-6 inline-block rounded-full bg-saffron px-3 py-1 text-xs font-bold uppercase tracking-wider text-ink">
+            <p className="mt-6 inline-block rounded-full bg-accent px-3 py-1 text-xs font-bold uppercase tracking-wider text-ink">
               {upcoming ? "Upcoming" : "Completed"} · {event.category}
             </p>
             <h1 className="mt-4 max-w-4xl font-display text-5xl font-extrabold leading-[0.95] tracking-tight sm:text-7xl">{event.title}</h1>

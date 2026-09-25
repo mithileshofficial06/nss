@@ -4,8 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "framer-motion";
-import { LayoutDashboard, LogIn, Menu, ShieldCheck, X } from "lucide-react";
-import { NssWheel } from "@/components/ui/nss-wheel";
+import { ArrowUpRight, LayoutDashboard, Menu, ShieldCheck, X } from "lucide-react";
+import { BrandLockup } from "./brand";
 import { cn } from "@/lib/utils";
 
 const links = [
@@ -16,6 +16,8 @@ const links = [
   { href: "/gallery", label: "Gallery" },
 ];
 
+const ease = [0.22, 1, 0.36, 1] as const;
+
 export function Navbar({ user }: { user: { name: string; role: "student" | "admin" } | null }) {
   const pathname = usePathname();
   const { scrollY } = useScroll();
@@ -25,131 +27,138 @@ export function Navbar({ user }: { user: { name: string; role: "student" | "admi
 
   useMotionValueEvent(scrollY, "change", (y) => {
     const prev = scrollY.getPrevious() ?? 0;
-    setHidden(y > prev && y > 240 && !open);
+    setHidden(y > prev && y > 320 && !open);
     setScrolled(y > 24);
   });
 
-  const onDarkHero = pathname === "/" && !scrolled;
+  // Every public page opens on a dark header, so the bar starts transparent with light text
+  const solid = scrolled;
+  const dashHref = user?.role === "admin" ? "/admin" : "/dashboard";
 
   return (
     <>
       <motion.header
-        animate={{ y: hidden ? -110 : 0 }}
-        transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-        className="fixed inset-x-0 top-0 z-50 px-3 pt-3 sm:px-6"
+        initial={{ y: -80, opacity: 0 }}
+        animate={{ y: hidden ? -100 : 0, opacity: 1 }}
+        transition={{ duration: 0.6, ease }}
+        className="fixed inset-x-0 top-0 z-50"
       >
-        <nav
+        <div
           className={cn(
-            "mx-auto flex max-w-7xl items-center justify-between rounded-2xl px-4 py-2.5 transition-all duration-500",
-            scrolled || pathname !== "/"
-              ? "border border-navy-900/10 bg-paper/80 shadow-[0_8px_30px_-12px_rgba(10,18,53,.25)] backdrop-blur-xl"
-              : "bg-transparent",
+            "transition-[background-color,border-color,box-shadow] duration-500",
+            solid ? "border-b border-line bg-white/85 shadow-[0_10px_30px_-20px_rgba(8,12,43,.35)] backdrop-blur-xl" : "border-b border-white/10 bg-transparent",
           )}
         >
-          <Link href="/" className="group flex items-center gap-2.5">
-            <span className={cn("grid h-10 w-10 place-items-center rounded-full", onDarkHero ? "bg-white/10 text-white" : "bg-navy-900 text-white")}>
-              <NssWheel className="h-7 w-7 text-white transition-transform duration-700 group-hover:rotate-180" strokeWidth={4} />
-            </span>
-            <span className={cn("leading-none", onDarkHero ? "text-white" : "text-navy-900")}>
-              <span className="block font-display text-lg font-extrabold tracking-tight">NSS LICET</span>
-              <span className="block text-[10px] font-semibold uppercase tracking-[0.2em] opacity-60">Not me but you</span>
-            </span>
-          </Link>
+          <nav className="mx-auto flex h-[72px] max-w-7xl items-center justify-between px-5 sm:px-8">
+            <Link href="/" aria-label="NSS LICET home">
+              <BrandLockup tone={solid ? "dark" : "light"} />
+            </Link>
 
-          <ul className="hidden items-center gap-1 md:flex">
-            {links.map((l) => {
-              const active = l.href === "/" ? pathname === "/" : pathname.startsWith(l.href);
-              return (
-                <li key={l.href}>
-                  <Link
-                    href={l.href}
-                    className={cn(
-                      "relative rounded-full px-4 py-2 text-sm font-semibold transition-colors",
-                      onDarkHero ? "text-white/80 hover:text-white" : "text-navy-900/70 hover:text-navy-900",
-                      active && (onDarkHero ? "text-white" : "text-navy-900"),
-                    )}
-                  >
-                    {active && (
-                      <motion.span
-                        layoutId="nav-pill"
-                        className={cn("absolute inset-0 -z-10 rounded-full", onDarkHero ? "bg-white/15" : "bg-navy-900/8")}
-                        transition={{ type: "spring", stiffness: 380, damping: 30 }}
+            <ul className="hidden items-center gap-8 lg:flex">
+              {links.map((l) => {
+                const active = l.href === "/" ? pathname === "/" : pathname.startsWith(l.href);
+                return (
+                  <li key={l.href}>
+                    <Link
+                      href={l.href}
+                      className={cn(
+                        "group relative py-2 text-[14px] font-medium transition-colors",
+                        solid ? "text-navy-900/70 hover:text-navy-900" : "text-white/75 hover:text-white",
+                        active && (solid ? "text-navy-900" : "text-white"),
+                      )}
+                    >
+                      {l.label}
+                      <span
+                        className={cn(
+                          "absolute -bottom-0.5 left-0 h-[2px] w-full origin-left rounded-full bg-nss-red transition-transform duration-300",
+                          active ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100",
+                        )}
                       />
-                    )}
-                    {l.label}
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+
+            <div className="hidden items-center gap-3 lg:flex">
+              {user ? (
+                <Link href={dashHref} className="inline-flex items-center gap-2 rounded-full bg-nss-red px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-nss-red-dark">
+                  {user.role === "admin" ? <ShieldCheck size={16} /> : <LayoutDashboard size={16} />}
+                  {user.role === "admin" ? "Admin panel" : "My dashboard"}
+                </Link>
+              ) : (
+                <>
+                  <Link
+                    href="/login"
+                    className={cn("rounded-full px-4 py-2.5 text-sm font-semibold transition", solid ? "text-navy-900 hover:bg-navy-100" : "text-white hover:bg-white/10")}
+                  >
+                    Sign in
                   </Link>
-                </li>
-              );
-            })}
-          </ul>
+                  <Link
+                    href="/register"
+                    className="group inline-flex items-center gap-1.5 rounded-full bg-nss-red px-5 py-2.5 text-sm font-semibold text-white shadow-[0_8px_24px_-8px_rgba(225,29,42,.7)] transition hover:bg-nss-red-dark"
+                  >
+                    Join NSS
+                    <ArrowUpRight size={16} className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                  </Link>
+                </>
+              )}
+            </div>
 
-          <div className="hidden items-center gap-2 md:flex">
-            {user ? (
-              <Link
-                href={user.role === "admin" ? "/admin" : "/dashboard"}
-                className="flex items-center gap-2 rounded-full bg-nss-red px-4 py-2 text-sm font-bold text-white transition hover:bg-nss-red-dark"
-              >
-                {user.role === "admin" ? <ShieldCheck size={16} /> : <LayoutDashboard size={16} />}
-                {user.role === "admin" ? "Admin" : "Dashboard"}
-              </Link>
-            ) : (
-              <>
-                <Link href="/register" className={cn("rounded-full px-4 py-2 text-sm font-semibold", onDarkHero ? "text-white/85 hover:text-white" : "text-navy-900/75 hover:text-navy-900")}>
-                  Join NSS
-                </Link>
-                <Link href="/login" className="flex items-center gap-2 rounded-full bg-nss-red px-4 py-2 text-sm font-bold text-white transition hover:bg-nss-red-dark">
-                  <LogIn size={16} /> Login
-                </Link>
-              </>
-            )}
-          </div>
-
-          <button
-            className={cn("grid h-10 w-10 place-items-center rounded-full md:hidden", onDarkHero ? "text-white" : "text-navy-900")}
-            onClick={() => setOpen((o) => !o)}
-            aria-label={open ? "Close menu" : "Open menu"}
-            aria-expanded={open}
-          >
-            {open ? <X /> : <Menu />}
-          </button>
-        </nav>
+            <button
+              className={cn("grid h-11 w-11 place-items-center rounded-full lg:hidden", solid && !open ? "text-navy-900" : "text-white")}
+              onClick={() => setOpen((o) => !o)}
+              aria-label={open ? "Close menu" : "Open menu"}
+              aria-expanded={open}
+            >
+              {open ? <X /> : <Menu />}
+            </button>
+          </nav>
+        </div>
       </motion.header>
 
       <AnimatePresence>
         {open && (
           <motion.div
-            initial={{ clipPath: "circle(0% at calc(100% - 40px) 40px)" }}
-            animate={{ clipPath: "circle(150% at calc(100% - 40px) 40px)" }}
-            exit={{ clipPath: "circle(0% at calc(100% - 40px) 40px)" }}
-            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed inset-0 z-40 flex flex-col justify-between bg-navy-950 px-6 pb-10 pt-28 text-white md:hidden"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0, transition: { delay: 0.2 } }}
+            className="fixed inset-0 z-40 bg-navy-950 lg:hidden"
           >
-            <ul className="space-y-2">
-              {links.map((l, i) => (
-                <motion.li key={l.href} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.15 + i * 0.06 }}>
-                  <Link href={l.href} onClick={() => setOpen(false)} className="font-display text-5xl font-extrabold tracking-tight hover:text-saffron">
-                    {l.label}
+            <div className="flex h-full flex-col justify-between px-6 pb-10 pt-28 text-white">
+              <ul className="space-y-1">
+                {links.map((l, i) => (
+                  <li key={l.href} className="overflow-hidden">
+                    <motion.div initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} transition={{ duration: 0.5, delay: 0.05 * i, ease }}>
+                      <Link
+                        href={l.href}
+                        onClick={() => setOpen(false)}
+                        className="flex items-baseline justify-between border-b border-white/10 py-4 font-display text-3xl font-semibold tracking-tight"
+                      >
+                        {l.label}
+                        <span className="text-xs font-medium text-white/40">0{i + 1}</span>
+                      </Link>
+                    </motion.div>
+                  </li>
+                ))}
+              </ul>
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }} className="flex gap-3">
+                {user ? (
+                  <Link href={dashHref} onClick={() => setOpen(false)} className="flex-1 rounded-full bg-nss-red py-3.5 text-center font-semibold">
+                    {user.role === "admin" ? "Admin panel" : "My dashboard"}
                   </Link>
-                </motion.li>
-              ))}
-            </ul>
-            <div className="flex gap-3">
-              {user ? (
-                <Link href={user.role === "admin" ? "/admin" : "/dashboard"} onClick={() => setOpen(false)} className="flex-1 rounded-full bg-nss-red py-3 text-center font-bold">
-                  {user.role === "admin" ? "Admin panel" : "My dashboard"}
-                </Link>
-              ) : (
-                <>
-                  <Link href="/register" onClick={() => setOpen(false)} className="flex-1 rounded-full border border-white/25 py-3 text-center font-bold">
-                    Join NSS
-                  </Link>
-                  <Link href="/login" onClick={() => setOpen(false)} className="flex-1 rounded-full bg-nss-red py-3 text-center font-bold">
-                    Login
-                  </Link>
-                </>
-              )}
+                ) : (
+                  <>
+                    <Link href="/login" onClick={() => setOpen(false)} className="flex-1 rounded-full border border-white/20 py-3.5 text-center font-semibold">
+                      Sign in
+                    </Link>
+                    <Link href="/register" onClick={() => setOpen(false)} className="flex-1 rounded-full bg-nss-red py-3.5 text-center font-semibold">
+                      Join NSS
+                    </Link>
+                  </>
+                )}
+              </motion.div>
             </div>
-            <NssWheel spin className="pointer-events-none absolute -bottom-24 -right-24 h-80 w-80 text-white/5" />
           </motion.div>
         )}
       </AnimatePresence>

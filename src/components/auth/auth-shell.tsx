@@ -17,7 +17,7 @@ const floaters = [
 export function AuthShell({ children, variant = "student" }: { children: ReactNode; variant?: "student" | "admin" }) {
   return (
     <div className="grain relative flex min-h-[100svh] items-center justify-center overflow-hidden bg-navy-950 px-4 py-24 text-white">
-      <div className={`absolute left-1/4 top-1/4 h-[28rem] w-[28rem] rounded-full blur-[140px] ${variant === "admin" ? "bg-saffron/20" : "bg-nss-red/30"}`} />
+      <div className={`absolute left-1/4 top-1/4 h-[28rem] w-[28rem] rounded-full blur-[140px] ${variant === "admin" ? "bg-accent/20" : "bg-nss-red/30"}`} />
       <div className="absolute bottom-0 right-1/4 h-[24rem] w-[24rem] rounded-full bg-navy-600/40 blur-[120px]" />
       <NssWheel spin className="pointer-events-none absolute left-1/2 top-1/2 h-[120vmin] w-[120vmin] -translate-x-1/2 -translate-y-1/2 text-white/[0.035]" strokeWidth={1.2} />
 
@@ -58,8 +58,8 @@ export function Field({
   return (
     <label className="block">
       <span className="mb-1.5 block text-xs font-bold uppercase tracking-[0.15em] text-white/55">{label}</span>
-      <span className="group relative flex items-center rounded-xl border border-white/12 bg-white/[0.06] transition focus-within:border-saffron/70 focus-within:bg-white/[0.1] focus-within:shadow-[0_0_0_4px_rgba(245,184,61,.12)]">
-        {icon && <span className="pl-3.5 text-white/45 group-focus-within:text-saffron">{icon}</span>}
+      <span className="group relative flex items-center rounded-xl border border-white/12 bg-white/[0.06] transition focus-within:border-accent/70 focus-within:bg-white/[0.1] focus-within:shadow-[0_0_0_4px_rgba(169,177,255,.16)]">
+        {icon && <span className="pl-3.5 text-white/45 group-focus-within:text-accent">{icon}</span>}
         {children}
       </span>
       {error && <span className="mt-1 block text-xs font-semibold text-ember">{error}</span>}

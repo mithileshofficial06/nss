@@ -37,7 +37,7 @@ export function EventsManager({ events }: { events: EventItem[] }) {
                 </p>
               </button>
               <div className="hidden items-center gap-2 sm:flex">
-                {isUpcoming(e.event_date) && <span className="rounded-full bg-saffron/20 px-2 py-0.5 text-[10px] font-bold uppercase text-navy-900">Upcoming</span>}
+                {isUpcoming(e.event_date) && <span className="rounded-full bg-accent/20 px-2 py-0.5 text-[10px] font-bold uppercase text-navy-900">Upcoming</span>}
                 {!e.is_published && <span className="rounded-full bg-navy-900/10 px-2 py-0.5 text-[10px] font-bold uppercase">Draft</span>}
                 {e.register_url ? (
                   <a href={e.register_url} target="_blank" rel="noreferrer" title="Google Form" className="text-emerald-600">

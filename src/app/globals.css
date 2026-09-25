@@ -1,26 +1,29 @@
 @import "tailwindcss";
 
-/* NSS palette — navy + red from the Konark-wheel emblem, saffron as the warm accent */
+/* NSS palette — built from the emblem itself: blue #2E3191, red #EC1C24.
+   Deep blues carry the surfaces, red is reserved for emphasis, periwinkle is the quiet accent on dark. */
 @theme {
-  --color-ink: #070d2b;
-  --color-navy-950: #0a1235;
-  --color-navy-900: #0f1a4a;
-  --color-navy-800: #172564;
-  --color-navy-700: #22358a;
-  --color-navy-600: #3048b0;
-  --color-navy-400: #7385d6;
-  --color-navy-200: #c7cff0;
-  --color-navy-100: #e6eaf8;
+  --color-ink: #05081f;
+  --color-navy-950: #080c2b;
+  --color-navy-900: #0e1440;
+  --color-navy-800: #171f5e;
+  --color-navy-700: #222a7c;
+  --color-navy-600: #2e3191;
+  --color-navy-400: #6b70cf;
+  --color-navy-200: #c9cbf1;
+  --color-navy-100: #eceefb;
 
-  --color-nss-red: #d7263d;
-  --color-nss-red-dark: #a8172b;
-  --color-ember: #ff5a4e;
-  --color-saffron: #f5b83d;
-  --color-paper: #f7f4ee;
-  --color-paper-2: #efeae0;
+  --color-nss-red: #e11d2a;
+  --color-nss-red-dark: #b0141f;
+  --color-ember: #ff4f5a;
+  --color-accent: #a9b1ff;
+  --color-paper: #f7f8fc;
+  --color-paper-2: #eef0f8;
+  --color-line: #e3e6f2;
 
-  --font-display: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
-  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-instrument), ui-serif, Georgia, serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 
   --animate-spin-slow: spin 28s linear infinite;
   --animate-marquee: marquee 40s linear infinite;
@@ -91,7 +94,7 @@ body {
 .spin-border {
   background:
     linear-gradient(var(--color-navy-950), var(--color-navy-950)) padding-box,
-    conic-gradient(from var(--angle), transparent 0 60%, var(--color-nss-red) 72%, var(--color-saffron) 80%, transparent 92%) border-box;
+    conic-gradient(from var(--angle), transparent 0 60%, var(--color-nss-red) 72%, var(--color-accent) 80%, transparent 92%) border-box;
   border: 1.5px solid transparent;
   animation: var(--animate-border-spin);
 }

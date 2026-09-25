@@ -26,7 +26,7 @@ export function AdminSidebar({ name }: { name: string }) {
   const content = (
     <div className="flex h-full flex-col">
       <Link href="/admin" className="flex items-center gap-3 px-2">
-        <span className="grid h-11 w-11 place-items-center rounded-2xl bg-saffron text-ink">
+        <span className="grid h-11 w-11 place-items-center rounded-2xl bg-accent text-ink">
           <NssWheel className="h-8 w-8" strokeWidth={4} />
         </span>
         <span>

@@ -39,7 +39,7 @@ export function Ticker() {
         {row.map((w, i) => (
           <span key={i} className="flex items-center gap-10 font-display text-3xl font-extrabold uppercase tracking-tight sm:text-4xl">
             {w}
-            <span className="text-saffron">✦</span>
+            <span className="text-accent">✦</span>
           </span>
         ))}
       </div>
@@ -50,7 +50,7 @@ export function Ticker() {
 const pillars = [
   { icon: Leaf, title: "Environment", text: "Beach and campus clean-ups, waste-segregation drives and tree planting across Chennai.", img: "/images/events/beach-cleanup-2025.webp", color: "bg-emerald-500" },
   { icon: Droplets, title: "Health", text: "Blood donation camps, fitness campaigns and mental-health awareness on campus.", img: "/images/events/blood-donation-2026.webp", color: "bg-nss-red" },
-  { icon: Megaphone, title: "Awareness", text: "Road-safety rallies, drug-free marathons, vigilance quizzes and street plays.", img: "/images/events/road-safety-rally-2026.webp", color: "bg-saffron" },
+  { icon: Megaphone, title: "Awareness", text: "Road-safety rallies, drug-free marathons, vigilance quizzes and street plays.", img: "/images/events/road-safety-rally-2026.webp", color: "bg-accent" },
   { icon: HandHeart, title: "Outreach", text: "Blanket donations, orphanage and old-age home visits — service with a human face.", img: "/images/events/blanket-donation-2025.webp", color: "bg-navy-600" },
 ];
 
@@ -117,7 +117,7 @@ export function PhotoMarquee({ items }: { items: GalleryItem[] }) {
     <section className="overflow-hidden bg-ink py-24 text-white">
       <Reveal className="mx-auto mb-12 flex max-w-7xl flex-wrap items-end justify-between gap-4 px-6">
         <div>
-          <p className="text-xs font-bold uppercase tracking-[0.25em] text-saffron">Moments</p>
+          <p className="text-xs font-bold uppercase tracking-[0.25em] text-accent">Moments</p>
           <h2 className="mt-3 font-display text-4xl font-extrabold tracking-tight sm:text-6xl">Captured in the field.</h2>
         </div>
         <Link href="/gallery" className="group inline-flex items-center gap-2 rounded-full border border-white/20 px-5 py-3 text-sm font-bold hover:bg-white hover:text-ink">
@@ -145,10 +145,10 @@ export function PhotoMarquee({ items }: { items: GalleryItem[] }) {
 export function BatchTeaser({ batches }: { batches: Batch[] }) {
   return (
     <section className="relative overflow-hidden bg-navy-900 py-28 text-white">
-      <div className="absolute -right-20 top-10 h-80 w-80 rounded-full bg-saffron/20 blur-[120px]" />
+      <div className="absolute -right-20 top-10 h-80 w-80 rounded-full bg-accent/20 blur-[120px]" />
       <div className="mx-auto grid max-w-7xl items-center gap-12 px-6 lg:grid-cols-2">
         <Reveal>
-          <span className="grid h-14 w-14 place-items-center rounded-2xl bg-saffron text-ink">
+          <span className="grid h-14 w-14 place-items-center rounded-2xl bg-accent text-ink">
             <Trophy />
           </span>
           <h2 className="mt-6 font-display text-4xl font-extrabold tracking-tight sm:text-6xl">Batch-wise leaderboard.</h2>
@@ -162,11 +162,11 @@ export function BatchTeaser({ batches }: { batches: Batch[] }) {
               <Link
                 href={`/leaderboard/${b.label}`}
                 data-cursor="Rank"
-                className="group relative block overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-6 transition hover:-translate-y-1 hover:border-saffron/60 hover:bg-white/10"
+                className="group relative block overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-6 transition hover:-translate-y-1 hover:border-accent/60 hover:bg-white/10"
               >
                 <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-white/40">Batch</p>
                 <p className="mt-2 font-display text-4xl font-extrabold tracking-tight">{b.label}</p>
-                <ArrowRight className="absolute bottom-5 right-5 -rotate-45 text-saffron opacity-0 transition group-hover:rotate-0 group-hover:opacity-100" size={20} />
+                <ArrowRight className="absolute bottom-5 right-5 -rotate-45 text-accent opacity-0 transition group-hover:rotate-0 group-hover:opacity-100" size={20} />
               </Link>
             </Reveal>
           ))}
@@ -211,7 +211,7 @@ export function PersonCard({ person }: { person: OfficeBearer }) {
       )}
       <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/20 to-transparent" />
       <div className="absolute inset-x-0 bottom-0 p-4 text-white">
-        <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-saffron">{person.position}</p>
+        <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-accent">{person.position}</p>
         <p className="mt-1 font-display text-lg font-bold leading-tight">{person.name}</p>
         <p className="text-xs text-white/60">{person.department}</p>
       </div>

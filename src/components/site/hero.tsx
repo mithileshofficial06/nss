@@ -70,7 +70,7 @@ export function Hero() {
           transition={{ delay: 0.2 }}
           className="mx-auto inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.25em] text-white/80 backdrop-blur"
         >
-          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-saffron" />
+          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-accent" />
           National Service Scheme · LICET
         </motion.p>
 

@@ -48,7 +48,7 @@ export default async function PointsPage({ searchParams }: PageProps<"/admin/poi
           <ol className="divide-y divide-navy-900/5">
             {board.map((r) => (
               <li key={r.student_id} className="flex items-center gap-4 py-2.5 text-sm">
-                <span className={cn("grid h-8 w-8 place-items-center rounded-full font-display text-xs font-extrabold", r.rank <= 3 ? "bg-saffron text-ink" : "bg-navy-100 text-navy-900")}>{r.rank}</span>
+                <span className={cn("grid h-8 w-8 place-items-center rounded-full font-display text-xs font-extrabold", r.rank <= 3 ? "bg-accent text-ink" : "bg-navy-100 text-navy-900")}>{r.rank}</span>
                 <span className="flex-1">
                   <span className="font-bold text-navy-900">{r.full_name}</span>
                   <span className="ml-2 text-xs text-navy-900/45">

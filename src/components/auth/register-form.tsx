@@ -102,7 +102,7 @@ export function RegisterForm({ batches }: { batches: Batch[] }) {
               <span
                 className={cn(
                   "grid h-8 w-8 shrink-0 place-items-center rounded-full text-xs font-bold transition-all duration-500",
-                  i < step ? "bg-saffron text-ink" : i === step ? "bg-nss-red text-white ring-4 ring-nss-red/25" : "bg-white/10 text-white/50",
+                  i < step ? "bg-accent text-ink" : i === step ? "bg-nss-red text-white ring-4 ring-nss-red/25" : "bg-white/10 text-white/50",
                 )}
               >
                 {i < step ? <Check size={15} /> : i + 1}
@@ -110,7 +110,7 @@ export function RegisterForm({ batches }: { batches: Batch[] }) {
               <span className={cn("hidden text-xs font-bold sm:block", i === step ? "text-white" : "text-white/45")}>{s}</span>
               {i < steps.length - 1 && (
                 <span className="relative h-0.5 flex-1 overflow-hidden rounded bg-white/10">
-                  <motion.span className="absolute inset-y-0 left-0 bg-saffron" animate={{ width: i < step ? "100%" : "0%" }} transition={{ duration: 0.5 }} />
+                  <motion.span className="absolute inset-y-0 left-0 bg-accent" animate={{ width: i < step ? "100%" : "0%" }} transition={{ duration: 0.5 }} />
                 </span>
               )}
             </li>
@@ -174,7 +174,7 @@ export function RegisterForm({ batches }: { batches: Batch[] }) {
                           onClick={() => setF((p) => ({ ...p, batch_id: b.id }))}
                           className={cn(
                             "rounded-xl border py-2.5 text-sm font-bold transition",
-                            f.batch_id === b.id ? "border-saffron bg-saffron text-ink" : "border-white/12 bg-white/[0.05] text-white/70 hover:border-white/30",
+                            f.batch_id === b.id ? "border-accent bg-accent text-ink" : "border-white/12 bg-white/[0.05] text-white/70 hover:border-white/30",
                           )}
                         >
                           {b.label}
@@ -226,14 +226,14 @@ export function RegisterForm({ batches }: { batches: Batch[] }) {
               Continue <ArrowRight size={18} className="transition group-hover:translate-x-1" />
             </button>
           ) : (
-            <button type="button" disabled={loading} onClick={submit} className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-saffron py-3.5 font-bold text-ink disabled:opacity-70">
+            <button type="button" disabled={loading} onClick={submit} className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-accent py-3.5 font-bold text-ink disabled:opacity-70">
               {loading ? <Loader2 className="animate-spin" size={18} /> : <>Create account <Check size={18} /></>}
             </button>
           )}
         </div>
         <p className="mt-6 text-center text-sm text-white/55">
           Already registered?{" "}
-          <Link href="/login" className="font-bold text-saffron hover:underline">
+          <Link href="/login" className="font-bold text-accent hover:underline">
             Sign in
           </Link>
         </p>

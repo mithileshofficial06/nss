@@ -56,7 +56,7 @@ export function EventCard({ event, upcoming, index = 0 }: { event: EventItem; up
           <span
             className={cn(
               "absolute right-4 top-4 rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-wider",
-              upcoming ? "bg-saffron text-ink" : "bg-ink/60 text-white backdrop-blur",
+              upcoming ? "bg-accent text-ink" : "bg-ink/60 text-white backdrop-blur",
             )}
           >
             {upcoming ? "Upcoming" : event.category}

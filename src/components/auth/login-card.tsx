@@ -62,7 +62,7 @@ export function LoginCard({ mode, next, notice }: { mode: "student" | "admin"; n
             {success ? (
               <motion.div key="ok" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center py-16 text-center">
                 <motion.div initial={{ rotate: -90, scale: 0 }} animate={{ rotate: 0, scale: 1 }} transition={{ type: "spring", stiffness: 200, damping: 12 }}>
-                  <CheckCircle2 size={72} className="text-saffron" />
+                  <CheckCircle2 size={72} className="text-accent" />
                 </motion.div>
                 <p className="mt-5 font-display text-3xl font-extrabold">Welcome back!</p>
                 <p className="mt-1 text-sm text-white/60">Taking you to your {isAdmin ? "admin panel" : "dashboard"}…</p>
@@ -71,7 +71,7 @@ export function LoginCard({ mode, next, notice }: { mode: "student" | "admin"; n
               <motion.form key="form" onSubmit={onSubmit} exit={{ opacity: 0, y: -20 }} className="relative space-y-5">
                 <div className="flex flex-col items-center text-center">
                   <motion.div
-                    className={`grid h-20 w-20 place-items-center rounded-full ${isAdmin ? "bg-saffron text-ink" : "bg-nss-red text-white"} shadow-lg`}
+                    className={`grid h-20 w-20 place-items-center rounded-full ${isAdmin ? "bg-accent text-ink" : "bg-nss-red text-white"} shadow-lg`}
                     animate={{ rotate: password.length * 45 + (loading ? 720 : 0) }}
                     transition={{ type: "spring", stiffness: 90, damping: 14 }}
                   >
@@ -81,7 +81,7 @@ export function LoginCard({ mode, next, notice }: { mode: "student" | "admin"; n
                   <p className="mt-1 text-sm text-white/55">{isAdmin ? "Restricted to NSS coordinators" : "Sign in to see your NSS journey"}</p>
                 </div>
 
-                {notice && <p className="rounded-xl border border-saffron/30 bg-saffron/10 px-4 py-3 text-sm text-saffron">{notice}</p>}
+                {notice && <p className="rounded-xl border border-accent/30 bg-accent/10 px-4 py-3 text-sm text-accent">{notice}</p>}
 
                 <Field label="Email" icon={<Mail size={17} />}>
                   <input type="email" required autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@licet.ac.in" className={inputCls} />
@@ -111,7 +111,7 @@ export function LoginCard({ mode, next, notice }: { mode: "student" | "admin"; n
 
                 <button
                   disabled={loading}
-                  className={`group relative flex w-full items-center justify-center gap-2 overflow-hidden rounded-xl py-3.5 font-bold transition disabled:opacity-70 ${isAdmin ? "bg-saffron text-ink" : "bg-nss-red text-white"}`}
+                  className={`group relative flex w-full items-center justify-center gap-2 overflow-hidden rounded-xl py-3.5 font-bold transition disabled:opacity-70 ${isAdmin ? "bg-accent text-ink" : "bg-nss-red text-white"}`}
                 >
                   <span className="absolute inset-0 bg-[linear-gradient(110deg,transparent_25%,rgba(255,255,255,.35)_50%,transparent_75%)] bg-[length:200%_100%] opacity-0 transition group-hover:animate-shimmer group-hover:opacity-100" />
                   {loading ? <Loader2 className="animate-spin" size={18} /> : <>Sign in <ArrowRight size={18} className="transition group-hover:translate-x-1" /></>}
@@ -120,7 +120,7 @@ export function LoginCard({ mode, next, notice }: { mode: "student" | "admin"; n
                 {!isAdmin && (
                   <p className="text-center text-sm text-white/55">
                     First time here?{" "}
-                    <Link href="/register" className="font-bold text-saffron hover:underline">
+                    <Link href="/register" className="font-bold text-accent hover:underline">
                       Create your account
                     </Link>
                   </p>

@@ -27,13 +27,13 @@ export default async function LeaderboardIndex() {
                   data-cursor="Rank"
                   className="group relative block overflow-hidden rounded-[2rem] bg-navy-900 p-8 text-white"
                 >
-                  <Trophy className="absolute -right-6 -top-6 h-40 w-40 text-white/[0.06] transition duration-700 group-hover:rotate-12 group-hover:text-saffron/20" />
+                  <Trophy className="absolute -right-6 -top-6 h-40 w-40 text-white/[0.06] transition duration-700 group-hover:rotate-12 group-hover:text-accent/20" />
                   <p className="text-xs font-bold uppercase tracking-[0.25em] text-white/45">Batch</p>
                   <p className="mt-2 font-display text-7xl font-extrabold tracking-tighter">{b.label}</p>
                   <p className="mt-4 text-sm text-white/60">
                     {b.start_year} – {b.end_year} · {graduated ? "Alumni" : `Year ${year}`}
                   </p>
-                  <span className="mt-8 inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm font-bold transition group-hover:bg-saffron group-hover:text-ink">
+                  <span className="mt-8 inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm font-bold transition group-hover:bg-accent group-hover:text-ink">
                     View standings <ArrowRight size={16} />
                   </span>
                 </Link>

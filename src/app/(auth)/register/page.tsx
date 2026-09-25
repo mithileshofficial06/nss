@@ -19,7 +19,7 @@ export default async function RegisterPage() {
         <div className="spin-border rounded-[2rem] p-10 text-center">
           <h1 className="font-display text-3xl font-extrabold">Registrations are closed</h1>
           <p className="mt-2 text-white/60">The NSS team will reopen volunteer registration soon.</p>
-          <Link href="/login" className="mt-6 inline-block font-bold text-saffron hover:underline">
+          <Link href="/login" className="mt-6 inline-block font-bold text-accent hover:underline">
             Already have an account? Sign in
           </Link>
         </div>

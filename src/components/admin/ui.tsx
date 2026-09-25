@@ -68,7 +68,7 @@ function ToastItem({ state }: { state: NonNullable<ActionState> }) {
           )}
           role="status"
         >
-          {visible.ok ? <CheckCircle2 size={18} className="shrink-0 text-saffron" /> : <XCircle size={18} className="shrink-0" />}
+          {visible.ok ? <CheckCircle2 size={18} className="shrink-0 text-accent" /> : <XCircle size={18} className="shrink-0" />}
           {visible.message}
         </motion.div>
       )}

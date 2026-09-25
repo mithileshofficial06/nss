@@ -112,7 +112,7 @@ export function AttendanceSheet({ events, eventId, students, batches, initialPre
 
       <div className="sticky bottom-4 mt-6 flex items-center justify-between gap-4 rounded-2xl bg-navy-900 px-5 py-4 text-white shadow-2xl">
         <span className="text-sm">
-          <b className="font-display text-xl">{present.size}</b> marked present {dirty && <span className="ml-2 text-saffron">· unsaved changes</span>}
+          <b className="font-display text-xl">{present.size}</b> marked present {dirty && <span className="ml-2 text-accent">· unsaved changes</span>}
         </span>
         <button
           disabled={pending}
@@ -123,7 +123,7 @@ export function AttendanceSheet({ events, eventId, students, batches, initialPre
               router.refresh();
             })
           }
-          className="inline-flex items-center gap-2 rounded-xl bg-saffron px-5 py-2.5 text-sm font-bold text-ink disabled:opacity-60"
+          className="inline-flex items-center gap-2 rounded-xl bg-accent px-5 py-2.5 text-sm font-bold text-ink disabled:opacity-60"
         >
           {pending && <Loader2 size={16} className="animate-spin" />} Save attendance
         </button>

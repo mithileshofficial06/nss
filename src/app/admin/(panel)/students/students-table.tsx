@@ -134,7 +134,7 @@ export function StudentsTable({ students, batches }: { students: Row[]; batches:
                       }
                       start(async () => setToast(await updateStudent(r.id, { role })));
                     }}
-                    className={cn("rounded-lg border px-2 py-1 text-xs font-bold", r.role === "admin" ? "border-saffron bg-saffron/15 text-navy-900" : "border-navy-900/10 bg-white")}
+                    className={cn("rounded-lg border px-2 py-1 text-xs font-bold", r.role === "admin" ? "border-accent bg-accent/15 text-navy-900" : "border-navy-900/10 bg-white")}
                   >
                     <option value="student">Student</option>
                     <option value="admin">Admin</option>

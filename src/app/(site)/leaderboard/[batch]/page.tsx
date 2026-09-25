@@ -24,7 +24,7 @@ export default async function BatchLeaderboard({ params }: PageProps<"/leaderboa
   return (
     <>
       <PageHeader eyebrow="Leaderboard" title={`Batch ${batch.label}`}>
-        {!isSupabaseConfigured && <span className="rounded-full bg-saffron/20 px-3 py-1 text-xs font-bold text-saffron">Preview data — connect Supabase for live standings</span>}
+        {!isSupabaseConfigured && <span className="rounded-full bg-accent/20 px-3 py-1 text-xs font-bold text-accent">Preview data — connect Supabase for live standings</span>}
       </PageHeader>
       <section className="mx-auto max-w-5xl px-6 py-16">
         <div className="mb-12 flex flex-wrap justify-center gap-2">
