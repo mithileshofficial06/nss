@@ -2,19 +2,20 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { AuthCard, AuthShell } from "@/components/auth/auth-shell";
-import { RegisterForm } from "@/components/auth/register-form";
+import { RegisterTabs } from "@/components/auth/register-tabs";
 import { getBatches, getCurrentProfile, getSettings } from "@/lib/data";
 
 export const metadata: Metadata = { title: "Register" };
 
-export default async function RegisterPage() {
+export default async function RegisterPage({ searchParams }: PageProps<"/register">) {
+  const sp = await searchParams;
   const [profile, batches, settings] = await Promise.all([getCurrentProfile(), getBatches(), getSettings()]);
   if (profile) redirect("/dashboard");
 
   return (
     <AuthShell>
       {settings.registration_open ? (
-        <RegisterForm batches={batches.filter((b) => b.is_active)} />
+        <RegisterTabs batches={batches.filter((b) => b.is_active)} initial={sp.mode === "new" ? "new" : "activate"} />
       ) : (
         <AuthCard>
           <p className="font-display text-[13px] font-semibold uppercase tracking-[0.08em] text-nss-red">Sign up</p>

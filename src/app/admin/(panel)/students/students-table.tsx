@@ -30,8 +30,8 @@ export function StudentsTable({ students, batches }: { students: Row[]; batches:
   }, [students, q, batch, dept]);
 
   function exportCsv() {
-    const header = ["Name", "Register no", "Email", "Phone", "Department", "Section", "Batch", "Points", "Events attended", "Role"];
-    const lines = rows.map((r) => [r.full_name, r.register_no, r.email, r.phone, r.department, r.section, label(r.batch_id), r.points, r.attended, r.role].map((v) => `"${String(v ?? "").replace(/"/g, '""')}"`).join(","));
+    const header = ["Name", "Register no", "Email", "Phone", "Department", "Batch", "Points", "Events attended", "Role"];
+    const lines = rows.map((r) => [r.full_name, r.register_no, r.email, r.phone, r.department, label(r.batch_id), r.points, r.attended, r.role].map((v) => `"${String(v ?? "").replace(/"/g, '""')}"`).join(","));
     const blob = new Blob([[header.join(","), ...lines].join("\n")], { type: "text/csv" });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
@@ -112,7 +112,7 @@ export function StudentsTable({ students, batches }: { students: Row[]; batches:
                     </p>
                   </td>
                   <td className="py-3 pr-3 font-mono text-xs">{r.register_no ?? "—"}</td>
-                  <td className="py-3 pr-3">{[r.department, r.section].filter(Boolean).join(" ") || "—"}</td>
+                  <td className="py-3 pr-3">{r.department ?? "—"}</td>
                   <td className="py-3 pr-3">
                     <select
                       defaultValue={r.batch_id ?? ""}

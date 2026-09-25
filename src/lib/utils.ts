@@ -36,4 +36,11 @@ export function slugify(s: string) {
 /** Category of the weekly NSS-hour sessions: tracked for attendance, kept out of public event lists. */
 export const NSS_HOUR = "NSS Hour";
 
-export const DEPARTMENTS = ["AIDS", "CSE", "CSA", "IT", "ECE", "EEE", "MECH", "Other"] as const;
+/** The seven NSS units; CSE is split by section. Enforced by a check constraint on profiles.department. */
+export const DEPARTMENTS = ["CSE A", "CSE B", "AIDS", "IT", "EEE", "ECE", "MECH"] as const;
+
+/** Maps loose spellings ("cse-a", "CSEB", "Mech") to a DEPARTMENTS value, or null. */
+export function normalizeDepartment(raw: string | null | undefined): string | null {
+  const key = (raw ?? "").toUpperCase().replace(/[^A-Z]/g, "");
+  return DEPARTMENTS.find((d) => d.replace(" ", "") === key) ?? null;
+}

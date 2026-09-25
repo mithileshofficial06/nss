@@ -85,7 +85,7 @@ export default async function DashboardPage() {
                   <SplitWords text={profile.full_name} />
                 </h1>
                 <p className="mt-2 font-display text-[15px] text-ink/60">
-                  {[profile.department, profile.section].filter(Boolean).join(" · ")} {batch && <>· Batch {batch.label}</>}
+                  {profile.department} {batch && <>· Batch {batch.label}</>}
                 </p>
               </div>
             </div>
@@ -118,7 +118,7 @@ export default async function DashboardPage() {
             <Panel index="02" title="My details">
               <dl className="text-[15px]">
                 <Row k="Register no." v={profile.register_no ?? "—"} />
-                <Row k="Department" v={[profile.department, profile.section].filter(Boolean).join(" · ") || "—"} />
+                <Row k="Department" v={profile.department ?? "—"} />
                 <Row k="Batch" v={batch?.label ?? "—"} />
                 <Row k="Email" v={profile.email ?? "—"} />
                 <Row k="Phone" v={profile.phone ?? "—"} />

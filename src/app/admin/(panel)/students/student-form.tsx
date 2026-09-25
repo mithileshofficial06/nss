@@ -34,7 +34,6 @@ export function StudentForm({ student, batches, onClose }: { student: Profile | 
             ))}
           </select>
         </label>
-        <Field name="section" l="Section" d={student?.section} placeholder="A / B" />
         <label>
           <span className={label}>Batch</span>
           <select name="batch_id" defaultValue={student?.batch_id ?? ""} className={input}>
@@ -57,14 +56,17 @@ export function StudentForm({ student, batches, onClose }: { student: Profile | 
 export function StudentImport() {
   const [text, setText] = useState("");
   return (
-    <Card title="Import students (CSV)" description="register_no,full_name,department,section,batch,phone. Batch is its label, e.g. 25-29. Existing register numbers are updated.">
+    <Card
+      title="Import students (CSV)"
+      description={`register_no,full_name,department,batch,phone. Department is one of ${DEPARTMENTS.join(", ")}; batch is its label, e.g. 25-29. Existing register numbers are updated.`}
+    >
       <ActionForm action={importStudentsCsv} className="space-y-3" onSuccess={() => setText("")}>
         <textarea
           name="csv"
           rows={5}
           value={text}
           onChange={(e) => setText(e.target.value)}
-          placeholder={"register_no,full_name,department,section,batch,phone\n311126104001,Priya S,CSE,A,26-30,9876543210"}
+          placeholder={"register_no,full_name,department,batch,phone\n311126104001,Priya S,CSE A,26-30,9876543210"}
           className={cn(input, "font-mono text-xs")}
         />
         <div className="flex gap-2">

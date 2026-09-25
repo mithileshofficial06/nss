@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/lib/data";
 import { createClient } from "@/lib/supabase/server";
 import { CONTENT_KEYS, type ContentKey } from "@/lib/content";
-import { slugify } from "@/lib/utils";
+import { NSS_HOUR, normalizeDepartment, slugify } from "@/lib/utils";
 
 /** `at` makes every result unique, so the UI re-shows a toast even for a repeated message. */
 export type ActionState = { ok: boolean; message: string; at?: number } | null;
@@ -321,8 +321,7 @@ export async function saveStudent(_: ActionState, fd: FormData): Promise<ActionS
   const row = {
     full_name: str(fd, "full_name"),
     register_no: str(fd, "register_no")?.toUpperCase() ?? null,
-    department: str(fd, "department"),
-    section: str(fd, "section"),
+    department: normalizeDepartment(str(fd, "department")),
     phone: str(fd, "phone"),
     batch_id: str(fd, "batch_id"),
   };
@@ -334,7 +333,7 @@ export async function saveStudent(_: ActionState, fd: FormData): Promise<ActionS
   return ok(id ? "Student updated" : `${row.full_name} added`);
 }
 
-/** CSV lines: register_no,full_name,department,section,batch,phone (batch as its label, e.g. 25-29). Existing register numbers are updated. */
+/** CSV lines: register_no,full_name,department,batch,phone (department one of DEPARTMENTS, batch as its label, e.g. 25-29). Existing register numbers are updated. */
 export async function importStudentsCsv(_: ActionState, fd: FormData): Promise<ActionState> {
   const supabase = await admin();
   const csv = str(fd, "csv");
@@ -346,9 +345,14 @@ export async function importStudentsCsv(_: ActionState, fd: FormData): Promise<A
   for (const [n, line] of csv.split(/\r?\n/).entries()) {
     const cells = line.split(",").map((c) => c.trim().replace(/^"|"$/g, ""));
     if (!line.trim() || /register/i.test(cells[0])) continue;
-    const [register_no, full_name, department, section, batch, phone] = cells;
+    const [register_no, full_name, rawDept, batch, phone] = cells;
+    const department = normalizeDepartment(rawDept);
     if (!register_no || !full_name) {
       problems.push(`line ${n + 1}`);
+      continue;
+    }
+    if (rawDept && !department) {
+      problems.push(`line ${n + 1} (unknown department ${rawDept})`);
       continue;
     }
     if (batch && !batchId.has(batch)) {
@@ -358,8 +362,7 @@ export async function importStudentsCsv(_: ActionState, fd: FormData): Promise<A
     rows.push({
       register_no: register_no.toUpperCase(),
       full_name,
-      department: department || null,
-      section: section || null,
+      department,
       batch_id: batch ? batchId.get(batch) : null,
       phone: phone || null,
     });
@@ -370,4 +373,19 @@ export async function importStudentsCsv(_: ActionState, fd: FormData): Promise<A
   revalidatePath("/admin/students");
   refreshPublic();
   return problems.length ? fail(`Imported ${rows.length}. Skipped ${problems.slice(0, 5).join(", ")}`) : ok(`Imported ${rows.length} students`);
+}
+
+// ---------------------------------------------------------------- NSS hours
+/** Creates the weekly NSS-hour session for a date (an event in the NSS Hour category) and returns its id. */
+export async function createNssHour(date: string, location: string): Promise<{ id?: string; error?: string }> {
+  const supabase = await admin();
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return { error: "Pick a date" };
+  const { data, error } = await supabase
+    .from("events")
+    .insert({ title: "NSS Hour", slug: `nss-hour-${date}`, summary: "Weekly NSS hour for first-year volunteers.", category: NSS_HOUR, event_date: date, location: location || null, points: 0 })
+    .select("id")
+    .single();
+  if (error) return { error: error.code === "23505" ? "There is already an NSS hour on that date" : error.message };
+  revalidatePath("/admin/attendance");
+  return { id: data.id };
 }

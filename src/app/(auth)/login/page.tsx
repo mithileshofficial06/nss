@@ -12,7 +12,9 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
   if (profile) redirect(profile.role === "admin" ? "/admin" : "/dashboard");
 
   const notice =
-    sp.registered === "1"
+    sp.activated === "1"
+      ? "Account activated! Confirm your email if asked, then log in. Your attendance and points are waiting."
+      : sp.registered === "1"
       ? "Account created! Confirm your email if asked, then sign in."
       : sp.confirmed === "1"
         ? "Email confirmed — you can sign in now."

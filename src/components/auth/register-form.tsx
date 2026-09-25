@@ -4,12 +4,13 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowLeft, ArrowRight, BookOpen, Check, Hash, Loader2, Lock, Mail, Phone, User, Users } from "lucide-react";
+import { ArrowLeft, ArrowRight, BookOpen, Check, Hash, Loader2, Lock, Mail, Phone, User } from "lucide-react";
 import { AuthCard, Field, inputCls } from "./auth-shell";
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import type { Batch } from "@/lib/types";
 import { DEPARTMENTS, cn } from "@/lib/utils";
+import { signUpMessage } from "./activate-form";
 
 type Form = {
   full_name: string;
@@ -18,7 +19,6 @@ type Form = {
   confirm: string;
   register_no: string;
   department: string;
-  section: string;
   batch_id: string;
   phone: string;
 };
@@ -31,7 +31,7 @@ export function RegisterForm({ batches }: { batches: Batch[] }) {
   const [dir, setDir] = useState(1);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Partial<Record<keyof Form | "form", string>>>({});
-  const [f, setF] = useState<Form>({ full_name: "", email: "", password: "", confirm: "", register_no: "", department: "", section: "", batch_id: "", phone: "" });
+  const [f, setF] = useState<Form>({ full_name: "", email: "", password: "", confirm: "", register_no: "", department: "", batch_id: "", phone: "" });
   const set = (k: keyof Form) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => setF((p) => ({ ...p, [k]: e.target.value }));
 
   function validate(s: number) {
@@ -71,7 +71,6 @@ export function RegisterForm({ batches }: { batches: Batch[] }) {
           full_name: f.full_name.trim(),
           register_no: f.register_no.trim().toUpperCase(),
           department: f.department,
-          section: f.section.trim(),
           batch_id: f.batch_id,
           phone: f.phone.trim(),
         },
@@ -79,7 +78,7 @@ export function RegisterForm({ batches }: { batches: Batch[] }) {
     });
     if (error) {
       setLoading(false);
-      const msg = /register_no|duplicate/i.test(error.message) ? "That register number is already registered." : error.message;
+      const msg = /register_no|duplicate/i.test(error.message) ? "That register number is already registered." : signUpMessage(error.message);
       return setErrors({ form: msg });
     }
     // Registration always ends at the login screen
@@ -152,19 +151,14 @@ export function RegisterForm({ batches }: { batches: Batch[] }) {
                   <Field label="Register number" icon={<Hash size={17} />} error={errors.register_no}>
                     <input value={f.register_no} onChange={set("register_no")} placeholder="e.g. 312424104001" className={cn(inputCls, "uppercase")} />
                   </Field>
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <Field label="Department" icon={<BookOpen size={17} />} error={errors.department}>
-                      <select value={f.department} onChange={set("department")} className={inputCls}>
-                        <option value="">Select</option>
-                        {DEPARTMENTS.map((d) => (
-                          <option key={d}>{d}</option>
-                        ))}
-                      </select>
-                    </Field>
-                    <Field label="Section" icon={<Users size={17} />}>
-                      <input value={f.section} onChange={set("section")} placeholder="A / B (optional)" className={inputCls} />
-                    </Field>
-                  </div>
+                  <Field label="Department" icon={<BookOpen size={17} />} error={errors.department}>
+                    <select value={f.department} onChange={set("department")} className={inputCls}>
+                      <option value="">Select</option>
+                      {DEPARTMENTS.map((d) => (
+                        <option key={d}>{d}</option>
+                      ))}
+                    </select>
+                  </Field>
                   <div>
                     <span className="mb-1.5 block font-display text-[13px] font-semibold uppercase tracking-[0.08em] text-ink/55">Batch</span>
                     <div className="grid grid-cols-3 gap-2 sm:grid-cols-5">
@@ -195,7 +189,7 @@ export function RegisterForm({ batches }: { batches: Batch[] }) {
                     ["Name", f.full_name],
                     ["Email", f.email],
                     ["Register no.", f.register_no.toUpperCase()],
-                    ["Department", `${f.department}${f.section ? ` · ${f.section}` : ""}`],
+                    ["Department", f.department],
                     ["Batch", batchLabel],
                     ["Phone", f.phone || "—"],
                   ].map(([k, v]) => (
