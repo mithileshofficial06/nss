@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { SectionLabel } from "./section-label";
+import { SectionTitle } from "./section-title";
 import { cn } from "@/lib/utils";
 
 const ease = [0.22, 1, 0.36, 1] as const;
@@ -27,7 +27,7 @@ export function Objectives() {
   return (
     <section id="objectives" className="bg-white px-5 py-24 sm:px-8 sm:py-32">
       <div className="mx-auto max-w-[1440px]">
-        <SectionLabel index="02" label="Objectives" />
+        <SectionTitle index="03" title="Objectives" caption="What every volunteer gains" />
 
         <div className="mt-10 flex flex-wrap items-end justify-between gap-6">
           <h2 className="font-serif text-[clamp(3rem,7vw,6.5rem)] leading-[0.9] tracking-[-0.03em] text-ink">

@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { SectionTitle } from "./section-title";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useScroll, useTransform } from "framer-motion";
 
@@ -36,86 +37,91 @@ export function FieldCarousel({ slides }: { slides: Slide[] }) {
   const next = slides[(index + 1) % n];
 
   return (
-    <section
-      ref={ref}
-      aria-roledescription="carousel"
-      aria-label="NSS in the field"
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
-      className="relative mt-8 overflow-hidden"
-    >
-      {/* Full-bleed backdrop: the current photo */}
-      <motion.div style={{ scale: bgScale }} className="absolute inset-0">
-        <AnimatePresence initial={false}>
-          <motion.div key={cur.src} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 1.2 }} className="absolute inset-0">
-            <Image src={cur.src} alt="" fill sizes="100vw" className="object-cover" priority />
-          </motion.div>
-        </AnimatePresence>
-      </motion.div>
+    <div id="in-the-field" className="bg-white pb-24 sm:pb-32">
+      <div className="mx-auto max-w-[1440px] px-5 pb-10 sm:px-8">
+        <SectionTitle index="02" title="In the field" caption="Drives, rallies & outreach, 2024–26" />
+      </div>
+      <section
+        ref={ref}
+        aria-roledescription="carousel"
+        aria-label="NSS in the field"
+        onMouseEnter={() => setPaused(true)}
+        onMouseLeave={() => setPaused(false)}
+        className="relative overflow-hidden"
+      >
+        {/* Full-bleed backdrop: the current photo */}
+        <motion.div style={{ scale: bgScale }} className="absolute inset-0">
+          <AnimatePresence initial={false}>
+            <motion.div key={cur.src} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 1.2 }} className="absolute inset-0">
+              <Image src={cur.src} alt="" fill sizes="100vw" className="object-cover" priority />
+            </motion.div>
+          </AnimatePresence>
+        </motion.div>
 
-      <motion.div style={{ padding: inset }} className="relative">
-        <div className="flex min-h-[640px] flex-col bg-white px-5 py-4 font-display text-[15px] font-medium text-ink sm:min-h-[760px] sm:px-6 lg:h-[calc(100svh-64px)] lg:max-h-[900px]">
-          <div className="flex items-center justify-between">
-            <span>In the field</span>
-            <Link href="/gallery" className="transition-colors hover:text-nss-red">
-              Gallery ↗
-            </Link>
-          </div>
-
-          <div className="grid flex-1 grid-cols-1 items-center gap-6 py-4 lg:grid-cols-[1fr_minmax(0,3.2fr)_1fr]">
-            {/* Caption */}
-            <div className="order-2 min-h-[3.5rem] lg:order-none">
-              <AnimatePresence mode="wait">
-                <motion.div key={cur.title} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.45, ease }}>
-                  <p className="text-[17px] font-semibold">{cur.title}</p>
-                  <p className="text-ink/50">{cur.meta}</p>
-                </motion.div>
-              </AnimatePresence>
+        <motion.div style={{ padding: inset }} className="relative">
+          <div className="flex min-h-[640px] flex-col bg-white px-5 py-4 font-display text-[15px] font-medium text-ink sm:min-h-[760px] sm:px-6 lg:h-[calc(100svh-64px)] lg:max-h-[900px]">
+            <div className="flex items-center justify-between">
+              <span>Photo stories</span>
+              <Link href="/gallery" className="transition-colors hover:text-nss-red">
+                Gallery ↗
+              </Link>
             </div>
 
-            {/* Stacked strips */}
-            <button
-              onClick={() => go(1)}
-              data-cursor="Next"
-              aria-label={`Show next photo: ${next.title}`}
-              className="order-1 mx-auto flex h-full w-full max-w-[760px] flex-col items-center justify-center gap-3 lg:order-none"
-            >
-              <Strip slide={prev} className="h-[14%] min-h-[64px] w-[70%]" position="bottom" />
-              <Strip slide={cur} className="h-[56%] min-h-[260px] w-full" position="center" main />
-              <Strip slide={next} className="h-[14%] min-h-[64px] w-[70%]" position="top" />
-            </button>
+            <div className="grid flex-1 grid-cols-1 items-center gap-6 py-4 lg:grid-cols-[1fr_minmax(0,3.2fr)_1fr]">
+              {/* Caption */}
+              <div className="order-2 min-h-[3.5rem] lg:order-none">
+                <AnimatePresence mode="wait">
+                  <motion.div key={cur.title} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.45, ease }}>
+                    <p className="text-[17px] font-semibold">{cur.title}</p>
+                    <p className="text-ink/50">{cur.meta}</p>
+                  </motion.div>
+                </AnimatePresence>
+              </div>
 
-            {/* Counter */}
-            <p className="order-3 tabular-nums lg:order-none lg:text-right">
-              <AnimatePresence mode="wait">
-                <motion.span key={index} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} className="inline-block">
-                  {String(index + 1).padStart(2, "0")}
-                </motion.span>
-              </AnimatePresence>
-              /{String(n).padStart(2, "0")}
-            </p>
-          </div>
+              {/* Stacked strips */}
+              <button
+                onClick={() => go(1)}
+                data-cursor="Next"
+                aria-label={`Show next photo: ${next.title}`}
+                className="order-1 mx-auto flex h-full w-full max-w-[760px] flex-col items-center justify-center gap-3 lg:order-none"
+              >
+                <Strip slide={prev} className="h-[14%] min-h-[64px] w-[70%]" position="bottom" />
+                <Strip slide={cur} className="h-[56%] min-h-[260px] w-full" position="center" main />
+                <Strip slide={next} className="h-[14%] min-h-[64px] w-[70%]" position="top" />
+              </button>
 
-          <div className="flex items-end justify-between gap-4">
-            <span>Est. 1969 · Government of India</span>
-            <span className="flex items-center gap-4">
-              <button onClick={() => go(-1)} className="transition-colors hover:text-nss-red">
-                Prev
-              </button>
-              <span className="h-3 w-px bg-ink/20" />
-              <button onClick={() => go(1)} className="transition-colors hover:text-nss-red">
-                Next
-              </button>
-            </span>
-            <span className="hidden text-right sm:block">Volunteer-run in Chennai.</span>
+              {/* Counter */}
+              <p className="order-3 tabular-nums lg:order-none lg:text-right">
+                <AnimatePresence mode="wait">
+                  <motion.span key={index} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} className="inline-block">
+                    {String(index + 1).padStart(2, "0")}
+                  </motion.span>
+                </AnimatePresence>
+                /{String(n).padStart(2, "0")}
+              </p>
+            </div>
+
+            <div className="flex items-end justify-between gap-4">
+              <span>Est. 1969 · Government of India</span>
+              <span className="flex items-center gap-4">
+                <button onClick={() => go(-1)} className="transition-colors hover:text-nss-red">
+                  Prev
+                </button>
+                <span className="h-3 w-px bg-ink/20" />
+                <button onClick={() => go(1)} className="transition-colors hover:text-nss-red">
+                  Next
+                </button>
+              </span>
+              <span className="hidden text-right sm:block">Volunteer-run in Chennai.</span>
+            </div>
+            {/* Autoplay progress */}
+            <div className="mt-3 h-px bg-ink/10">
+              <motion.div key={`${index}-${paused}`} className="h-full origin-left bg-nss-red" initial={{ scaleX: 0 }} animate={{ scaleX: paused ? 0 : 1 }} transition={{ duration: paused ? 0.2 : 4.5, ease: "linear" }} />
+            </div>
           </div>
-          {/* Autoplay progress */}
-          <div className="mt-3 h-px bg-ink/10">
-            <motion.div key={`${index}-${paused}`} className="h-full origin-left bg-nss-red" initial={{ scaleX: 0 }} animate={{ scaleX: paused ? 0 : 1 }} transition={{ duration: paused ? 0.2 : 4.5, ease: "linear" }} />
-          </div>
-        </div>
-      </motion.div>
-    </section>
+        </motion.div>
+      </section>
+    </div>
   );
 }
 

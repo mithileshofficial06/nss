@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { PersonCard } from "@/components/site/person-card";
-import { SectionLabel } from "./section-label";
+import { SectionTitle } from "./section-title";
 import type { OfficeBearer } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -20,7 +20,7 @@ export function OfficeBearers({ people, batchLabels }: { people: OfficeBearer[];
   return (
     <section id="team" className="bg-white px-5 pb-24 pt-24 sm:px-8 sm:pb-32 sm:pt-32">
       <div className="mx-auto max-w-[1440px]">
-        <SectionLabel index="04" label="Team" />
+        <SectionTitle index="04" title="Team" caption="Office bearers & media team" />
         <div className="mt-10 flex flex-wrap items-end justify-between gap-6">
           <h2 className="font-serif text-[clamp(3rem,7vw,6.5rem)] leading-[0.9] tracking-[-0.03em] text-ink">
             <MaskLine>The people</MaskLine>

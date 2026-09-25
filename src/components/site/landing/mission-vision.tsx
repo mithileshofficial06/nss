@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useRef } from "react";
 import { motion, useScroll, useTransform, type MotionValue } from "framer-motion";
-import { SectionLabel } from "./section-label";
+import { SectionTitle } from "./section-title";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -21,7 +21,7 @@ export function MissionVision() {
   return (
     <section id="mission" className="bg-white px-5 pb-24 pt-24 sm:px-8 sm:pt-32">
       <div className="mx-auto max-w-[1440px]">
-        <SectionLabel index="01" label="Who we are" />
+        <SectionTitle index="01" title="Who we are" caption="About NSS LICET" />
 
         <div className="mt-10 grid gap-10 lg:grid-cols-[1fr_1.15fr] lg:gap-14">
           <Portrait />

@@ -34,8 +34,8 @@ export default async function HomePage() {
         nextEvent={next ? { title: next.title, slug: next.slug, date: formatDate(next.event_date, { day: "numeric", month: "short" }) } : null}
         signedIn={signedIn}
       />
-      <FieldCarousel slides={slides} />
       <MissionVision />
+      <FieldCarousel slides={slides} />
       <Objectives />
       <OfficeBearers people={current} batchLabels={batchLabels} />
     </>
