@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { AnimatePresence, motion, useAnimationControls } from "framer-motion";
 import { ArrowRight, CheckCircle2, Eye, EyeOff, Loader2, Lock, Mail, ShieldCheck } from "lucide-react";
 import { AuthCard, Field, inputCls } from "./auth-shell";
@@ -10,12 +10,16 @@ import { TiltCard } from "@/components/ui/motion";
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 
+const noop = () => () => {};
+
 export function LoginCard({ mode, next, notice }: { mode: "student" | "admin"; next?: string; notice?: string }) {
   const shake = useAnimationControls();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
+  // False until React has hydrated: before that a click would submit the form natively
+  const hydrated = useSyncExternalStore(noop, () => true, () => false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
@@ -64,7 +68,7 @@ export function LoginCard({ mode, next, notice }: { mode: "student" | "admin"; n
                 <p className="mt-2 font-display text-[15px] text-ink/55">Taking you to your {isAdmin ? "admin panel" : "dashboard"}…</p>
               </motion.div>
             ) : (
-              <motion.form key="form" onSubmit={onSubmit} exit={{ opacity: 0, y: -20 }} className="space-y-5">
+              <motion.form key="form" method="post" onSubmit={onSubmit} exit={{ opacity: 0, y: -20 }} className="space-y-5">
                 <div className="flex items-start justify-between gap-4">
                   <div>
                     <p className="font-display text-[13px] font-semibold uppercase tracking-[0.08em] text-nss-red">{isAdmin ? "Restricted" : "Volunteers"}</p>
@@ -112,7 +116,7 @@ export function LoginCard({ mode, next, notice }: { mode: "student" | "admin"; n
                 </AnimatePresence>
 
                 <button
-                  disabled={loading}
+                  disabled={loading || !hydrated}
                   className="group relative flex w-full items-center justify-center gap-2 overflow-hidden bg-ink py-3.5 font-display text-[17px] font-semibold text-white transition-colors disabled:opacity-70"
                 >
                   {/* Red fill sweeps up from the bottom on hover */}

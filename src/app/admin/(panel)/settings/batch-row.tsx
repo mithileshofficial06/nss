@@ -5,7 +5,8 @@ import { Loader2, Pencil, Trash2 } from "lucide-react";
 import { deleteBatch, setBatchActive, updateBatch, type ActionState } from "../../actions";
 import { ActionForm, LiveSwitch, SubmitButton, Toast, input } from "@/components/admin/ui";
 import type { Batch } from "@/lib/types";
-import { cn } from "@/lib/utils";
+// Sized input: the shared style is w-full, which clsx cannot override with another width class
+const narrow = input.replace("w-full", "w-24");
 
 /** One batch: label and years, open-for-sign-up switch, inline edit, and delete (refused while students remain). */
 export function BatchRow({ batch }: { batch: Batch }) {
@@ -18,9 +19,9 @@ export function BatchRow({ batch }: { batch: Batch }) {
       {editing ? (
         <ActionForm action={updateBatch} onSuccess={() => setEditing(false)} className="flex flex-wrap items-end gap-2">
           <input type="hidden" name="id" value={batch.id} />
-          <input name="label" defaultValue={batch.label} className={cn(input, "w-24")} aria-label="Label" required />
-          <input name="start_year" type="number" defaultValue={batch.start_year} className={cn(input, "w-24")} aria-label="Start year" required />
-          <input name="end_year" type="number" defaultValue={batch.end_year} className={cn(input, "w-24")} aria-label="End year" required />
+          <input name="label" defaultValue={batch.label} className={narrow} aria-label="Label" required />
+          <input name="start_year" type="number" defaultValue={batch.start_year} className={narrow} aria-label="Start year" required />
+          <input name="end_year" type="number" defaultValue={batch.end_year} className={narrow} aria-label="End year" required />
           <SubmitButton>Save</SubmitButton>
           <button type="button" onClick={() => setEditing(false)} className="px-2 py-2.5 font-display text-[14px] text-ink/55 hover:text-ink">
             Cancel

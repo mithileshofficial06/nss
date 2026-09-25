@@ -53,7 +53,24 @@ export function Card({ title, description, children, actions, className }: { tit
 }
 
 /** Each new result remounts the toast (keyed on its timestamp), which then hides itself after a few seconds. */
+// One Toaster lives in the admin layout; <Toast> forwards to it, so a result stays on screen even
+// when the form that produced it closes on success (e.g. "Event created").
+const toastBus = typeof window === "undefined" ? null : new EventTarget();
+
 export function Toast({ state }: { state: ActionState }) {
+  useEffect(() => {
+    if (state) toastBus?.dispatchEvent(new CustomEvent("toast", { detail: state }));
+  }, [state]);
+  return null;
+}
+
+export function Toaster() {
+  const [state, setState] = useState<ActionState>(null);
+  useEffect(() => {
+    const on = (e: Event) => setState((e as CustomEvent<NonNullable<ActionState>>).detail);
+    toastBus?.addEventListener("toast", on);
+    return () => toastBus?.removeEventListener("toast", on);
+  }, []);
   if (!state) return null;
   return <ToastItem key={`${state.at}-${state.message}`} state={state} />;
 }

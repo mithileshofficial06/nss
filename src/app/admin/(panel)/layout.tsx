@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { AdminSidebar } from "@/components/admin/sidebar";
+import { Toaster } from "@/components/admin/ui";
 import { requireAdmin } from "@/lib/data";
 
 export const metadata: Metadata = { title: { default: "Admin", template: "%s · NSS Admin" } };
@@ -12,6 +13,7 @@ export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
       <div className="lg:pl-72">
         <div className="mx-auto max-w-6xl px-5 py-8 sm:px-10 sm:py-12">{children}</div>
       </div>
+      <Toaster />
     </div>
   );
 }
