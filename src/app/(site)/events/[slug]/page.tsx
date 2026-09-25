@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, Award, CalendarDays, MapPin, Tag } from "lucide-react";
 import { RegisterButton } from "@/components/site/event-card";
 import { GalleryGrid } from "@/components/site/gallery-grid";
-import { Reveal } from "@/components/ui/motion";
+import { SectionLabel } from "@/components/site/landing/section-label";
+import { Reveal, SplitWords } from "@/components/ui/motion";
 import { getEvent, getGallery } from "@/lib/data";
 import { formatDate, isUpcoming } from "@/lib/utils";
 
@@ -22,60 +22,57 @@ export default async function EventPage({ params }: PageProps<"/events/[slug]">)
   const photos = await getGallery(event.id);
   const upcoming = isUpcoming(event.event_date);
 
+  const details = [
+    ["Date", formatDate(event.event_date, { weekday: "long", day: "numeric", month: "long", year: "numeric" })],
+    ["Location", event.location ?? "—"],
+    ["Category", event.category],
+    ["Points", `${event.points} for attending`],
+  ];
+
   return (
-    <>
-      <section className="relative flex min-h-[70vh] items-end overflow-hidden bg-ink text-white">
-        {event.cover_url && <Image src={event.cover_url} alt="" fill priority sizes="100vw" className="object-cover opacity-60" />}
-        <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/50 to-transparent" />
-        <div className="relative mx-auto w-full max-w-7xl px-6 pb-14 pt-40">
-          <Link href="/events" className="inline-flex items-center gap-2 text-sm font-semibold text-white/70 hover:text-white">
-            <ArrowLeft size={16} /> All events
-          </Link>
+    <article className="bg-white px-5 pb-24 pt-24 sm:px-8 sm:pt-28">
+      <div className="mx-auto max-w-[1440px]">
+        <SectionLabel label={upcoming ? "Upcoming event" : "Past event"} aside={formatDate(event.event_date)} />
+        <Link href="/events" className="mt-6 inline-block font-display text-[15px] font-medium text-ink/55 transition-colors hover:text-nss-red">
+          ← All events
+        </Link>
+        <h1 className="mt-4 max-w-5xl font-serif text-[clamp(3rem,7.5vw,7rem)] leading-[0.9] tracking-[-0.03em] text-ink">
+          <SplitWords text={event.title} />
+        </h1>
+
+        {event.cover_url && (
+          <Reveal className="relative mt-10 aspect-[4/3] overflow-hidden bg-paper sm:aspect-[21/9]">
+            <Image src={event.cover_url} alt={event.title} fill priority sizes="100vw" className="object-cover" />
+          </Reveal>
+        )}
+
+        <div className="mt-10 grid gap-12 lg:grid-cols-[1.6fr_1fr]">
           <Reveal>
-            <p className="mt-6 inline-block rounded-full bg-accent px-3 py-1 text-xs font-bold uppercase tracking-wider text-ink">
-              {upcoming ? "Upcoming" : "Completed"} · {event.category}
-            </p>
-            <h1 className="mt-4 max-w-4xl font-display text-5xl font-extrabold leading-[0.95] tracking-tight sm:text-7xl">{event.title}</h1>
+            <p className="font-display text-[clamp(1.6rem,2.6vw,2.4rem)] font-semibold leading-[1.1] tracking-[-0.02em] text-ink">{event.summary}</p>
+            {event.description && <div className="mt-6 max-w-2xl whitespace-pre-line text-[17px] leading-relaxed text-ink/70">{event.description}</div>}
+          </Reveal>
+          <Reveal delay={0.1}>
+            <dl className="border-t border-ink font-display text-[16px]">
+              {details.map(([k, v]) => (
+                <div key={k} className="flex justify-between gap-6 border-b border-ink/15 py-3">
+                  <dt className="text-ink/50">{k}</dt>
+                  <dd className="text-right font-medium text-ink">{v}</dd>
+                </div>
+              ))}
+            </dl>
+            {upcoming && <RegisterButton event={event} className="mt-6" />}
           </Reveal>
         </div>
-      </section>
 
-      <section className="mx-auto grid max-w-7xl gap-12 px-6 py-16 lg:grid-cols-[1fr_22rem]">
-        <Reveal>
-          <p className="text-xl leading-relaxed text-navy-900/80">{event.summary}</p>
-          {event.description && <div className="mt-6 whitespace-pre-line leading-relaxed text-navy-900/70">{event.description}</div>}
-        </Reveal>
-        <Reveal delay={0.1}>
-          <aside className="sticky top-28 space-y-4 rounded-3xl border border-navy-900/10 bg-white p-6 shadow-[0_20px_50px_-30px_rgba(10,18,53,.4)]">
-            <Detail icon={CalendarDays} label="Date" value={formatDate(event.event_date, { weekday: "long", day: "numeric", month: "long", year: "numeric" })} />
-            {event.location && <Detail icon={MapPin} label="Location" value={event.location} />}
-            <Detail icon={Tag} label="Category" value={event.category} />
-            <Detail icon={Award} label="Points" value={`${event.points} points for attending`} />
-            {upcoming && <RegisterButton event={event} className="w-full justify-center" />}
-          </aside>
-        </Reveal>
-      </section>
-
-      {photos.length > 0 && (
-        <section className="mx-auto max-w-7xl px-6 pb-24">
-          <h2 className="mb-8 font-display text-3xl font-extrabold tracking-tight text-navy-900">Photos</h2>
-          <GalleryGrid items={photos} />
-        </section>
-      )}
-    </>
-  );
-}
-
-function Detail({ icon: Icon, label, value }: { icon: typeof MapPin; label: string; value: string }) {
-  return (
-    <div className="flex gap-3">
-      <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-navy-100 text-navy-800">
-        <Icon size={18} />
-      </span>
-      <div>
-        <p className="text-[11px] font-bold uppercase tracking-wider text-navy-900/45">{label}</p>
-        <p className="font-semibold text-navy-900">{value}</p>
+        {photos.length > 0 && (
+          <section className="mt-24">
+            <SectionLabel label="Photos" aside={`${photos.length} images`} />
+            <div className="mt-8">
+              <GalleryGrid items={photos} />
+            </div>
+          </section>
+        )}
       </div>
-    </div>
+    </article>
   );
 }

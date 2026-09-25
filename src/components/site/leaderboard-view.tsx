@@ -2,15 +2,11 @@
 
 import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { Crown, Medal, Search } from "lucide-react";
 import type { LeaderboardRow } from "@/lib/types";
-import { cn, initials } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 
-const podiumStyle = [
-  { order: "order-2", height: "h-44", ring: "ring-accent", bg: "bg-accent", label: "1st" },
-  { order: "order-1", height: "h-32", ring: "ring-navy-200", bg: "bg-navy-200", label: "2nd" },
-  { order: "order-3", height: "h-24", ring: "ring-orange-300", bg: "bg-orange-300", label: "3rd" },
-];
+const ease = [0.22, 1, 0.36, 1] as const;
+const ordinal = ["1st", "2nd", "3rd"];
 
 export function LeaderboardView({ rows, highlightId }: { rows: LeaderboardRow[]; highlightId?: string }) {
   const [q, setQ] = useState("");
@@ -22,91 +18,76 @@ export function LeaderboardView({ rows, highlightId }: { rows: LeaderboardRow[];
   const max = rows[0]?.points || 1;
 
   if (!rows.length) {
-    return <p className="rounded-3xl border border-dashed border-navy-900/20 p-12 text-center text-navy-900/50">No standings yet for this batch.</p>;
+    return <p className="py-20 text-center font-serif text-3xl text-ink/40">No standings yet for this batch.</p>;
   }
 
   return (
     <div>
-      {/* Podium */}
-      <div className="mx-auto flex max-w-2xl items-end justify-center gap-3 sm:gap-6">
-        {top.map((r, i) => {
-          const s = podiumStyle[i];
-          return (
-            <motion.div
-              key={r.student_id}
-              className={cn("flex w-1/3 flex-col items-center", s.order)}
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 + (2 - i) * 0.15, type: "spring", stiffness: 120, damping: 14 }}
-            >
-              {i === 0 && <Crown className="mb-1 text-accent" size={30} />}
-              <div className={cn("grid h-16 w-16 place-items-center rounded-full bg-navy-900 font-display text-xl font-extrabold text-white ring-4 sm:h-20 sm:w-20", s.ring)}>
-                {initials(r.full_name)}
-              </div>
-              <p className="mt-3 line-clamp-1 text-center text-sm font-bold text-navy-900">{r.full_name}</p>
-              <p className="text-xs font-semibold text-navy-900/50">{r.points} pts</p>
-              <motion.div
-                className={cn("mt-3 flex w-full items-start justify-center rounded-t-2xl pt-3 font-display text-2xl font-extrabold text-ink", s.bg)}
-                initial={{ height: 0 }}
-                animate={{ height: "auto" }}
-                transition={{ delay: 0.4 + (2 - i) * 0.15, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-              >
-                <div className={s.height}>{s.label}</div>
-              </motion.div>
-            </motion.div>
-          );
-        })}
-      </div>
+      {/* Top three as a ruled three-column spread */}
+      <ol className="grid border-y border-ink md:grid-cols-3">
+        {top.map((r, i) => (
+          <motion.li
+            key={r.student_id}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 + i * 0.12, ease }}
+            className={cn("flex flex-col justify-between gap-10 border-ink/15 py-8 md:px-8 md:first:pl-0", i > 0 && "border-t md:border-l md:border-t-0")}
+          >
+            <div className="flex items-baseline justify-between font-display text-[15px] font-medium text-ink/50">
+              <span>{r.department}</span>
+              <span>{r.events_attended} events</span>
+            </div>
+            <div>
+              <p className={cn("font-serif text-[clamp(4rem,8vw,7.5rem)] italic leading-[0.8] tracking-[-0.03em]", i === 0 ? "text-nss-red" : "text-navy-600")}>{ordinal[i]}</p>
+              <p className="mt-4 font-serif text-3xl leading-tight text-ink">{r.full_name}</p>
+              <p className="font-display text-[16px] font-medium text-ink/55">{r.points} points</p>
+            </div>
+          </motion.li>
+        ))}
+      </ol>
 
-      {/* Table */}
-      <div className="mt-14 overflow-hidden rounded-3xl border border-navy-900/10 bg-white shadow-[0_20px_60px_-35px_rgba(10,18,53,.5)]">
-        <div className="flex items-center gap-3 border-b border-navy-900/10 px-5 py-4">
-          <Search size={18} className="text-navy-900/40" />
-          <input
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            placeholder="Search by name or department"
-            className="w-full bg-transparent text-sm outline-none placeholder:text-navy-900/40"
-          />
-        </div>
-        <ol>
-          {filtered.map((r, i) => (
-            <motion.li
-              key={r.student_id}
-              initial={{ opacity: 0, x: -16 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: Math.min(i, 10) * 0.03 }}
-              className={cn(
-                "grid grid-cols-[3rem_1fr_auto] items-center gap-4 border-b border-navy-900/5 px-5 py-3.5 last:border-0 sm:grid-cols-[3rem_1fr_12rem_5rem]",
-                r.student_id === highlightId && "bg-accent/15",
-              )}
-            >
-              <span className={cn("grid h-9 w-9 place-items-center rounded-full font-display text-sm font-extrabold", r.rank <= 3 ? "bg-navy-900 text-white" : "bg-navy-100 text-navy-900")}>
-                {r.rank <= 3 ? <Medal size={16} /> : r.rank}
-              </span>
-              <div className="min-w-0">
-                <p className="truncate font-bold text-navy-900">
-                  {r.full_name} {r.student_id === highlightId && <span className="ml-1 rounded-full bg-nss-red px-2 py-0.5 text-[10px] text-white">You</span>}
-                </p>
-                <p className="text-xs text-navy-900/50">
-                  {r.department ?? "—"} · {r.events_attended} events
-                </p>
-              </div>
-              <div className="hidden h-2 overflow-hidden rounded-full bg-navy-100 sm:block">
-                <motion.div
-                  className="h-full rounded-full bg-gradient-to-r from-nss-red to-accent"
-                  initial={{ width: 0 }}
-                  whileInView={{ width: `${(r.points / max) * 100}%` }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
-                />
-              </div>
-              <span className="text-right font-display text-lg font-extrabold text-navy-900">{r.points}</span>
-            </motion.li>
-          ))}
-        </ol>
+      {/* Full standings */}
+      <div className="mt-14 flex items-baseline justify-between gap-6 border-b border-ink pb-3">
+        <h2 className="font-serif text-4xl text-ink">Standings</h2>
+        <input
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          placeholder="Search name or department"
+          className="w-56 border-b border-ink/20 bg-transparent py-1 font-display text-[15px] outline-none placeholder:text-ink/35 focus:border-nss-red"
+        />
       </div>
+      <ol>
+        {filtered.map((r, i) => (
+          <motion.li
+            key={r.student_id}
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: Math.min(i, 10) * 0.03, ease }}
+            className={cn(
+              "group grid grid-cols-[3rem_1fr_auto] items-baseline gap-4 border-b border-ink/15 py-4 transition-colors hover:text-nss-red sm:grid-cols-[4rem_1fr_14rem_5rem]",
+              r.student_id === highlightId && "bg-paper",
+            )}
+          >
+            <span className="font-display text-[14px] font-medium text-ink/40 tabular-nums group-hover:text-nss-red">{String(r.rank).padStart(2, "0")}</span>
+            <span className="font-serif text-2xl leading-none">
+              {r.full_name}
+              {r.student_id === highlightId && <span className="ml-2 font-display text-[13px] font-semibold text-nss-red">You</span>}
+              <span className="ml-3 font-display text-[14px] text-ink/45">{r.department}</span>
+            </span>
+            <span className="hidden h-px self-center bg-ink/10 sm:block">
+              <motion.span
+                className="block h-[3px] -translate-y-px bg-nss-red"
+                initial={{ width: 0 }}
+                whileInView={{ width: `${(r.points / max) * 100}%` }}
+                viewport={{ once: true }}
+                transition={{ duration: 1, ease }}
+              />
+            </span>
+            <span className="text-right font-display text-xl font-semibold tabular-nums">{r.points}</span>
+          </motion.li>
+        ))}
+      </ol>
     </div>
   );
 }

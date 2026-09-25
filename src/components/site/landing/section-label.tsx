@@ -6,7 +6,21 @@ import { cn } from "@/lib/utils";
 const ease = [0.22, 1, 0.36, 1] as const;
 
 /** Editorial section head: a full-width rule that draws in, label on the left, index on the right. */
-export function SectionLabel({ index, label, tone = "dark", className }: { index: string; label: string; tone?: "dark" | "light"; className?: string }) {
+export function SectionLabel({
+  index,
+  aside,
+  label,
+  tone = "dark",
+  className,
+}: {
+  /** Shown as "(01)" on the right */
+  index?: string;
+  /** Raw right-hand text, used instead of an index */
+  aside?: string;
+  label: string;
+  tone?: "dark" | "light";
+  className?: string;
+}) {
   const onDark = tone === "light";
   return (
     <motion.div initial="hidden" whileInView="show" viewport={{ once: true, margin: "-60px" }} className={cn("font-display text-[15px] font-medium", className)}>
@@ -19,7 +33,7 @@ export function SectionLabel({ index, label, tone = "dark", className }: { index
         className={cn("flex justify-between pt-3", onDark ? "text-white" : "text-ink")}
       >
         <span>{label}</span>
-        <span className={onDark ? "text-white/50" : "text-ink/45"}>({index})</span>
+        <span className={onDark ? "text-white/50" : "text-ink/45"}>{aside ?? `(${index})`}</span>
       </motion.div>
     </motion.div>
   );

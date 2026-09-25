@@ -12,7 +12,7 @@ export default async function TeamPage() {
       <PageHeader eyebrow="Office bearers" title="The team that keeps NSS moving.">
         Office bearers and media team by tenure and batch.
       </PageHeader>
-      <section className="mx-auto max-w-7xl px-6 py-16">
+      <section className="mx-auto max-w-[1440px] px-5 pb-24 pt-4 sm:px-8">
         <TeamBrowser people={people} batches={batches} />
       </section>
     </>

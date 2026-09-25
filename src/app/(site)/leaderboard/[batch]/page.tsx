@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Lock } from "lucide-react";
 import { PageHeader } from "@/components/site/page-header";
 import { LeaderboardView } from "@/components/site/leaderboard-view";
 import { getBatches, getCurrentProfile, getLeaderboard, getSettings } from "@/lib/data";
@@ -24,28 +23,24 @@ export default async function BatchLeaderboard({ params }: PageProps<"/leaderboa
   return (
     <>
       <PageHeader eyebrow="Leaderboard" title={`Batch ${batch.label}`}>
-        {!isSupabaseConfigured && <span className="rounded-full bg-accent/20 px-3 py-1 text-xs font-bold text-accent">Preview data — connect Supabase for live standings</span>}
+        {isSupabaseConfigured ? "Ranked by points earned at NSS events." : <span className="text-nss-red">Preview data — connect Supabase for live standings.</span>}
       </PageHeader>
-      <section className="mx-auto max-w-5xl px-6 py-16">
-        <div className="mb-12 flex flex-wrap justify-center gap-2">
+      <section className="mx-auto max-w-[1440px] px-5 pb-24 sm:px-8">
+        <div className="mb-10 flex flex-wrap gap-x-6 gap-y-1 font-display text-[16px] font-medium">
           {batches.map((b) => (
             <Link
               key={b.id}
               href={`/leaderboard/${b.label}`}
-              className={cn(
-                "rounded-full border px-4 py-2 text-sm font-bold transition",
-                b.id === batch.id ? "border-navy-900 bg-navy-900 text-white" : "border-navy-900/15 text-navy-900/70 hover:border-navy-900/40",
-              )}
+              className={cn("transition-colors", b.id === batch.id ? "text-nss-red" : "text-ink/45 hover:text-ink")}
             >
               {b.label}
             </Link>
           ))}
         </div>
         {hidden ? (
-          <div className="rounded-3xl border border-dashed border-navy-900/20 p-14 text-center">
-            <Lock className="mx-auto text-navy-900/40" />
-            <p className="mt-3 font-bold text-navy-900">Standings are hidden right now.</p>
-            <p className="text-sm text-navy-900/55">The NSS team will publish the leaderboard soon.</p>
+          <div className="border-y border-ink py-20 text-center">
+            <p className="font-serif text-4xl text-ink">Standings are hidden right now.</p>
+            <p className="mt-2 font-display text-[16px] text-ink/55">The NSS team will publish the leaderboard soon.</p>
           </div>
         ) : (
           <LeaderboardView rows={rows} highlightId={profile?.id} />

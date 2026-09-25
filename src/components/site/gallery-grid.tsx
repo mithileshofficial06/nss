@@ -27,7 +27,7 @@ export function GalleryGrid({ items }: { items: GalleryItem[] }) {
     };
   }, [open, close, step]);
 
-  if (!items.length) return <p className="rounded-3xl border border-dashed border-navy-900/20 p-12 text-center text-navy-900/50">No photos yet.</p>;
+  if (!items.length) return <p className="py-20 text-center font-serif text-3xl text-ink/40">No photos yet.</p>;
 
   return (
     <>
@@ -41,7 +41,7 @@ export function GalleryGrid({ items }: { items: GalleryItem[] }) {
             transition={{ duration: 0.6, delay: (i % 4) * 0.06 }}
             onClick={() => setOpen(i)}
             data-cursor="Open"
-            className="group relative block w-full break-inside-avoid overflow-hidden rounded-2xl bg-navy-100"
+            className="group relative block w-full break-inside-avoid overflow-hidden bg-paper"
           >
             <Image
               src={g.image_url}
@@ -52,7 +52,7 @@ export function GalleryGrid({ items }: { items: GalleryItem[] }) {
               className="h-auto w-full object-cover transition duration-700 group-hover:scale-105"
             />
             {g.caption && (
-              <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/80 to-transparent p-3 text-left text-xs font-bold text-white opacity-0 transition group-hover:opacity-100">
+              <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/80 to-transparent p-3 text-left font-display text-[14px] font-medium text-white opacity-0 transition group-hover:opacity-100">
                 {g.caption}
               </span>
             )}
@@ -82,7 +82,7 @@ export function GalleryGrid({ items }: { items: GalleryItem[] }) {
             >
               <Image src={items[open].image_url} alt={items[open].caption ?? ""} fill sizes="100vw" className="object-contain" quality={85} />
             </motion.div>
-            <p className="absolute bottom-6 left-1/2 -translate-x-1/2 text-sm font-semibold text-white/80">
+            <p className="absolute bottom-6 left-1/2 -translate-x-1/2 font-display text-[15px] font-medium text-white/80">
               {items[open].caption} · {open + 1}/{items.length}
             </p>
             <button aria-label="Close" onClick={close} className="absolute right-5 top-5 grid h-12 w-12 place-items-center rounded-full bg-white/10 text-white hover:bg-white/20">

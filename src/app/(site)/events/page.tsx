@@ -16,7 +16,7 @@ export default async function EventsPage() {
       <PageHeader eyebrow="Events" title="Every drive, every rally, every hour.">
         Register for upcoming events through the Google Form linked on each card. Attendance and points are updated by the NSS team afterwards.
       </PageHeader>
-      <section className="mx-auto max-w-7xl px-6 py-16">
+      <section className="mx-auto max-w-[1440px] px-5 pb-24 pt-4 sm:px-8">
         <EventsBrowser upcoming={upcoming} past={past} />
       </section>
     </>

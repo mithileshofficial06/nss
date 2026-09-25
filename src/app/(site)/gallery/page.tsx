@@ -12,7 +12,7 @@ export default async function GalleryPage() {
       <PageHeader eyebrow="Gallery" title="Moments from the field.">
         Photos from our drives, rallies and orientations. Click any photo to open it full screen — use the arrow keys to browse.
       </PageHeader>
-      <section className="mx-auto max-w-7xl px-6 py-16">
+      <section className="mx-auto max-w-[1440px] px-5 pb-24 pt-4 sm:px-8">
         <GalleryGrid items={items} />
       </section>
     </>

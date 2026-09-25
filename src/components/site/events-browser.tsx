@@ -15,8 +15,8 @@ export function EventsBrowser({ upcoming, past }: { upcoming: EventItem[]; past:
 
   return (
     <div>
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <div className="relative flex rounded-full border border-navy-900/10 bg-white p-1">
+      <div className="flex flex-wrap items-end justify-between gap-6 border-b border-ink pb-3">
+        <div className="flex gap-8">
           {(["upcoming", "past"] as const).map((t) => (
             <button
               key={t}
@@ -24,25 +24,17 @@ export function EventsBrowser({ upcoming, past }: { upcoming: EventItem[]; past:
                 setTab(t);
                 setCategory("All");
               }}
-              className={cn("relative rounded-full px-6 py-2.5 text-sm font-bold capitalize transition-colors", tab === t ? "text-white" : "text-navy-900/60 hover:text-navy-900")}
+              className={cn("relative font-serif text-[clamp(2rem,3vw,2.8rem)] capitalize leading-none transition-colors", tab === t ? "text-ink" : "text-ink/30 hover:text-ink/60")}
             >
-              {tab === t && <motion.span layoutId="events-tab" className="absolute inset-0 -z-0 rounded-full bg-navy-900" transition={{ type: "spring", stiffness: 380, damping: 32 }} />}
-              <span className="relative">
-                {t} <span className="opacity-60">({t === "upcoming" ? upcoming.length : past.length})</span>
-              </span>
+              {t}
+              <sup className="ml-1 font-display text-[14px] font-medium">{t === "upcoming" ? upcoming.length : past.length}</sup>
+              {tab === t && <motion.span layoutId="events-tab" className="absolute -bottom-[14px] left-0 h-[3px] w-full bg-nss-red" />}
             </button>
           ))}
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-x-4 gap-y-1 font-display text-[15px] font-medium">
           {categories.map((c) => (
-            <button
-              key={c}
-              onClick={() => setCategory(c)}
-              className={cn(
-                "rounded-full border px-4 py-1.5 text-xs font-bold transition",
-                category === c ? "border-nss-red bg-nss-red text-white" : "border-navy-900/15 text-navy-900/65 hover:border-navy-900/40",
-              )}
-            >
+            <button key={c} onClick={() => setCategory(c)} className={cn("transition-colors", category === c ? "text-nss-red" : "text-ink/50 hover:text-ink")}>
               {c}
             </button>
           ))}
@@ -50,20 +42,20 @@ export function EventsBrowser({ upcoming, past }: { upcoming: EventItem[]; past:
       </div>
 
       {shown.length === 0 ? (
-        <p className="mt-16 rounded-3xl border border-dashed border-navy-900/20 p-12 text-center text-navy-900/50">
-          {tab === "upcoming" ? "No upcoming events announced yet — check back soon." : "No events here yet."}
+        <p className="py-20 text-center font-serif text-3xl text-ink/40">
+          {tab === "upcoming" ? "No upcoming events announced yet." : "No events here yet."}
         </p>
       ) : (
-        <motion.div layout className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <motion.div layout className="mt-10 grid gap-x-8 gap-y-14 md:grid-cols-2 lg:grid-cols-3">
           <AnimatePresence mode="popLayout">
             {shown.map((e, i) => (
               <motion.div
                 key={e.id}
                 layout
-                initial={{ opacity: 0, y: 30, scale: 0.96 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.5, delay: Math.min(i, 8) * 0.05, ease: [0.22, 1, 0.36, 1] }}
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.6, delay: Math.min(i, 8) * 0.05, ease: [0.22, 1, 0.36, 1] }}
                 className="h-full"
               >
                 <EventCard event={e} upcoming={tab === "upcoming"} index={i} />

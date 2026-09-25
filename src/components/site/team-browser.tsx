@@ -20,8 +20,8 @@ export function TeamBrowser({ people, batches }: { people: OfficeBearer[]; batch
 
   return (
     <div>
-      <div className="flex flex-wrap items-center gap-3">
-        <span className="text-xs font-bold uppercase tracking-[0.2em] text-navy-900/45">Tenure</span>
+      <div className="flex flex-wrap items-baseline gap-x-5 gap-y-2 border-b border-ink pb-3 font-display text-[15px] font-medium">
+        <span className="text-ink/45">Tenure</span>
         {tenures.map((t) => (
           <button
             key={t}
@@ -29,19 +29,19 @@ export function TeamBrowser({ people, batches }: { people: OfficeBearer[]; batch
               setTenure(t);
               setBatchFilter("all");
             }}
-            className={cn("rounded-full px-4 py-2 text-sm font-bold transition", t === tenure ? "bg-navy-900 text-white" : "bg-white text-navy-900/70 hover:text-navy-900")}
+            className={cn("font-serif text-3xl transition-colors", t === tenure ? "text-ink" : "text-ink/30 hover:text-ink/60")}
           >
             {t}
           </button>
         ))}
-        <span className="ml-4 text-xs font-bold uppercase tracking-[0.2em] text-navy-900/45">Batch</span>
+        <span className="ml-auto text-ink/45">Batch</span>
         {["all", ...batchIds].map((id) => (
           <button
             key={id}
             onClick={() => setBatchFilter(id)}
             className={cn(
-              "rounded-full border px-4 py-1.5 text-xs font-bold transition",
-              batchFilter === id ? "border-nss-red bg-nss-red text-white" : "border-navy-900/15 text-navy-900/65 hover:border-navy-900/40",
+              "transition-colors",
+              batchFilter === id ? "text-nss-red" : "text-ink/50 hover:text-ink",
             )}
           >
             {id === "all" ? "All" : batchLabel(id)}
@@ -53,8 +53,8 @@ export function TeamBrowser({ people, batches }: { people: OfficeBearer[]; batch
         <motion.div key={`${tenure}-${batchFilter}`} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.4 }}>
           {teams.map((team) => (
             <div key={team} className="mt-14">
-              <h2 className="font-display text-3xl font-extrabold tracking-tight text-navy-900">{team}</h2>
-              <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+              <h2 className="border-b border-ink/15 pb-2 font-display text-[15px] font-medium text-ink/50">{team}</h2>
+              <div className="mt-6 grid grid-cols-2 gap-x-5 gap-y-10 sm:grid-cols-3 lg:grid-cols-5">
                 {visible
                   .filter((p) => p.team === team)
                   .map((p, i) => (
