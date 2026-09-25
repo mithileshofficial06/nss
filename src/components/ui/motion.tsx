@@ -109,16 +109,16 @@ export function TiltCard({ children, className, max = 10, glare = true }: { chil
   );
 }
 
-/** Animated number that counts up once visible. */
-export function CountUp({ to, suffix = "", className }: { to: number; suffix?: string; className?: string }) {
+/** Animated number that counts up once visible (and once `start` is true, for callers that hold it back). */
+export function CountUp({ to, suffix = "", className, start = true }: { to: number; suffix?: string; className?: string; start?: boolean }) {
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true });
   const [value, setValue] = useState(0);
   useEffect(() => {
-    if (!inView) return;
+    if (!inView || !start) return;
     const controls = animate(0, to, { duration: 2, ease: [0.16, 1, 0.3, 1], onUpdate: (v) => setValue(Math.round(v)) });
     return () => controls.stop();
-  }, [inView, to]);
+  }, [inView, start, to]);
   return (
     <span ref={ref} className={className}>
       {value.toLocaleString("en-IN")}

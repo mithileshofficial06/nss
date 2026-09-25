@@ -3,7 +3,7 @@ import { Masthead } from "@/components/site/landing/masthead";
 import { MissionVision } from "@/components/site/landing/mission-vision";
 import { Objectives } from "@/components/site/landing/objectives";
 import { OfficeBearers } from "@/components/site/landing/office-bearers";
-import { getBatches, getCurrentProfile, getEvents, getOfficeBearers } from "@/lib/data";
+import { getBatches, getCurrentProfile, getEvents, getOfficeBearers, getPublicStats } from "@/lib/data";
 import { formatDate, isUpcoming } from "@/lib/utils";
 
 // Captions follow the original photo names from the NSS drive
@@ -20,7 +20,7 @@ const slides: Slide[] = [
 ];
 
 export default async function HomePage() {
-  const [events, profile, team, batches] = await Promise.all([getEvents(), getCurrentProfile(), getOfficeBearers(), getBatches()]);
+  const [events, profile, team, batches, stats] = await Promise.all([getEvents(), getCurrentProfile(), getOfficeBearers(), getBatches(), getPublicStats()]);
   // events are newest-first, so the last upcoming one is the soonest
   const next = events.filter((e) => isUpcoming(e.event_date)).at(-1);
   // office bearers come sorted newest tenure first; the landing page shows only the current one
@@ -33,6 +33,7 @@ export default async function HomePage() {
       <Masthead
         nextEvent={next ? { title: next.title, slug: next.slug, date: formatDate(next.event_date, { day: "numeric", month: "short" }) } : null}
         signedIn={signedIn}
+        stats={stats}
       />
       <MissionVision />
       <FieldCarousel slides={slides} />
