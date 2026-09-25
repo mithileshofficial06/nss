@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { ImagePlus, Loader2 } from "lucide-react";
 import { addGalleryImages, deleteGalleryImage, type ActionState } from "../../actions";
-import { Card, ConfirmButton, Toast, input, label, uploadImage } from "@/components/admin/ui";
+import { Card, ConfirmButton, Toast, input, inputAuto, label, uploadImage } from "@/components/admin/ui";
 import type { GalleryItem } from "@/lib/types";
 import { formatDate } from "@/lib/utils";
 
@@ -86,7 +86,7 @@ export function GalleryManager({ items, events }: { items: GalleryItem[]; events
         className="mt-6"
         title={`${shown.length} photos`}
         actions={
-          <select value={filter} onChange={(e) => setFilter(e.target.value)} className={`${input} w-auto`}>
+          <select value={filter} onChange={(e) => setFilter(e.target.value)} className={inputAuto}>
             <option value="all">All</option>
             {events.map((e) => (
               <option key={e.id} value={e.id}>

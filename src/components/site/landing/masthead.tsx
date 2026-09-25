@@ -9,19 +9,26 @@ import { AuthButtons, NAV_LINKS } from "@/components/site/navbar";
 import { useIntroReady } from "@/components/site/intro";
 import { LiveDate, LiveTime } from "@/components/ui/live-clock";
 import { CountUp } from "@/components/ui/motion";
+import { Rich } from "@/components/ui/rich";
+import type { Photo, SiteContent } from "@/lib/content";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
 type NextEvent = { title: string; slug: string; date: string } | null;
 type Stats = { volunteers: number; events: number; hours: number; batches: number };
+type Hero = SiteContent["hero"];
 
-// Lead photographs that cross-fade in the hero's centre frame
-const LEAD = [
-  { src: "/images/orientation/orientation-1.webp", caption: "Orientation Day, 2026" },
-  { src: "/images/events/beach-cleanup-2025.webp", caption: "Beach Clean-Up, 2025" },
-  { src: "/images/events/blood-donation-2026.webp", caption: "Blood Donation Camp, 2026" },
-  { src: "/images/events/road-safety-rally-2026.webp", caption: "Road Safety Rally, 2026" },
-];
+/** "A · B · C" shows in full from sm up; phones get only the last part. */
+function Squeeze({ text }: { text: string }) {
+  const cut = text.lastIndexOf("·");
+  if (cut < 0) return <>{text}</>;
+  return (
+    <>
+      <span className="hidden sm:inline">{text.slice(0, cut + 1)} </span>
+      {text.slice(cut + 1).trim()}
+    </>
+  );
+}
 
 /** Fades and lifts into place `delay` seconds after the intro curtain clears. */
 const rise = (delay: number, y = 12): Variants => ({
@@ -34,7 +41,7 @@ const rise = (delay: number, y = 12): Variants => ({
  * the LICET crest, ruled nav, then a three-column lead band (about, photo, figures).
  * Everything waits for the intro curtain before animating.
  */
-export function Masthead({ nextEvent, signedIn, stats }: { nextEvent: NextEvent; signedIn: { href: string; label: string } | null; stats: Stats }) {
+export function Masthead({ nextEvent, signedIn, stats, content }: { nextEvent: NextEvent; signedIn: { href: string; label: string } | null; stats: Stats; content: Hero }) {
   const ready = useIntroReady();
   return (
     <motion.header initial="hidden" animate={ready ? "show" : "hidden"} className="bg-white px-5 pt-5 sm:px-8">
@@ -45,7 +52,7 @@ export function Masthead({ nextEvent, signedIn, stats }: { nextEvent: NextEvent;
           className="grid grid-cols-[1fr_auto_1fr] items-center gap-4 font-display text-[12px] font-medium uppercase tracking-[0.08em] text-ink/55 sm:text-[13px]"
         >
           <span>
-            <span className="hidden sm:inline">National Service Scheme · </span>Est. 1969
+            <Squeeze text={content.schemeLeft} />
           </span>
           <span className="flex w-16 overflow-hidden sm:w-24">
             <span className="h-[3px] flex-1 bg-navy-600" />
@@ -53,27 +60,31 @@ export function Masthead({ nextEvent, signedIn, stats }: { nextEvent: NextEvent;
             <span className="h-[3px] flex-1 bg-nss-red" />
           </span>
           <span className="text-right">
-            <span className="hidden sm:inline">Ministry of Youth Affairs &amp; Sports · </span>Govt. of India
+            <Squeeze text={content.schemeRight} />
           </span>
         </motion.div>
 
         <Wordmark />
 
         <motion.p variants={rise(0.75)} className="mt-4 text-center font-display text-[clamp(0.95rem,1.4vw,1.2rem)] font-semibold uppercase tracking-[0.22em] text-navy-600">
-          <span lang="hi" className="tracking-normal">राष्ट्रीय सेवा योजना</span>
-          <span className="mx-3 text-nss-red">·</span>
-          Not me, <span className="text-nss-red">but you</span>
+          {content.hindi && (
+            <>
+              <span lang="hi" className="tracking-normal">{content.hindi}</span>
+              <span className="mx-3 text-nss-red">·</span>
+            </>
+          )}
+          <Rich text={content.motto} accent="not-italic text-nss-red" />
         </motion.p>
 
         {/* College name, centred under the wordmark */}
         <motion.p variants={rise(0.85)} className="mt-6 text-center font-serif text-[clamp(1.6rem,3vw,2.75rem)] leading-tight text-ink">
-          Loyola-ICAM College of Engineering <em className="text-navy-600">&amp;</em> Technology
+          <Rich text={content.college} accent="text-navy-600" />
         </motion.p>
         <motion.p variants={rise(0.88)} className="mt-2 text-center font-display text-[clamp(1rem,1.4vw,1.2rem)] font-medium text-ink/65">
-          Loyola Campus, Nungambakkam, Chennai 600034
+          {content.address}
         </motion.p>
         <motion.p variants={rise(0.89)} className="mt-1 text-center font-display text-[14px] text-ink/70">
-          Autonomous · Tamil Nadu
+          {content.subline}
         </motion.p>
 
         {/* Dateline */}
@@ -104,7 +115,7 @@ export function Masthead({ nextEvent, signedIn, stats }: { nextEvent: NextEvent;
           <Rule delay={1} />
         </nav>
 
-        <LeadBand nextEvent={nextEvent} signedIn={signedIn} stats={stats} ready={ready} />
+        <LeadBand nextEvent={nextEvent} signedIn={signedIn} stats={stats} ready={ready} content={content} />
       </div>
     </motion.header>
   );
@@ -155,7 +166,7 @@ function Wordmark() {
 }
 
 /** About · lead photograph · figures, under the nav rule. */
-function LeadBand({ nextEvent, signedIn, stats, ready }: { nextEvent: NextEvent; signedIn: { href: string; label: string } | null; stats: Stats; ready: boolean }) {
+function LeadBand({ nextEvent, signedIn, stats, ready, content }: { nextEvent: NextEvent; signedIn: { href: string; label: string } | null; stats: Stats; ready: boolean; content: Hero }) {
   const figures = [
     { label: "Volunteers", value: stats.volunteers, suffix: "+" },
     { label: "Events held", value: stats.events, suffix: "" },
@@ -166,13 +177,12 @@ function LeadBand({ nextEvent, signedIn, stats, ready }: { nextEvent: NextEvent;
     <div className="grid gap-10 py-10 lg:grid-cols-[1fr_1.5fr_1fr] lg:gap-0 lg:py-12">
       {/* About */}
       <motion.div variants={rise(1.15)} className="flex flex-col lg:border-r lg:border-ink/15 lg:pr-8">
-        <p className="font-display text-[13px] font-medium uppercase tracking-[0.08em] text-nss-red">The unit</p>
+        <p className="font-display text-[13px] font-medium uppercase tracking-[0.08em] text-nss-red">{content.aboutKicker}</p>
         <p className="mt-3 font-serif text-[clamp(1.6rem,2.2vw,2.15rem)] leading-[1.1] text-ink">
-          Engineers in training, learning that the problems worth solving are <em className="text-navy-600">human ones.</em>
+          <Rich text={content.aboutHeadline} accent="text-navy-600" />
         </p>
         <p className="mt-5 max-w-md text-[15px] leading-relaxed text-ink/65">
-          Since 1969, the National Service Scheme has asked students to learn through service. At LICET that means beach clean-ups, blood-donation
-          camps, road-safety rallies and outreach in the communities around Chennai — with every hour logged to your batch.
+          {content.aboutBody}
         </p>
         <div className="mt-auto flex flex-wrap gap-x-6 gap-y-3 pt-8 font-display text-[16px] font-semibold">
           <Link href={signedIn?.href ?? "/register"} className="group inline-flex items-center gap-1.5 border-b-2 border-nss-red pb-0.5 text-nss-red">
@@ -191,7 +201,7 @@ function LeadBand({ nextEvent, signedIn, stats, ready }: { nextEvent: NextEvent;
         variants={{ hidden: { clipPath: "inset(100% 0 0 0)" }, show: { clipPath: "inset(0% 0 0 0)", transition: { duration: 1.2, delay: 1.05, ease } } }}
         className="lg:px-8"
       >
-        <LeadPhoto />
+        <LeadPhoto photos={content.leadPhotos} />
       </motion.div>
 
       {/* Figures + next event */}
@@ -227,12 +237,17 @@ function LeadBand({ nextEvent, signedIn, stats, ready }: { nextEvent: NextEvent;
   );
 }
 
-function LeadPhoto() {
-  const [i, setI] = useState(0);
+function LeadPhoto({ photos }: { photos: Photo[] }) {
+  const [n, setN] = useState(0);
+  const count = photos.length;
   useEffect(() => {
-    const t = setInterval(() => setI((n) => (n + 1) % LEAD.length), 4500);
+    if (count < 2) return;
+    const t = setInterval(() => setN((k) => k + 1), 4500);
     return () => clearInterval(t);
-  }, []);
+  }, [count]);
+  if (!count) return <div className="aspect-[4/3] bg-paper" />;
+  const i = n % count;
+  const LEAD = photos;
   return (
     <figure>
       <div className="relative aspect-[4/3] overflow-hidden bg-paper">
@@ -252,8 +267,8 @@ function LeadPhoto() {
       <figcaption className="mt-2 flex items-center justify-between font-display text-[13px] text-ink/60">
         <span>{LEAD[i].caption}</span>
         <span className="flex gap-1.5" aria-hidden>
-          {LEAD.map((_, n) => (
-            <span key={n} className={`h-[3px] w-5 transition-colors duration-500 ${n === i ? "bg-nss-red" : "bg-ink/15"}`} />
+          {LEAD.map((_, k) => (
+            <span key={k} className={`h-[3px] w-5 transition-colors duration-500 ${k === i ? "bg-nss-red" : "bg-ink/15"}`} />
           ))}
         </span>
       </figcaption>

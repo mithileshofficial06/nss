@@ -4,26 +4,15 @@ import Image from "next/image";
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { SectionTitle } from "./section-title";
+import { Rich } from "@/components/ui/rich";
+import type { SiteContent } from "@/lib/content";
 import { cn } from "@/lib/utils";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
-// The ten objectives of the National Service Scheme
-const objectives: { title: string; text: string; image?: string }[] = [
-  { title: "Know the community", text: "Understand the community in which they work.", image: "/images/events/road-safety-rally-2026.webp" },
-  { title: "Know yourself", text: "Understand themselves in relation to their community.", image: "/images/orientation/orientation-3.webp" },
-  { title: "Solve together", text: "Identify the needs and problems of the community and involve them in problem-solving.", image: "/images/events/cleanup-drive-2024.webp" },
-  { title: "Civic responsibility", text: "Develop among themselves a sense of social and civic responsibility.", image: "/images/events/blood-donation-2026.webp" },
-  { title: "Practical solutions", text: "Use their knowledge to find practical solutions to individual and community problems." },
-  { title: "Group living", text: "Develop the competence required for group living and sharing of responsibilities." },
-  { title: "Mobilise people", text: "Gain skills in mobilising community participation." },
-  { title: "Lead democratically", text: "Acquire leadership qualities and a democratic attitude." },
-  { title: "Rise in a crisis", text: "Develop the capacity to meet emergencies and natural disasters." },
-  { title: "One nation", text: "Practise national integration and social harmony." },
-];
-
-export function Objectives() {
-  const [lead, ...rest] = objectives;
+export function Objectives({ content }: { content: SiteContent["objectives"] }) {
+  const [lead, ...rest] = content.items;
+  if (!lead) return null;
   return (
     <section id="objectives" className="bg-white px-5 py-24 sm:px-8 sm:py-32">
       <div className="mx-auto max-w-[1440px]">
@@ -31,9 +20,8 @@ export function Objectives() {
 
         <div className="mt-10 flex flex-wrap items-end justify-between gap-6">
           <h2 className="font-serif text-[clamp(3rem,7vw,6.5rem)] leading-[0.9] tracking-[-0.03em] text-ink">
-            <MaskLine>Ten objectives,</MaskLine>
             <MaskLine delay={0.1}>
-              <em className="text-navy-600">one volunteer.</em>
+              <Rich text={content.heading} accent="text-navy-600" />
             </MaskLine>
           </h2>
           <motion.p
@@ -43,8 +31,7 @@ export function Objectives() {
             transition={{ duration: 0.8, delay: 0.3, ease }}
             className="max-w-sm font-display text-[17px] font-medium leading-snug text-ink/70"
           >
-            The National Service Scheme sets out what every volunteer should gain from serving — from knowing the community to practising national
-            integration.
+            {content.intro}
           </motion.p>
         </div>
 
@@ -52,7 +39,7 @@ export function Objectives() {
 
         <ol className="mt-4 grid border-t border-ink sm:grid-cols-2 lg:grid-cols-3">
           {rest.map((o, i) => (
-            <Article key={o.title} index={i + 2} position={i} {...o} />
+            <Article key={`${i}-${o.title}`} index={i + 2} position={i} {...o} />
           ))}
         </ol>
       </div>

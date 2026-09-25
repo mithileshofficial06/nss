@@ -12,6 +12,7 @@ import {
   fallbackSettings,
 } from "./fallback";
 import { NSS_HOUR } from "./utils";
+import { DEFAULT_CONTENT, mergeContent, type SiteContent } from "./content";
 import type { Batch, EventItem, GalleryItem, LeaderboardRow, OfficeBearer, Profile, SiteSettings } from "./types";
 
 export async function getBatches(): Promise<Batch[]> {
@@ -52,6 +53,14 @@ export async function getOfficeBearers(): Promise<OfficeBearer[]> {
   const { data } = await supabase.from("office_bearers").select("*").order("tenure", { ascending: false }).order("sort_order");
   return data ?? [];
 }
+
+/** Editable site copy (Admin → Site content) merged over the shipped defaults. */
+export const getContent = cache(async (): Promise<SiteContent> => {
+  if (!isSupabaseConfigured) return DEFAULT_CONTENT;
+  const supabase = await createClient();
+  const { data, error } = await supabase.from("site_content").select("key, value");
+  return error ? DEFAULT_CONTENT : mergeContent(data ?? []);
+});
 
 export const getSettings = cache(async (): Promise<SiteSettings> => {
   if (!isSupabaseConfigured) return fallbackSettings;

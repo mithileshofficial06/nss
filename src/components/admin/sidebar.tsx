@@ -16,6 +16,7 @@ const nav = [
   { href: "/admin/points", label: "Leaderboard & points" },
   { href: "/admin/team", label: "Office bearers" },
   { href: "/admin/gallery", label: "Gallery" },
+  { href: "/admin/content", label: "Site content" },
   { href: "/admin/settings", label: "Settings & visibility" },
 ];
 

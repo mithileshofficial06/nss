@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { StudentImport } from "./student-form";
 import { StudentsTable } from "./students-table";
 import { PageTitle } from "@/components/admin/ui";
 import { getBatches } from "@/lib/data";
@@ -25,8 +26,11 @@ export default async function StudentsPage() {
 
   return (
     <>
-      <PageTitle title="Students" description={`${students.filter((s) => s.role === "student").length} registered volunteers`} />
+      <PageTitle title="Students" description={`${students.filter((s) => s.role === "student").length} volunteers, ${students.filter((s) => s.role === "student" && s.email).length} with an account. Click a name to edit their details.`} />
       <StudentsTable students={students} batches={batches} />
+      <div className="mt-6">
+        <StudentImport />
+      </div>
     </>
   );
 }

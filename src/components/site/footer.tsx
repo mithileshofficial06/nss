@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { LiveTime } from "@/components/ui/live-clock";
+import type { SiteContent } from "@/lib/content";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -12,7 +13,7 @@ const columns = [
   { title: "Portal", links: [["/register", "Register"], ["/login", "Sign in"], ["/admin/login", "Admin"]] },
 ];
 
-export function Footer() {
+export function Footer({ content }: { content: SiteContent["footer"] }) {
   return (
     <footer className="overflow-hidden border-t border-ink/10 bg-white text-ink">
       <div className="mx-auto max-w-[1440px] px-5 pt-16 sm:px-8">
@@ -20,7 +21,7 @@ export function Footer() {
           <div className="flex items-start gap-4">
             <Image src="/brand/licet-logo.png" alt="LICET crest" width={48} height={48} className="h-12 w-12" />
             <p className="max-w-xs leading-snug text-ink/70">
-              National Service Scheme unit of Loyola-ICAM College of Engineering and Technology, Chennai.
+              {content.blurb}
             </p>
           </div>
           {columns.map((c) => (
@@ -39,11 +40,12 @@ export function Footer() {
           ))}
           <div>
             <p className="text-ink/45">Visit</p>
-            <p className="mt-3 font-medium leading-snug">
-              Loyola Campus, Nungambakkam,
-              <br />
-              Chennai 600034
-            </p>
+            <p className="mt-3 whitespace-pre-line font-medium leading-snug">{content.address}</p>
+            {content.email && (
+              <a href={`mailto:${content.email}`} className="mt-2 block font-medium text-nss-red transition-colors hover:text-navy-600">
+                {content.email}
+              </a>
+            )}
             <LiveTime className="mt-3 block text-ink/45 tabular-nums" />
           </div>
         </div>

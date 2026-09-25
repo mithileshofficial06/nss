@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/lib/data";
 import { createClient } from "@/lib/supabase/server";
+import { CONTENT_KEYS, type ContentKey } from "@/lib/content";
 import { slugify } from "@/lib/utils";
 
 /** `at` makes every result unique, so the UI re-shows a toast even for a repeated message. */
@@ -268,4 +269,105 @@ export async function deleteGalleryImage(id: string) {
     await supabase.storage.from("media").remove([data.image_url.split(marker)[1]]);
   }
   refreshPublic();
+}
+
+export async function updateBatch(_: ActionState, fd: FormData): Promise<ActionState> {
+  const supabase = await admin();
+  const id = str(fd, "id");
+  const start = Number(str(fd, "start_year"));
+  const end = Number(str(fd, "end_year"));
+  const label = str(fd, "label");
+  if (!id || !label || !start || !end || end <= start) return fail("Enter a label and a valid start/end year");
+  const { error } = await supabase.from("batches").update({ label, start_year: start, end_year: end }).eq("id", id);
+  if (error) return fail(error.code === "23505" ? `Batch ${label} already exists` : error.message);
+  refreshPublic();
+  return ok(`Batch ${label} saved`);
+}
+
+export async function deleteBatch(id: string): Promise<ActionState> {
+  const supabase = await admin();
+  const { count } = await supabase.from("profiles").select("id", { count: "exact", head: true }).eq("batch_id", id);
+  if (count) return fail(`This batch still has ${count} students. Move them to another batch first.`);
+  const { error } = await supabase.from("batches").delete().eq("id", id);
+  if (error) return fail(error.message);
+  refreshPublic();
+  return ok("Batch deleted");
+}
+
+// ---------------------------------------------------------------- site content
+export async function saveContent(key: ContentKey, value: unknown): Promise<ActionState> {
+  if (!CONTENT_KEYS.includes(key)) return fail("Unknown section");
+  const supabase = await admin();
+  const { error } = await supabase.from("site_content").upsert({ key, value, updated_at: new Date().toISOString() });
+  if (error) return fail(/site_content/.test(error.message) ? "Run migration 20260925000005_admin_control.sql in Supabase first" : error.message);
+  refreshPublic();
+  return ok("Saved. It's live on the site.");
+}
+
+export async function resetContent(key: ContentKey): Promise<ActionState> {
+  if (!CONTENT_KEYS.includes(key)) return fail("Unknown section");
+  const supabase = await admin();
+  const { error } = await supabase.from("site_content").delete().eq("key", key);
+  if (error) return fail(error.message);
+  refreshPublic();
+  return ok("Restored the original content");
+}
+
+// ---------------------------------------------------------------- student records
+/** Adds a volunteer record (no account needed; they claim it by signing up with the same register number) or edits one. */
+export async function saveStudent(_: ActionState, fd: FormData): Promise<ActionState> {
+  const supabase = await admin();
+  const id = str(fd, "id");
+  const row = {
+    full_name: str(fd, "full_name"),
+    register_no: str(fd, "register_no")?.toUpperCase() ?? null,
+    department: str(fd, "department"),
+    section: str(fd, "section"),
+    phone: str(fd, "phone"),
+    batch_id: str(fd, "batch_id"),
+  };
+  if (!row.full_name) return fail("Name is required");
+  const { error } = id ? await supabase.from("profiles").update(row).eq("id", id) : await supabase.from("profiles").insert({ ...row, role: "student" });
+  if (error) return fail(error.code === "23505" ? "That register number is already in use" : error.message);
+  revalidatePath("/admin/students");
+  refreshPublic();
+  return ok(id ? "Student updated" : `${row.full_name} added`);
+}
+
+/** CSV lines: register_no,full_name,department,section,batch,phone (batch as its label, e.g. 25-29). Existing register numbers are updated. */
+export async function importStudentsCsv(_: ActionState, fd: FormData): Promise<ActionState> {
+  const supabase = await admin();
+  const csv = str(fd, "csv");
+  if (!csv) return fail("Paste or load a CSV first");
+  const { data: batches } = await supabase.from("batches").select("id, label");
+  const batchId = new Map((batches ?? []).map((b) => [b.label, b.id]));
+  const rows = [];
+  const problems: string[] = [];
+  for (const [n, line] of csv.split(/\r?\n/).entries()) {
+    const cells = line.split(",").map((c) => c.trim().replace(/^"|"$/g, ""));
+    if (!line.trim() || /register/i.test(cells[0])) continue;
+    const [register_no, full_name, department, section, batch, phone] = cells;
+    if (!register_no || !full_name) {
+      problems.push(`line ${n + 1}`);
+      continue;
+    }
+    if (batch && !batchId.has(batch)) {
+      problems.push(`line ${n + 1} (no batch ${batch})`);
+      continue;
+    }
+    rows.push({
+      register_no: register_no.toUpperCase(),
+      full_name,
+      department: department || null,
+      section: section || null,
+      batch_id: batch ? batchId.get(batch) : null,
+      phone: phone || null,
+    });
+  }
+  if (!rows.length) return fail(problems.length ? `Nothing imported. Check ${problems.slice(0, 5).join(", ")}` : "No rows found");
+  const { error } = await supabase.from("profiles").upsert(rows, { onConflict: "register_no" });
+  if (error) return fail(error.message);
+  revalidatePath("/admin/students");
+  refreshPublic();
+  return problems.length ? fail(`Imported ${rows.length}. Skipped ${problems.slice(0, 5).join(", ")}`) : ok(`Imported ${rows.length} students`);
 }

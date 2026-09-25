@@ -11,6 +11,8 @@ import { cn } from "@/lib/utils";
 
 export const input =
   "w-full border border-ink/20 bg-white px-3.5 py-2.5 text-sm text-ink outline-none transition-colors placeholder:text-ink/35 focus:border-navy-600 focus:shadow-[inset_0_-2px_0_var(--color-navy-600)]";
+/** Same field style, sized to its content (for filter selects in toolbars). */
+export const inputAuto = input.replace("w-full", "w-auto");
 export const label = "mb-1.5 block font-display text-[13px] font-semibold uppercase tracking-[0.08em] text-ink/55";
 
 export function PageTitle({ title, description, children }: { title: string; description?: string; children?: ReactNode }) {

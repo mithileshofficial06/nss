@@ -2,11 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { PageHeader } from "@/components/site/page-header";
 import { Reveal } from "@/components/ui/motion";
-import { getBatches } from "@/lib/data";
+import { getContent, getBatches } from "@/lib/data";
 
 export const metadata: Metadata = { title: "Leaderboard" };
 
 export default async function LeaderboardIndex() {
+  const copy = (await getContent()).pages.leaderboard;
   const batches = await getBatches();
   const now = new Date();
   // Academic years roll over in July
@@ -14,8 +15,8 @@ export default async function LeaderboardIndex() {
 
   return (
     <>
-      <PageHeader eyebrow="Leaderboard" title="Pick your batch.">
-        Points are awarded for every event you volunteer at. Standings are maintained by the NSS team.
+      <PageHeader eyebrow="Leaderboard" title={copy.title}>
+        {copy.intro}
       </PageHeader>
       <section className="bg-white px-5 pb-24 sm:px-8">
         <ol className="mx-auto max-w-[1440px] border-t border-ink">

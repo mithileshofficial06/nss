@@ -8,8 +8,7 @@ import { AnimatePresence, motion, useScroll, useTransform } from "framer-motion"
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
-/** `word` is set huge and faint behind the photo stack. */
-export type Slide = { src: string; title: string; meta: string; word: string };
+import type { Slide } from "@/lib/content";
 
 /**
  * Framed, stacked photo carousel: a white panel inset over the full-bleed current photo,

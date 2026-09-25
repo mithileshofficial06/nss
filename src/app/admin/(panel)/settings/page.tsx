@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
-import { saveBatch, saveSettings, setBatchActive } from "../../actions";
+import { saveBatch, saveSettings } from "../../actions";
+import { BatchRow } from "./batch-row";
 import { SettingsForm } from "./settings-form";
-import { ActionForm, Card, LiveSwitch, PageTitle, SubmitButton, input, label } from "@/components/admin/ui";
+import { ActionForm, Card, PageTitle, SubmitButton, input, label } from "@/components/admin/ui";
 import { getBatches, getSettings } from "@/lib/data";
 
 export const metadata: Metadata = { title: "Settings" };
@@ -18,17 +19,7 @@ export default async function SettingsPage() {
         <Card title="Batches" description="Batches appear in registration, the leaderboard and team pages.">
           <ul className="divide-y divide-ink/10">
             {batches.map((b) => (
-              <li key={b.id} className="flex items-center justify-between py-3">
-                <span>
-                  <span className="font-poster text-lg text-ink">{b.label}</span>
-                  <span className="ml-2 text-xs text-ink/50">
-                    {b.start_year}–{b.end_year}
-                  </span>
-                </span>
-                <span className="flex items-center gap-2 text-xs text-ink/50">
-                  Open for sign-up <LiveSwitch initial={b.is_active} action={setBatchActive.bind(null, b.id)} />
-                </span>
-              </li>
+              <BatchRow key={b.id} batch={b} />
             ))}
           </ul>
           <ActionForm action={saveBatch} resetOnSuccess className="mt-4 flex items-end gap-2">
