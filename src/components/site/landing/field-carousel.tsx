@@ -1,0 +1,149 @@
+"use client";
+
+import Image from "next/image";
+import Link from "next/link";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion, useScroll, useTransform } from "framer-motion";
+
+const ease = [0.22, 1, 0.36, 1] as const;
+
+export type Slide = { src: string; title: string; meta: string };
+
+/**
+ * Framed, stacked photo carousel: a white panel inset over the full-bleed current photo,
+ * with the previous / current / next shots stacked as offset strips.
+ */
+export function FieldCarousel({ slides }: { slides: Slide[] }) {
+  const [index, setIndex] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const ref = useRef<HTMLElement>(null);
+  const n = slides.length;
+  const go = useCallback((d: number) => setIndex((i) => (i + d + n) % n), [n]);
+
+  useEffect(() => {
+    if (paused) return;
+    const id = setInterval(() => go(1), 4500);
+    return () => clearInterval(id);
+  }, [go, paused, index]);
+
+  // Frame opens up as the section scrolls into view
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "start start"] });
+  const inset = useTransform(scrollYProgress, [0, 1], [72, 32]);
+  const bgScale = useTransform(scrollYProgress, [0, 1], [1.2, 1]);
+
+  const cur = slides[index];
+  const prev = slides[(index - 1 + n) % n];
+  const next = slides[(index + 1) % n];
+
+  return (
+    <section
+      ref={ref}
+      aria-roledescription="carousel"
+      aria-label="NSS in the field"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      className="relative mt-8 overflow-hidden"
+    >
+      {/* Full-bleed backdrop: the current photo */}
+      <motion.div style={{ scale: bgScale }} className="absolute inset-0">
+        <AnimatePresence initial={false}>
+          <motion.div key={cur.src} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 1.2 }} className="absolute inset-0">
+            <Image src={cur.src} alt="" fill sizes="100vw" className="object-cover" priority />
+          </motion.div>
+        </AnimatePresence>
+      </motion.div>
+
+      <motion.div style={{ padding: inset }} className="relative">
+        <div className="flex min-h-[640px] flex-col bg-white px-5 py-4 font-display text-[15px] font-medium text-ink sm:min-h-[760px] sm:px-6 lg:h-[calc(100svh-64px)] lg:max-h-[900px]">
+          <div className="flex items-center justify-between">
+            <span>In the field</span>
+            <Link href="/gallery" className="transition-colors hover:text-nss-red">
+              Gallery ↗
+            </Link>
+          </div>
+
+          <div className="grid flex-1 grid-cols-1 items-center gap-6 py-4 lg:grid-cols-[1fr_minmax(0,3.2fr)_1fr]">
+            {/* Caption */}
+            <div className="order-2 min-h-[3.5rem] lg:order-none">
+              <AnimatePresence mode="wait">
+                <motion.div key={cur.title} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.45, ease }}>
+                  <p className="text-[17px] font-semibold">{cur.title}</p>
+                  <p className="text-ink/50">{cur.meta}</p>
+                </motion.div>
+              </AnimatePresence>
+            </div>
+
+            {/* Stacked strips */}
+            <button
+              onClick={() => go(1)}
+              data-cursor="Next"
+              aria-label={`Show next photo: ${next.title}`}
+              className="order-1 mx-auto flex h-full w-full max-w-[760px] flex-col items-center justify-center gap-3 lg:order-none"
+            >
+              <Strip slide={prev} className="h-[14%] min-h-[64px] w-[70%]" position="bottom" />
+              <Strip slide={cur} className="h-[56%] min-h-[260px] w-full" position="center" main />
+              <Strip slide={next} className="h-[14%] min-h-[64px] w-[70%]" position="top" />
+            </button>
+
+            {/* Counter */}
+            <p className="order-3 tabular-nums lg:order-none lg:text-right">
+              <AnimatePresence mode="wait">
+                <motion.span key={index} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} className="inline-block">
+                  {String(index + 1).padStart(2, "0")}
+                </motion.span>
+              </AnimatePresence>
+              /{String(n).padStart(2, "0")}
+            </p>
+          </div>
+
+          <div className="flex items-end justify-between gap-4">
+            <span>Est. 1969 · Government of India</span>
+            <span className="flex items-center gap-4">
+              <button onClick={() => go(-1)} className="transition-colors hover:text-nss-red">
+                Prev
+              </button>
+              <span className="h-3 w-px bg-ink/20" />
+              <button onClick={() => go(1)} className="transition-colors hover:text-nss-red">
+                Next
+              </button>
+            </span>
+            <span className="hidden text-right sm:block">Volunteer-run in Chennai.</span>
+          </div>
+          {/* Autoplay progress */}
+          <div className="mt-3 h-px bg-ink/10">
+            <motion.div key={`${index}-${paused}`} className="h-full origin-left bg-nss-red" initial={{ scaleX: 0 }} animate={{ scaleX: paused ? 0 : 1 }} transition={{ duration: paused ? 0.2 : 4.5, ease: "linear" }} />
+          </div>
+        </div>
+      </motion.div>
+    </section>
+  );
+}
+
+function Strip({ slide, className, position, main = false }: { slide: Slide; className: string; position: "top" | "center" | "bottom"; main?: boolean }) {
+  // Spans (display:block) rather than divs: these live inside the carousel's <button>
+  return (
+    <span className={`relative block overflow-hidden ${className}`}>
+      <AnimatePresence initial={false}>
+        <motion.span
+          key={slide.src}
+          initial={{ clipPath: "inset(100% 0 0 0)" }}
+          animate={{ clipPath: "inset(0% 0 0 0)" }}
+          exit={{ clipPath: "inset(0 0 100% 0)" }}
+          transition={{ duration: main ? 1 : 0.8, delay: main ? 0.1 : 0, ease }}
+          className="absolute inset-0 block"
+        >
+          <motion.span initial={{ scale: 1.15 }} animate={{ scale: 1 }} transition={{ duration: 1.6, ease }} className="absolute inset-0 block">
+            <Image
+              src={slide.src}
+              alt={main ? slide.title : ""}
+              fill
+              sizes={main ? "(max-width: 1024px) 100vw, 760px" : "540px"}
+              className="object-cover"
+              style={{ objectPosition: `center ${position}` }}
+            />
+          </motion.span>
+        </motion.span>
+      </AnimatePresence>
+    </span>
+  );
+}
