@@ -1,9 +1,9 @@
 @import "tailwindcss";
 
-/* NSS palette — built from the emblem itself: blue #2E3191, red #EC1C24.
-   Deep blues carry the surfaces, red is reserved for emphasis, periwinkle is the quiet accent on dark. */
+/* Editorial system: white newsprint surfaces and near-black ink, with the NSS emblem's
+   blue (#2E3191) and red (#EC1C24) used as the only accent colours. */
 @theme {
-  --color-ink: #05081f;
+  --color-ink: #0b0b12;
   --color-navy-950: #080c2b;
   --color-navy-900: #0e1440;
   --color-navy-800: #171f5e;
@@ -17,11 +17,11 @@
   --color-nss-red-dark: #b0141f;
   --color-ember: #ff4f5a;
   --color-accent: #a9b1ff;
-  --color-paper: #f7f8fc;
-  --color-paper-2: #eef0f8;
-  --color-line: #e3e6f2;
+  --color-paper: #f4f3ef;
+  --color-paper-2: #ebe9e3;
+  --color-line: #e2e0da;
 
-  --font-display: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-archivo-narrow), "Arial Narrow", ui-sans-serif, sans-serif;
   --font-serif: var(--font-instrument), ui-serif, Georgia, serif;
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 
@@ -60,7 +60,7 @@ html {
 }
 
 body {
-  background: var(--color-paper);
+  background: #ffffff;
   color: var(--color-ink);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;

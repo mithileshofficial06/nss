@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import { Inter, Instrument_Serif, Plus_Jakarta_Sans } from "next/font/google";
+import { Archivo_Narrow, Inter, Instrument_Serif } from "next/font/google";
 import { CustomCursor } from "@/components/ui/custom-cursor";
 import "./globals.css";
 
-const display = Plus_Jakarta_Sans({ variable: "--font-jakarta", subsets: ["latin"] });
+const display = Archivo_Narrow({ variable: "--font-archivo-narrow", subsets: ["latin"] });
 const serif = Instrument_Serif({ variable: "--font-instrument", subsets: ["latin"], weight: "400", style: ["normal", "italic"] });
 const body = Inter({ variable: "--font-inter", subsets: ["latin"] });
 

@@ -1,14 +1,14 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "framer-motion";
-import { ArrowUpRight, LayoutDashboard, Menu, ShieldCheck, X } from "lucide-react";
-import { BrandLockup } from "./brand";
+import { LiveDate, LiveTime } from "@/components/ui/live-clock";
 import { cn } from "@/lib/utils";
 
-const links = [
+export const NAV_LINKS = [
   { href: "/", label: "Home" },
   { href: "/events", label: "Events" },
   { href: "/leaderboard", label: "Leaderboard" },
@@ -18,150 +18,104 @@ const links = [
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
+/**
+ * Editorial top bar: brand, live Chennai clock, links spread across a grid.
+ * On the landing page the masthead carries the nav, so this bar only slides in after scrolling past it.
+ */
 export function Navbar({ user }: { user: { name: string; role: "student" | "admin" } | null }) {
   const pathname = usePathname();
+  const isHome = pathname === "/";
   const { scrollY } = useScroll();
-  const [hidden, setHidden] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
+  const [pastMasthead, setPastMasthead] = useState(false);
   const [open, setOpen] = useState(false);
 
-  useMotionValueEvent(scrollY, "change", (y) => {
-    const prev = scrollY.getPrevious() ?? 0;
-    setHidden(y > prev && y > 320 && !open);
-    setScrolled(y > 24);
-  });
+  useMotionValueEvent(scrollY, "change", (y) => setPastMasthead(y > 460));
 
-  // Every public page opens on a dark header, so the bar starts transparent with light text
-  const solid = scrolled;
-  const dashHref = user?.role === "admin" ? "/admin" : "/dashboard";
+  const visible = !isHome || pastMasthead || open;
+  const account = user
+    ? { href: user.role === "admin" ? "/admin" : "/dashboard", label: user.role === "admin" ? "Admin" : "Dashboard" }
+    : { href: "/register", label: "Join NSS" };
 
   return (
     <>
       <motion.header
-        initial={{ y: -80, opacity: 0 }}
-        animate={{ y: hidden ? -100 : 0, opacity: 1 }}
-        transition={{ duration: 0.6, ease }}
-        className="fixed inset-x-0 top-0 z-50"
+        initial={false}
+        animate={{ y: visible ? 0 : -80 }}
+        transition={{ duration: 0.5, ease }}
+        className="fixed inset-x-0 top-0 z-50 border-b border-ink/10 bg-white/90 backdrop-blur-md"
       >
-        <div
-          className={cn(
-            "transition-[background-color,border-color,box-shadow] duration-500",
-            solid ? "border-b border-line bg-white/85 shadow-[0_10px_30px_-20px_rgba(8,12,43,.35)] backdrop-blur-xl" : "border-b border-white/10 bg-transparent",
-          )}
-        >
-          <nav className="mx-auto flex h-[72px] max-w-7xl items-center justify-between px-5 sm:px-8">
-            <Link href="/" aria-label="NSS LICET home">
-              <BrandLockup tone={solid ? "dark" : "light"} />
+        <nav className="mx-auto grid h-14 max-w-[1440px] grid-cols-[1fr_auto] items-center gap-6 px-5 font-display text-[15px] font-medium text-ink sm:px-8 lg:grid-cols-[1.4fr_1.4fr_repeat(4,1fr)_auto]">
+          <Link href="/" className="flex items-center gap-2.5" aria-label="NSS LICET home">
+            <Image src="/brand/nss-logo.png" alt="" width={28} height={28} className="h-7 w-7" />
+            <span className="text-[16px] font-semibold tracking-tight">NSS LICET</span>
+          </Link>
+          <span className="hidden text-ink/70 tabular-nums lg:block">
+            <LiveTime /> <LiveDate className="ml-1" />
+          </span>
+          {NAV_LINKS.slice(1).map((l) => (
+            <NavItem key={l.href} href={l.href} label={l.label} active={pathname.startsWith(l.href)} className="hidden lg:inline-flex" />
+          ))}
+          <div className="flex items-center justify-end gap-5">
+            {!user && <NavItem href="/login" label="Sign in" active={pathname === "/login"} className="hidden lg:inline-flex" />}
+            <Link href={account.href} className="hidden items-center gap-1.5 text-nss-red transition-colors hover:text-navy-600 lg:inline-flex">
+              <span className="h-2 w-2 bg-nss-red" /> {account.label}
             </Link>
-
-            <ul className="hidden items-center gap-8 lg:flex">
-              {links.map((l) => {
-                const active = l.href === "/" ? pathname === "/" : pathname.startsWith(l.href);
-                return (
-                  <li key={l.href}>
-                    <Link
-                      href={l.href}
-                      className={cn(
-                        "group relative py-2 text-[14px] font-medium transition-colors",
-                        solid ? "text-navy-900/70 hover:text-navy-900" : "text-white/75 hover:text-white",
-                        active && (solid ? "text-navy-900" : "text-white"),
-                      )}
-                    >
-                      {l.label}
-                      <span
-                        className={cn(
-                          "absolute -bottom-0.5 left-0 h-[2px] w-full origin-left rounded-full bg-nss-red transition-transform duration-300",
-                          active ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100",
-                        )}
-                      />
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-
-            <div className="hidden items-center gap-3 lg:flex">
-              {user ? (
-                <Link href={dashHref} className="inline-flex items-center gap-2 rounded-full bg-nss-red px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-nss-red-dark">
-                  {user.role === "admin" ? <ShieldCheck size={16} /> : <LayoutDashboard size={16} />}
-                  {user.role === "admin" ? "Admin panel" : "My dashboard"}
-                </Link>
-              ) : (
-                <>
-                  <Link
-                    href="/login"
-                    className={cn("rounded-full px-4 py-2.5 text-sm font-semibold transition", solid ? "text-navy-900 hover:bg-navy-100" : "text-white hover:bg-white/10")}
-                  >
-                    Sign in
-                  </Link>
-                  <Link
-                    href="/register"
-                    className="group inline-flex items-center gap-1.5 rounded-full bg-nss-red px-5 py-2.5 text-sm font-semibold text-white shadow-[0_8px_24px_-8px_rgba(225,29,42,.7)] transition hover:bg-nss-red-dark"
-                  >
-                    Join NSS
-                    <ArrowUpRight size={16} className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-                  </Link>
-                </>
-              )}
-            </div>
-
-            <button
-              className={cn("grid h-11 w-11 place-items-center rounded-full lg:hidden", solid && !open ? "text-navy-900" : "text-white")}
-              onClick={() => setOpen((o) => !o)}
-              aria-label={open ? "Close menu" : "Open menu"}
-              aria-expanded={open}
-            >
-              {open ? <X /> : <Menu />}
+            <button onClick={() => setOpen((o) => !o)} className="lg:hidden" aria-expanded={open} aria-label={open ? "Close menu" : "Open menu"}>
+              {open ? "Close" : "Menu"}
             </button>
-          </nav>
-        </div>
+          </div>
+        </nav>
       </motion.header>
 
       <AnimatePresence>
         {open && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0, transition: { delay: 0.2 } }}
-            className="fixed inset-0 z-40 bg-navy-950 lg:hidden"
+            initial={{ clipPath: "inset(0 0 100% 0)" }}
+            animate={{ clipPath: "inset(0 0 0% 0)" }}
+            exit={{ clipPath: "inset(0 0 100% 0)" }}
+            transition={{ duration: 0.6, ease }}
+            className="fixed inset-0 z-40 flex flex-col justify-between bg-white px-5 pb-8 pt-20 lg:hidden"
           >
-            <div className="flex h-full flex-col justify-between px-6 pb-10 pt-28 text-white">
-              <ul className="space-y-1">
-                {links.map((l, i) => (
-                  <li key={l.href} className="overflow-hidden">
-                    <motion.div initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} transition={{ duration: 0.5, delay: 0.05 * i, ease }}>
-                      <Link
-                        href={l.href}
-                        onClick={() => setOpen(false)}
-                        className="flex items-baseline justify-between border-b border-white/10 py-4 font-display text-3xl font-semibold tracking-tight"
-                      >
-                        {l.label}
-                        <span className="text-xs font-medium text-white/40">0{i + 1}</span>
-                      </Link>
-                    </motion.div>
-                  </li>
-                ))}
-              </ul>
-              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }} className="flex gap-3">
-                {user ? (
-                  <Link href={dashHref} onClick={() => setOpen(false)} className="flex-1 rounded-full bg-nss-red py-3.5 text-center font-semibold">
-                    {user.role === "admin" ? "Admin panel" : "My dashboard"}
-                  </Link>
-                ) : (
-                  <>
-                    <Link href="/login" onClick={() => setOpen(false)} className="flex-1 rounded-full border border-white/20 py-3.5 text-center font-semibold">
-                      Sign in
+            <ul>
+              {NAV_LINKS.map((l, i) => (
+                <li key={l.href} className="overflow-hidden border-b border-ink/10">
+                  <motion.div initial={{ y: "100%" }} animate={{ y: 0 }} transition={{ duration: 0.55, delay: 0.15 + i * 0.05, ease }}>
+                    <Link href={l.href} onClick={() => setOpen(false)} className="flex items-baseline justify-between py-3 font-serif text-5xl text-ink">
+                      {l.label}
+                      <span className="font-display text-sm text-ink/40">0{i + 1}</span>
                     </Link>
-                    <Link href="/register" onClick={() => setOpen(false)} className="flex-1 rounded-full bg-nss-red py-3.5 text-center font-semibold">
-                      Join NSS
-                    </Link>
-                  </>
-                )}
-              </motion.div>
+                  </motion.div>
+                </li>
+              ))}
+            </ul>
+            <div className="flex items-center justify-between font-display text-[15px]">
+              {!user && (
+                <Link href="/login" onClick={() => setOpen(false)}>
+                  Sign in
+                </Link>
+              )}
+              <Link href={account.href} onClick={() => setOpen(false)} className="inline-flex items-center gap-1.5 text-nss-red">
+                <span className="h-2 w-2 bg-nss-red" /> {account.label}
+              </Link>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
     </>
+  );
+}
+
+/** Link with a strike-through style underline that sweeps in on hover. */
+export function NavItem({ href, label, active, className }: { href: string; label: string; active?: boolean; className?: string }) {
+  return (
+    <Link href={href} className={cn("group relative w-fit items-center transition-colors hover:text-nss-red", active && "text-nss-red", className)}>
+      {label}
+      <span
+        className={cn(
+          "absolute -bottom-0.5 left-0 h-px w-full origin-right bg-current transition-transform duration-500 ease-out group-hover:origin-left group-hover:scale-x-100",
+          active ? "scale-x-100" : "scale-x-0",
+        )}
+      />
+    </Link>
   );
 }
