@@ -72,10 +72,12 @@ export function Masthead({ nextEvent, signedIn, stats }: { nextEvent: NextEvent;
         <motion.p variants={rise(0.88)} className="mt-2 text-center font-display text-[clamp(1rem,1.4vw,1.2rem)] font-medium text-ink/65">
           Loyola Campus, Nungambakkam, Chennai 600034
         </motion.p>
+        <motion.p variants={rise(0.89)} className="mt-1 text-center font-display text-[14px] text-ink/70">
+          Autonomous · Tamil Nadu
+        </motion.p>
 
         {/* Dateline */}
-        <motion.div variants={rise(0.9, 0)} className="mt-6 flex flex-wrap items-center justify-between gap-2 font-display text-[14px] text-ink/70">
-          <span>Autonomous · Tamil Nadu</span>
+        <motion.div variants={rise(0.9, 0)} className="mt-4 flex items-center justify-end font-display text-[14px] text-ink/70">
           <span className="tabular-nums sm:text-right">
             <LiveTime /> &nbsp;<LiveDate />
           </span>
