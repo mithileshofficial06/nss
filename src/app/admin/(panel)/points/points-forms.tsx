@@ -21,9 +21,9 @@ export function AwardForm({ action, students, events }: { action: Action; studen
       <div>
         <span className={label}>Students ({picked.size} selected)</span>
         <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Filter…" className={cn(input, "mb-2 py-2")} />
-        <div className="max-h-48 overflow-y-auto rounded-xl border border-navy-900/10">
+        <div className="max-h-48 overflow-y-auto border border-ink/10">
           {shown.map((s) => (
-            <label key={s.id} className="flex cursor-pointer items-center gap-2 border-b border-navy-900/5 px-3 py-2 text-sm last:border-0 hover:bg-paper">
+            <label key={s.id} className="flex cursor-pointer items-center gap-2 border-b border-ink/10 px-3 py-2 text-sm last:border-0 hover:bg-paper">
               <input
                 type="checkbox"
                 className="accent-nss-red"
@@ -38,10 +38,10 @@ export function AwardForm({ action, students, events }: { action: Action; studen
                 }
               />
               <span className="flex-1 truncate">{s.full_name}</span>
-              <span className="font-mono text-[10px] text-navy-900/40">{s.register_no}</span>
+              <span className="font-mono text-[10px] text-ink/40">{s.register_no}</span>
             </label>
           ))}
-          {!shown.length && <p className="p-4 text-center text-xs text-navy-900/50">No students.</p>}
+          {!shown.length && <p className="p-4 text-center text-xs text-ink/50">No students.</p>}
         </div>
       </div>
       <div className="grid grid-cols-[6rem_1fr] gap-2">
@@ -66,7 +66,7 @@ export function AwardForm({ action, students, events }: { action: Action; studen
         </select>
       </label>
       <SubmitButton className="w-full">Save points</SubmitButton>
-      <p className="text-xs text-navy-900/45">Use a negative number to deduct.</p>
+      <p className="text-xs text-ink/45">Use a negative number to deduct.</p>
     </ActionForm>
   );
 }
@@ -84,7 +84,7 @@ export function CsvImport({ action }: { action: Action }) {
         className={cn(input, "font-mono text-xs")}
       />
       <div className="flex gap-2">
-        <label className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-navy-900/15 px-4 py-2.5 text-sm font-bold text-navy-900 hover:bg-paper">
+        <label className="inline-flex cursor-pointer items-center gap-2 border border-ink/15 px-4 py-2.5 text-sm font-bold text-ink hover:bg-paper">
           <Upload size={16} /> Load .csv
           <input type="file" accept=".csv,text/csv" className="sr-only" onChange={async (e) => setText((await e.target.files?.[0]?.text()) ?? "")} />
         </label>

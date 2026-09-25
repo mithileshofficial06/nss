@@ -32,9 +32,7 @@ export function Navbar({ user }: { user: { name: string; role: "student" | "admi
   useMotionValueEvent(scrollY, "change", (y) => setPastMasthead(y > 620));
 
   const visible = !isHome || pastMasthead || open;
-  const account = user
-    ? { href: user.role === "admin" ? "/admin" : "/dashboard", label: user.role === "admin" ? "Admin" : "Dashboard" }
-    : { href: "/register", label: "Join NSS" };
+  const account = user ? { href: user.role === "admin" ? "/admin" : "/dashboard", label: user.role === "admin" ? "Admin" : "Dashboard" } : null;
 
   return (
     <>
@@ -44,7 +42,7 @@ export function Navbar({ user }: { user: { name: string; role: "student" | "admi
         transition={{ duration: 0.5, ease }}
         className="fixed inset-x-0 top-0 z-50 border-b border-ink/10 bg-white/90 backdrop-blur-md"
       >
-        <nav className="mx-auto grid h-14 max-w-[1440px] grid-cols-[1fr_auto] items-center gap-6 px-5 font-display text-[15px] font-medium text-ink sm:px-8 lg:grid-cols-[1.4fr_1.4fr_repeat(4,1fr)_auto]">
+        <nav className="mx-auto grid h-14 max-w-[1440px] grid-cols-[1fr_auto] items-center gap-6 px-5 font-display text-[15px] font-medium text-ink sm:px-8 lg:grid-cols-[1.3fr_1.3fr_repeat(4,1fr)_auto]">
           <Link href="/" className="flex items-center gap-2.5" aria-label="NSS LICET home">
             <Image src="/brand/nss-logo.png" alt="" width={28} height={28} className="h-7 w-7" />
             <span className="text-[16px] font-semibold tracking-tight">NSS LICET</span>
@@ -56,10 +54,7 @@ export function Navbar({ user }: { user: { name: string; role: "student" | "admi
             <NavItem key={l.href} href={l.href} label={l.label} active={pathname.startsWith(l.href)} className="hidden lg:inline-flex" />
           ))}
           <div className="flex items-center justify-end gap-5">
-            {!user && <NavItem href="/login" label="Sign in" active={pathname === "/login"} className="hidden lg:inline-flex" />}
-            <Link href={account.href} className="hidden items-center gap-1.5 text-nss-red transition-colors hover:text-navy-600 lg:inline-flex">
-              <span className="h-2 w-2 bg-nss-red" /> {account.label}
-            </Link>
+            <AuthButtons account={account} compact className="hidden lg:flex" />
             <button onClick={() => setOpen((o) => !o)} className="lg:hidden" aria-expanded={open} aria-label={open ? "Close menu" : "Open menu"}>
               {open ? "Close" : "Menu"}
             </button>
@@ -88,15 +83,8 @@ export function Navbar({ user }: { user: { name: string; role: "student" | "admi
                 </li>
               ))}
             </ul>
-            <div className="flex items-center justify-between font-display text-[15px]">
-              {!user && (
-                <Link href="/login" onClick={() => setOpen(false)}>
-                  Sign in
-                </Link>
-              )}
-              <Link href={account.href} onClick={() => setOpen(false)} className="inline-flex items-center gap-1.5 text-nss-red">
-                <span className="h-2 w-2 bg-nss-red" /> {account.label}
-              </Link>
+            <div onClick={() => setOpen(false)}>
+              <AuthButtons account={account} />
             </div>
           </motion.div>
         )}
@@ -117,5 +105,34 @@ export function NavItem({ href, label, active, className }: { href: string; labe
         )}
       />
     </Link>
+  );
+}
+
+/**
+ * Right-hand account controls. Signed out: "Log in" as a ruled text link and "Sign up" as a flat red block.
+ * Signed in: the dashboard / admin link and a sign-out button.
+ */
+export function AuthButtons({ account, compact, className }: { account: { href: string; label: string } | null; compact?: boolean; className?: string }) {
+  const block = cn("inline-flex items-center gap-1.5 font-display font-semibold transition-colors", compact ? "px-3.5 py-1.5 text-[15px]" : "px-5 py-2.5 text-[16px]");
+  return (
+    <div className={cn("flex items-center gap-4", className)}>
+      {account ? (
+        <>
+          <Link href={account.href} className={cn(block, "bg-navy-600 text-white hover:bg-nss-red")}>
+            {account.label} <span aria-hidden>↗</span>
+          </Link>
+          <form action="/auth/signout" method="post">
+            <button className="font-display text-[15px] font-medium text-ink/70 transition-colors hover:text-nss-red">Sign out</button>
+          </form>
+        </>
+      ) : (
+        <>
+          <NavItem href="/login" label="Log in" className="inline-flex font-display text-[16px] font-semibold" />
+          <Link href="/register" className={cn(block, "bg-nss-red text-white hover:bg-navy-600")}>
+            Sign up <span aria-hidden>↗</span>
+          </Link>
+        </>
+      )}
+    </div>
   );
 }

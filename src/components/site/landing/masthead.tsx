@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion, type Variants } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
-import { NAV_LINKS } from "@/components/site/navbar";
+import { AuthButtons, NAV_LINKS } from "@/components/site/navbar";
 import { useIntroReady } from "@/components/site/intro";
 import { LiveDate, LiveTime } from "@/components/ui/live-clock";
 import { CountUp } from "@/components/ui/motion";
@@ -77,23 +77,21 @@ export function Masthead({ nextEvent, signedIn, stats }: { nextEvent: NextEvent;
         {/* Ruled nav */}
         <nav aria-label="Primary" className="relative mt-3">
           <Rule delay={0.9} />
-          <ul className="flex items-center justify-start gap-x-8 overflow-x-auto py-3 font-serif text-[22px] text-ink sm:justify-center [scrollbar-width:none]">
-            {NAV_LINKS.map((l, i) => (
-              <motion.li key={l.href} variants={rise(1 + i * 0.05, 8)}>
-                <Link href={l.href} className="whitespace-nowrap transition-colors hover:text-nss-red">
-                  {l.label}
-                </Link>
-              </motion.li>
-            ))}
-            <motion.li variants={rise(1.3, 0)} className="text-ink/20">
-              |
-            </motion.li>
-            <motion.li variants={rise(1.35, 8)}>
-              <Link href={signedIn?.href ?? "/register"} className="whitespace-nowrap italic text-nss-red transition-colors hover:text-navy-600">
-                {signedIn?.label ?? "Join NSS"}
-              </Link>
-            </motion.li>
-          </ul>
+          <div className="flex flex-col items-center gap-3 py-3 lg:grid lg:grid-cols-[1fr_auto_1fr] lg:gap-6">
+            <span className="hidden lg:block" />
+            <ul className="flex max-w-full items-center gap-x-8 overflow-x-auto font-serif text-[22px] text-ink [scrollbar-width:none]">
+              {NAV_LINKS.map((l, i) => (
+                <motion.li key={l.href} variants={rise(1 + i * 0.05, 8)}>
+                  <Link href={l.href} className="whitespace-nowrap transition-colors hover:text-nss-red">
+                    {l.label}
+                  </Link>
+                </motion.li>
+              ))}
+            </ul>
+            <motion.div variants={rise(1.3, 8)} className="lg:justify-self-end">
+              <AuthButtons account={signedIn} />
+            </motion.div>
+          </div>
           <Rule delay={1} />
         </nav>
 

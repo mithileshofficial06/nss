@@ -10,29 +10,37 @@ import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 
 export const input =
-  "w-full rounded-xl border border-navy-900/12 bg-white px-3.5 py-2.5 text-sm text-navy-900 outline-none transition placeholder:text-navy-900/35 focus:border-navy-600 focus:ring-4 focus:ring-navy-600/10";
-export const label = "mb-1.5 block text-xs font-bold uppercase tracking-wider text-navy-900/55";
+  "w-full border border-ink/20 bg-white px-3.5 py-2.5 text-sm text-ink outline-none transition-colors placeholder:text-ink/35 focus:border-navy-600 focus:shadow-[inset_0_-2px_0_var(--color-navy-600)]";
+export const label = "mb-1.5 block font-display text-[13px] font-semibold uppercase tracking-[0.08em] text-ink/55";
 
 export function PageTitle({ title, description, children }: { title: string; description?: string; children?: ReactNode }) {
   return (
-    <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="mb-8 flex flex-wrap items-end justify-between gap-4">
-      <div>
-        <h1 className="font-display text-3xl font-extrabold tracking-tight text-navy-900 sm:text-4xl">{title}</h1>
-        {description && <p className="mt-1 text-navy-900/55">{description}</p>}
+    <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }} className="mb-10">
+      <div className="flex items-center justify-between border-t border-ink pt-3 font-display text-[15px] font-medium">
+        <span className="flex items-center gap-2.5 text-nss-red">
+          <span className="h-2.5 w-2.5 bg-nss-red" /> Admin
+        </span>
+        <span className="text-ink/50">NSS LICET</span>
       </div>
-      {children}
+      <div className="mt-5 flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <h1 className="font-serif text-[clamp(2.6rem,5vw,4.5rem)] leading-[0.92] tracking-[-0.02em] text-ink">{title}</h1>
+          {description && <p className="mt-2 max-w-2xl font-display text-[16px] text-ink/60">{description}</p>}
+        </div>
+        {children}
+      </div>
     </motion.div>
   );
 }
 
 export function Card({ title, description, children, actions, className }: { title?: string; description?: string; children: ReactNode; actions?: ReactNode; className?: string }) {
   return (
-    <section className={cn("rounded-3xl border border-navy-900/10 bg-white p-6 shadow-[0_12px_40px_-28px_rgba(10,18,53,.5)]", className)}>
+    <section className={cn("border border-ink/15 bg-white p-6", className)}>
       {(title || actions) && (
         <div className="mb-5 flex flex-wrap items-start justify-between gap-3">
           <div>
-            {title && <h2 className="font-display text-xl font-extrabold text-navy-900">{title}</h2>}
-            {description && <p className="mt-0.5 text-sm text-navy-900/55">{description}</p>}
+            {title && <h2 className="font-serif text-[1.9rem] leading-none text-ink">{title}</h2>}
+            {description && <p className="mt-1.5 font-display text-[14px] text-ink/55">{description}</p>}
           </div>
           {actions}
         </div>
@@ -63,12 +71,12 @@ function ToastItem({ state }: { state: NonNullable<ActionState> }) {
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 20 }}
           className={cn(
-            "fixed bottom-6 right-6 z-[200] flex max-w-sm items-center gap-3 rounded-2xl px-5 py-4 text-sm font-semibold shadow-2xl",
-            visible.ok ? "bg-navy-900 text-white" : "bg-nss-red text-white",
+            "fixed bottom-6 right-6 z-[200] flex max-w-sm items-center gap-3 border-l-4 px-5 py-4 font-display text-[15px] font-semibold text-white",
+            visible.ok ? "border-navy-400 bg-ink" : "border-ink bg-nss-red",
           )}
           role="status"
         >
-          {visible.ok ? <CheckCircle2 size={18} className="shrink-0 text-accent" /> : <XCircle size={18} className="shrink-0" />}
+          {visible.ok ? <CheckCircle2 size={18} className="shrink-0 text-navy-200" /> : <XCircle size={18} className="shrink-0" />}
           {visible.message}
         </motion.div>
       )}
@@ -114,7 +122,7 @@ export function SubmitButton({ children, className }: { children: ReactNode; cla
   return (
     <button
       disabled={pending}
-      className={cn("inline-flex items-center justify-center gap-2 rounded-xl bg-navy-900 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-nss-red disabled:opacity-60", className)}
+      className={cn("inline-flex items-center justify-center gap-2 bg-ink px-5 py-2.5 font-display text-[15px] font-semibold text-white transition-colors hover:bg-nss-red disabled:opacity-60", className)}
     >
       {pending && <Loader2 size={16} className="animate-spin" />}
       {children}
@@ -130,10 +138,10 @@ export function Switch({ checked, onChange, name, disabled }: { checked: boolean
       aria-checked={checked}
       disabled={disabled}
       onClick={() => onChange?.(!checked)}
-      className={cn("relative h-7 w-12 shrink-0 rounded-full transition-colors disabled:opacity-50", checked ? "bg-emerald-500" : "bg-navy-900/15")}
+      className={cn("relative h-7 w-12 shrink-0 border transition-colors disabled:opacity-50", checked ? "border-navy-600 bg-navy-600" : "border-ink/25 bg-white")}
     >
       {name && <input type="hidden" name={name} value={checked ? "on" : ""} />}
-      <motion.span layout transition={{ type: "spring", stiffness: 500, damping: 32 }} className={cn("absolute top-1 h-5 w-5 rounded-full bg-white shadow", checked ? "right-1" : "left-1")} />
+      <motion.span layout transition={{ type: "spring", stiffness: 500, damping: 32 }} className={cn("absolute top-[3px] h-[18px] w-[18px]", checked ? "right-[3px] bg-white" : "left-[3px] bg-ink/35")} />
     </button>
   );
 }
@@ -165,7 +173,7 @@ export function ConfirmButton({ onConfirm, children = <Trash2 size={16} />, mess
       onClick={() => {
         if (confirm(message)) start(async () => void (await onConfirm()));
       }}
-      className="grid h-9 w-9 place-items-center rounded-lg text-navy-900/40 transition hover:bg-nss-red/10 hover:text-nss-red disabled:opacity-50"
+      className="grid h-9 w-9 place-items-center text-ink/40 transition-colors hover:bg-nss-red hover:text-white disabled:opacity-50"
       aria-label="Delete"
     >
       {pending ? <Loader2 size={16} className="animate-spin" /> : children}
@@ -209,17 +217,17 @@ export function ImageField({ name, folder, defaultValue, aspect = "aspect-video"
   return (
     <div>
       <input type="hidden" name={name} value={url} />
-      <label className={cn("group relative flex cursor-pointer items-center justify-center overflow-hidden rounded-2xl border-2 border-dashed border-navy-900/15 bg-paper transition hover:border-navy-600", aspect)}>
+      <label className={cn("group relative flex cursor-pointer items-center justify-center overflow-hidden border border-dashed border-ink/30 bg-paper transition-colors hover:border-navy-600", aspect)}>
         {url ? (
           <Image src={url} alt="" fill sizes="400px" className="object-cover" />
         ) : (
-          <span className="flex flex-col items-center gap-1 text-sm text-navy-900/50">
+          <span className="flex flex-col items-center gap-1 font-display text-[15px] text-ink/50">
             <ImagePlus size={24} /> Upload image
           </span>
         )}
         {busy && (
           <span className="absolute inset-0 grid place-items-center bg-white/70">
-            <Loader2 className="animate-spin text-navy-900" />
+            <Loader2 className="animate-spin text-ink" />
           </span>
         )}
         <input
@@ -244,7 +252,7 @@ export function ImageField({ name, folder, defaultValue, aspect = "aspect-video"
       <div className="mt-2 flex items-center gap-2">
         <input value={url} onChange={(e) => setUrl(e.target.value)} placeholder="…or paste an image URL / /images/path" className={cn(input, "py-2 text-xs")} />
         {url && (
-          <button type="button" onClick={() => setUrl("")} className="text-xs font-bold text-nss-red">
+          <button type="button" onClick={() => setUrl("")} className="font-display text-[13px] font-semibold text-nss-red">
             Clear
           </button>
         )}

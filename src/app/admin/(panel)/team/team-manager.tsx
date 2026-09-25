@@ -17,10 +17,10 @@ export function TeamManager({ people, batches }: { people: OfficeBearer[]; batch
   const batchLabel = (id: string | null) => batches.find((b) => b.id === id)?.label ?? "—";
 
   return (
-    <div className="grid gap-6 xl:grid-cols-[1fr_24rem]">
+    <div className={cn("grid gap-6", editing && "xl:grid-cols-[1fr_24rem]")}>
       <Card
         actions={
-          <button onClick={() => setEditing("new")} className="inline-flex items-center gap-2 rounded-xl bg-nss-red px-4 py-2.5 text-sm font-bold text-white">
+          <button onClick={() => setEditing("new")} className="inline-flex items-center gap-2 bg-nss-red px-4 py-2.5 text-sm font-bold text-white">
             <Plus size={16} /> Add member
           </button>
         }
@@ -28,20 +28,20 @@ export function TeamManager({ people, batches }: { people: OfficeBearer[]; batch
       >
         <div className="mb-4 flex flex-wrap gap-2">
           {tenures.map((t) => (
-            <button key={t} onClick={() => setTenure(t)} className={cn("rounded-full px-4 py-1.5 text-sm font-bold", t === tenure ? "bg-navy-900 text-white" : "bg-paper text-navy-900/60")}>
+            <button key={t} onClick={() => setTenure(t)} className={cn("px-4 py-1.5 text-sm font-bold", t === tenure ? "bg-ink text-white" : "bg-paper text-ink/60")}>
               {t}
             </button>
           ))}
         </div>
         <ul className="grid gap-3 sm:grid-cols-2">
           {shown.map((p) => (
-            <li key={p.id} className={cn("flex items-center gap-3 rounded-2xl border p-3", current?.id === p.id ? "border-navy-900" : "border-navy-900/10")}>
-              <div className="relative grid h-14 w-14 shrink-0 place-items-center overflow-hidden rounded-xl bg-navy-900 font-display font-extrabold text-white">
+            <li key={p.id} className={cn("flex items-center gap-3 border p-3", current?.id === p.id ? "border-ink" : "border-ink/10")}>
+              <div className="relative grid h-14 w-14 shrink-0 place-items-center overflow-hidden bg-ink font-display font-semibold text-white">
                 {p.photo_url ? <Image src={p.photo_url} alt="" fill sizes="56px" className="object-cover" /> : initials(p.name)}
               </div>
               <button onClick={() => setEditing(p)} className="min-w-0 flex-1 text-left">
-                <p className="truncate font-bold text-navy-900">{p.name}</p>
-                <p className="truncate text-xs text-navy-900/50">
+                <p className="truncate font-bold text-ink">{p.name}</p>
+                <p className="truncate text-xs text-ink/50">
                   {p.position} · {p.department} · Batch {batchLabel(p.batch_id)}
                 </p>
               </button>

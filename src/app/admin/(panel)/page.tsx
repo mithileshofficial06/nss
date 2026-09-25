@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, CalendarDays, ClipboardCheck, Eye, Trophy, Users } from "lucide-react";
+import { CalendarDays, ClipboardCheck, Eye, Trophy, Users } from "lucide-react";
 import { toggleSetting } from "../actions";
 import { Card, LiveSwitch, PageTitle } from "@/components/admin/ui";
 import { getSettings } from "@/lib/data";
@@ -35,47 +35,46 @@ export default async function AdminOverview() {
     <>
       <PageTitle title="Overview" description="Everything on the NSS portal, managed from here." />
 
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div className="grid border-y border-ink sm:grid-cols-3">
         {stats.map((s) => (
-          <Link key={s.label} href={s.href} className="group rounded-3xl bg-navy-900 p-6 text-white transition hover:-translate-y-0.5 hover:shadow-xl">
-            <s.icon className="text-accent" />
-            <p className="mt-4 font-display text-4xl font-extrabold">{s.value}</p>
-            <p className="mt-1 flex items-center justify-between text-sm text-white/60">
-              {s.label} <ArrowRight size={16} className="opacity-0 transition group-hover:opacity-100" />
+          <Link key={s.label} href={s.href} className="group border-ink/15 px-1 py-6 transition-colors hover:bg-paper sm:border-r sm:px-6 sm:first:pl-1 sm:last:border-r-0">
+            <p className="flex items-center justify-between font-display text-[14px] font-medium text-ink/55">
+              {s.label} <span className="text-nss-red opacity-0 transition-opacity group-hover:opacity-100">↗</span>
             </p>
+            <p className="mt-2 font-poster text-[clamp(2.6rem,4vw,3.6rem)] leading-none text-navy-600">{s.value}</p>
           </Link>
         ))}
       </div>
 
       <div className="mt-6 grid gap-6 lg:grid-cols-2">
         <Card title="Quick visibility controls" description="Changes apply instantly to every student.">
-          <ul className="divide-y divide-navy-900/5">
+          <ul className="divide-y divide-ink/10">
             {toggles.map((t) => (
               <li key={t.key} className="flex items-center justify-between gap-4 py-3">
-                <span className="flex items-center gap-2 text-sm font-semibold text-navy-900">
-                  <Eye size={16} className="text-navy-900/40" /> {t.label}
+                <span className="flex items-center gap-2 text-sm font-semibold text-ink">
+                  <Eye size={16} className="shrink-0 text-ink/40" /> {t.label}
                 </span>
                 <LiveSwitch initial={t.value} action={toggleSetting.bind(null, t.key)} />
               </li>
             ))}
           </ul>
-          <p className="mt-3 text-xs text-navy-900/45">Tip: reveal details for individual students or a whole batch from the Students page.</p>
+          <p className="mt-3 text-xs text-ink/45">Tip: reveal details for individual students or a whole batch from the Students page.</p>
         </Card>
 
         <Card title="Latest registrations" actions={<Link href="/admin/students" className="text-sm font-bold text-nss-red">All students →</Link>}>
-          <ul className="divide-y divide-navy-900/5">
+          <ul className="divide-y divide-ink/10">
             {(recent.data ?? []).map((p) => (
               <li key={p.id} className="flex items-center justify-between gap-3 py-3 text-sm">
                 <span>
-                  <span className="font-bold text-navy-900">{p.full_name}</span>
-                  <span className="block text-xs text-navy-900/50">
+                  <span className="font-bold text-ink">{p.full_name}</span>
+                  <span className="block text-xs text-ink/50">
                     {p.register_no} · {p.department} · {(p.batches as unknown as { label: string } | null)?.label ?? "No batch"}
                   </span>
                 </span>
-                <span className="text-xs text-navy-900/45">{formatDate(p.created_at.slice(0, 10))}</span>
+                <span className="text-xs text-ink/45">{formatDate(p.created_at.slice(0, 10))}</span>
               </li>
             ))}
-            {!recent.data?.length && <li className="py-6 text-center text-sm text-navy-900/50">No students yet.</li>}
+            {!recent.data?.length && <li className="py-6 text-center text-sm text-ink/50">No students yet.</li>}
           </ul>
         </Card>
       </div>
@@ -87,8 +86,8 @@ export default async function AdminOverview() {
             { href: "/admin/attendance", label: "Mark attendance for an event", icon: ClipboardCheck },
             { href: "/admin/points", label: "Update the batch leaderboard", icon: Trophy },
           ].map((t) => (
-            <Link key={t.href} href={t.href} className="flex items-center gap-3 rounded-2xl border border-navy-900/10 p-4 text-sm font-bold text-navy-900 transition hover:border-navy-900 hover:bg-paper">
-              <t.icon size={18} className="text-nss-red" /> {t.label}
+            <Link key={t.href} href={t.href} className="flex items-center gap-3 border border-ink/10 p-4 text-sm font-bold text-ink transition hover:border-ink hover:bg-paper">
+              <t.icon size={18} className="shrink-0 text-nss-red" /> {t.label}
             </Link>
           ))}
         </div>

@@ -55,13 +55,13 @@ export function AttendanceSheet({ events, eventId, students, batches, initialPre
           ))}
         </select>
         <div className="relative">
-          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-navy-900/40" />
+          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-ink/40" />
           <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search" className={cn(input, "pl-9")} />
         </div>
       </div>
 
-      <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-paper px-4 py-3">
-        <label className="flex items-center gap-3 text-sm font-semibold text-navy-900">
+      <div className="mt-4 flex flex-wrap items-center justify-between gap-3 bg-paper px-4 py-3">
+        <label className="flex items-center gap-3 text-sm font-semibold text-ink">
           <input
             type="checkbox"
             checked={allShown}
@@ -76,7 +76,7 @@ export function AttendanceSheet({ events, eventId, students, batches, initialPre
           />
           Select all shown ({rows.length})
         </label>
-        <span className="flex items-center gap-3 text-sm text-navy-900/70">
+        <span className="flex items-center gap-3 text-sm text-ink/70">
           Auto-award {event?.points ?? 0} pts <Switch checked={award} onChange={setAward} />
         </span>
       </div>
@@ -90,16 +90,16 @@ export function AttendanceSheet({ events, eventId, students, batches, initialPre
                 type="button"
                 onClick={() => toggle(r.id)}
                 className={cn(
-                  "flex w-full items-center gap-3 rounded-2xl border px-4 py-3 text-left transition",
-                  on ? "border-emerald-500 bg-emerald-50" : "border-navy-900/10 hover:border-navy-900/30",
+                  "flex w-full items-center gap-3 border px-4 py-3 text-left transition",
+                  on ? "border-navy-600 bg-navy-100" : "border-ink/10 hover:border-ink/30",
                 )}
               >
-                <span className={cn("grid h-6 w-6 shrink-0 place-items-center rounded-md border-2 transition", on ? "border-emerald-500 bg-emerald-500 text-white" : "border-navy-900/20")}>
+                <span className={cn("grid h-6 w-6 shrink-0 place-items-center border-2 transition", on ? "border-navy-600 bg-navy-600 text-white" : "border-ink/20")}>
                   {on && <Check size={14} strokeWidth={3} />}
                 </span>
                 <span className="min-w-0">
-                  <span className="block truncate font-bold text-navy-900">{r.full_name}</span>
-                  <span className="text-xs text-navy-900/50">
+                  <span className="block truncate font-bold text-ink">{r.full_name}</span>
+                  <span className="text-xs text-ink/50">
                     {r.register_no} · {r.department} {r.section}
                   </span>
                 </span>
@@ -107,12 +107,12 @@ export function AttendanceSheet({ events, eventId, students, batches, initialPre
             </li>
           );
         })}
-        {!rows.length && <li className="col-span-full py-10 text-center text-sm text-navy-900/50">No students in this filter.</li>}
+        {!rows.length && <li className="col-span-full py-10 text-center text-sm text-ink/50">No students in this filter.</li>}
       </ul>
 
-      <div className="sticky bottom-4 mt-6 flex items-center justify-between gap-4 rounded-2xl bg-navy-900 px-5 py-4 text-white shadow-2xl">
+      <div className="sticky bottom-4 mt-6 flex items-center justify-between gap-4 border-t-[3px] border-nss-red bg-ink px-5 py-4 text-white">
         <span className="text-sm">
-          <b className="font-display text-xl">{present.size}</b> marked present {dirty && <span className="ml-2 text-accent">· unsaved changes</span>}
+          <b className="font-poster text-2xl">{present.size}</b> marked present {dirty && <span className="ml-2 text-navy-200">· unsaved changes</span>}
         </span>
         <button
           disabled={pending}
@@ -123,7 +123,7 @@ export function AttendanceSheet({ events, eventId, students, batches, initialPre
               router.refresh();
             })
           }
-          className="inline-flex items-center gap-2 rounded-xl bg-accent px-5 py-2.5 text-sm font-bold text-ink disabled:opacity-60"
+          className="inline-flex items-center gap-2 bg-nss-red px-5 py-2.5 font-display text-[15px] font-semibold text-white transition-colors hover:bg-white hover:text-ink disabled:opacity-60"
         >
           {pending && <Loader2 size={16} className="animate-spin" />} Save attendance
         </button>

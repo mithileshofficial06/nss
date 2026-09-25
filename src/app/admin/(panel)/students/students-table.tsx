@@ -41,7 +41,7 @@ export function StudentsTable({ students, batches }: { students: Row[]; batches:
     <Card>
       <div className="flex flex-wrap items-center gap-3">
         <div className="relative min-w-60 flex-1">
-          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-navy-900/40" />
+          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-ink/40" />
           <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search name, email, register no." className={cn(input, "pl-9")} />
         </div>
         <select value={batch} onChange={(e) => setBatch(e.target.value)} className={cn(input, "w-auto")}>
@@ -58,18 +58,18 @@ export function StudentsTable({ students, batches }: { students: Row[]; batches:
             <option key={d}>{d}</option>
           ))}
         </select>
-        <button onClick={exportCsv} className="inline-flex items-center gap-2 rounded-xl border border-navy-900/15 px-4 py-2.5 text-sm font-bold text-navy-900 hover:bg-paper">
+        <button onClick={exportCsv} className="inline-flex items-center gap-2 border border-ink/15 px-4 py-2.5 text-sm font-bold text-ink hover:bg-paper">
           <Download size={16} /> CSV
         </button>
       </div>
 
       {batch !== "all" && (
-        <div className="mt-4 flex flex-wrap items-center gap-2 rounded-2xl bg-paper p-3 text-sm">
-          <span className="font-semibold text-navy-900">Batch {label(batch)} dashboards:</span>
-          <button disabled={pending} onClick={() => start(() => revealForBatch(batch, true))} className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-bold text-white disabled:opacity-50">
+        <div className="mt-4 flex flex-wrap items-center gap-2 bg-paper p-3 text-sm">
+          <span className="font-semibold text-ink">Batch {label(batch)} dashboards:</span>
+          <button disabled={pending} onClick={() => start(() => revealForBatch(batch, true))} className="inline-flex items-center gap-1.5 bg-navy-600 px-3 py-1.5 text-xs font-bold text-white disabled:opacity-50">
             <Eye size={14} /> Reveal all
           </button>
-          <button disabled={pending} onClick={() => start(() => revealForBatch(batch, false))} className="inline-flex items-center gap-1.5 rounded-lg bg-navy-900 px-3 py-1.5 text-xs font-bold text-white disabled:opacity-50">
+          <button disabled={pending} onClick={() => start(() => revealForBatch(batch, false))} className="inline-flex items-center gap-1.5 bg-ink px-3 py-1.5 text-xs font-bold text-white disabled:opacity-50">
             <EyeOff size={14} /> Follow global blur
           </button>
         </div>
@@ -78,7 +78,7 @@ export function StudentsTable({ students, batches }: { students: Row[]; batches:
       <div className="mt-5 overflow-x-auto">
         <table className="w-full min-w-[56rem] text-left text-sm">
           <thead>
-            <tr className="border-b border-navy-900/10 text-xs uppercase tracking-wider text-navy-900/45">
+            <tr className="border-b border-ink/10 text-xs uppercase tracking-wider text-ink/45">
               <th className="py-3 pr-3 font-bold">Student</th>
               <th className="py-3 pr-3 font-bold">Register no.</th>
               <th className="py-3 pr-3 font-bold">Dept</th>
@@ -94,10 +94,10 @@ export function StudentsTable({ students, batches }: { students: Row[]; batches:
           </thead>
           <tbody>
             {rows.map((r) => (
-              <tr key={r.id} className="border-b border-navy-900/5 last:border-0 hover:bg-paper/60">
+              <tr key={r.id} className="border-b border-ink/10 last:border-0 hover:bg-paper/60">
                 <td className="py-3 pr-3">
-                  <p className="font-bold text-navy-900">{r.full_name}</p>
-                  <p className="text-xs text-navy-900/50">
+                  <p className="font-bold text-ink">{r.full_name}</p>
+                  <p className="text-xs text-ink/50">
                     {r.email}
                     {r.phone && ` · ${r.phone}`}
                   </p>
@@ -108,7 +108,7 @@ export function StudentsTable({ students, batches }: { students: Row[]; batches:
                   <select
                     defaultValue={r.batch_id ?? ""}
                     onChange={(e) => start(async () => setToast(await updateStudent(r.id, { batch_id: e.target.value || null })))}
-                    className="rounded-lg border border-navy-900/10 bg-white px-2 py-1 text-xs"
+                    className="border border-ink/10 bg-white px-2 py-1 text-xs"
                   >
                     <option value="">—</option>
                     {batches.map((b) => (
@@ -118,7 +118,7 @@ export function StudentsTable({ students, batches }: { students: Row[]; batches:
                     ))}
                   </select>
                 </td>
-                <td className="py-3 pr-3 text-right font-display font-extrabold text-navy-900">{r.points}</td>
+                <td className="py-3 pr-3 text-right font-display font-semibold text-ink">{r.points}</td>
                 <td className="py-3 pr-3 text-right">{r.attended}</td>
                 <td className="py-3 pr-3">
                   <LiveSwitch initial={r.reveal_details} action={(v) => updateStudent(r.id, { reveal_details: v })} />
@@ -134,7 +134,7 @@ export function StudentsTable({ students, batches }: { students: Row[]; batches:
                       }
                       start(async () => setToast(await updateStudent(r.id, { role })));
                     }}
-                    className={cn("rounded-lg border px-2 py-1 text-xs font-bold", r.role === "admin" ? "border-accent bg-accent/15 text-navy-900" : "border-navy-900/10 bg-white")}
+                    className={cn("border px-2 py-1 text-xs font-bold", r.role === "admin" ? "border-navy-600 bg-navy-100 text-navy-800" : "border-ink/10 bg-white")}
                   >
                     <option value="student">Student</option>
                     <option value="admin">Admin</option>
@@ -147,7 +147,7 @@ export function StudentsTable({ students, batches }: { students: Row[]; batches:
             ))}
             {!rows.length && (
               <tr>
-                <td colSpan={9} className="py-12 text-center text-navy-900/50">
+                <td colSpan={9} className="py-12 text-center text-ink/50">
                   No students match.
                 </td>
               </tr>

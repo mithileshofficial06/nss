@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Award, CalendarCheck2, Flame, Hash, LogOut, Mail, Phone, TrendingUp, Trophy } from "lucide-react";
+import { Lock, LogOut } from "lucide-react";
 import { Lockable } from "@/components/dashboard/locked";
 import { RegisterButton } from "@/components/site/event-card";
-import { CountUp, Reveal } from "@/components/ui/motion";
-import { NssWheel } from "@/components/ui/nss-wheel";
+import { SectionLabel } from "@/components/site/landing/section-label";
+import { CountUp, Reveal, SplitWords } from "@/components/ui/motion";
 import { getBatches, getEvents, getLeaderboard, getSettings, requireStudent } from "@/lib/data";
 import { createClient } from "@/lib/supabase/server";
 import type { EventItem } from "@/lib/types";
@@ -61,83 +61,82 @@ export default async function DashboardPage() {
   const upcoming = events.filter((e) => isUpcoming(e.event_date)).reverse().slice(0, 3);
 
   return (
-    <div className="bg-paper pb-24">
-      {/* Header */}
-      <section className="grain relative overflow-hidden bg-navy-950 px-6 pb-28 pt-36 text-white">
-        <NssWheel spin className="pointer-events-none absolute -right-20 -top-20 h-96 w-96 text-white/[0.05]" />
-        <div className="absolute -left-20 bottom-0 h-72 w-72 rounded-full bg-nss-red/25 blur-[120px]" />
-        <div className="relative mx-auto flex max-w-7xl flex-wrap items-end justify-between gap-6">
-          <Reveal className="flex items-center gap-5">
-            <span className="grid h-20 w-20 place-items-center rounded-3xl bg-gradient-to-br from-nss-red to-accent font-display text-3xl font-extrabold shadow-xl">
-              {initials(profile.full_name)}
-            </span>
-            <div>
-              <p className="text-sm text-white/55">Welcome back,</p>
-              <h1 className="font-display text-4xl font-extrabold tracking-tight sm:text-5xl">{profile.full_name}</h1>
-              <p className="mt-1 text-sm text-white/60">
-                {[profile.department, profile.section].filter(Boolean).join(" · ")} {batch && <>· Batch {batch.label}</>}
-              </p>
+    <div className="bg-white px-5 pb-24 sm:px-8">
+      <div className="mx-auto max-w-[1440px]">
+        {/* Header */}
+        <section className="pb-10 pt-24 sm:pt-28">
+          <SectionLabel label="Student dashboard" aside={batch ? `Batch ${batch.label}` : "NSS LICET"} />
+          <div className="mt-8 flex flex-wrap items-end justify-between gap-6">
+            <div className="flex items-end gap-5">
+              <span className="grid h-20 w-20 shrink-0 place-items-center bg-navy-600 font-poster text-3xl text-white sm:h-24 sm:w-24 sm:text-4xl">{initials(profile.full_name)}</span>
+              <div>
+                <p className="font-display text-[15px] font-medium text-ink/55">Welcome back,</p>
+                <h1 className="font-serif text-[clamp(2.6rem,6vw,5.5rem)] leading-[0.92] tracking-[-0.03em] text-ink">
+                  <SplitWords text={profile.full_name} />
+                </h1>
+                <p className="mt-2 font-display text-[15px] text-ink/60">
+                  {[profile.department, profile.section].filter(Boolean).join(" · ")} {batch && <>· Batch {batch.label}</>}
+                </p>
+              </div>
             </div>
-          </Reveal>
-          <form action="/auth/signout" method="post">
-            <button className="inline-flex items-center gap-2 rounded-full border border-white/20 px-5 py-2.5 text-sm font-bold text-white/80 hover:bg-white hover:text-navy-950">
-              <LogOut size={16} /> Sign out
-            </button>
-          </form>
-        </div>
-      </section>
+            <form action="/auth/signout" method="post">
+              <button className="inline-flex items-center gap-2 border border-ink/20 px-5 py-2.5 font-display text-[15px] font-semibold text-ink transition-colors hover:border-nss-red hover:text-nss-red">
+                <LogOut size={16} /> Sign out
+              </button>
+            </form>
+          </div>
+        </section>
 
-      <div className="relative mx-auto -mt-16 max-w-7xl space-y-8 px-6">
-        {/* Stats */}
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <StatCard icon={Award} label="Total points" locked={!revealed.points} value={totalPoints} accent="from-accent to-orange-400" />
-          <StatCard icon={Trophy} label="Batch rank" locked={!revealed.points} value={rank ?? 0} prefix="#" empty={!rank} accent="from-navy-600 to-navy-800" />
-          <StatCard icon={CalendarCheck2} label="Events attended" locked={!revealed.activities} value={present.length} accent="from-nss-red to-ember" />
-          <StatCard icon={TrendingUp} label="Attendance" locked={!revealed.attendance} value={attendancePct} suffix="%" accent="from-emerald-500 to-teal-600" />
+        {/* Figures */}
+        <div className="grid grid-cols-2 border-y border-ink lg:grid-cols-4">
+          <StatCard label="Total points" locked={!revealed.points} value={totalPoints} />
+          <StatCard label="Batch rank" locked={!revealed.points} value={rank ?? 0} prefix="#" empty={!rank} />
+          <StatCard label="Events attended" locked={!revealed.activities} value={present.length} />
+          <StatCard label="Attendance" locked={!revealed.attendance} value={attendancePct} suffix="%" />
         </div>
 
-        <div className="grid gap-8 lg:grid-cols-[1.5fr_1fr]">
+        <div className="mt-14 grid gap-14 lg:grid-cols-[1.5fr_1fr] lg:gap-16">
           {/* Activities */}
-          <Panel title="My activities" icon={Flame}>
+          <Panel index="01" title="My activities">
             <Lockable locked={!revealed.activities} label="Activities">
               <ActivityList items={revealed.activities ? activities : dummyActivities} />
             </Lockable>
           </Panel>
 
-          <div className="space-y-8">
+          <div className="space-y-14">
             {/* Student details — always visible */}
-            <Panel title="My details" icon={Hash}>
-              <dl className="space-y-3 text-sm">
+            <Panel index="02" title="My details">
+              <dl className="text-[15px]">
                 <Row k="Register no." v={profile.register_no ?? "—"} />
                 <Row k="Department" v={[profile.department, profile.section].filter(Boolean).join(" · ") || "—"} />
                 <Row k="Batch" v={batch?.label ?? "—"} />
-                <Row k={<Mail size={14} />} v={profile.email} />
-                <Row k={<Phone size={14} />} v={profile.phone ?? "—"} />
+                <Row k="Email" v={profile.email} />
+                <Row k="Phone" v={profile.phone ?? "—"} />
               </dl>
             </Panel>
 
             {/* Involvement / points ledger */}
-            <Panel title="Involvement" icon={Award}>
+            <Panel index="03" title="Involvement">
               <Lockable locked={!revealed.points} label="Points">
-                <ul className="space-y-2">
+                <ul>
                   {(revealed.points ? (ledger ?? []) : dummyLedger).slice(0, 6).map((l) => (
-                    <li key={l.id} className="flex items-center justify-between rounded-xl bg-paper px-4 py-3 text-sm">
+                    <li key={l.id} className="flex items-center justify-between gap-4 border-b border-ink/10 py-3 text-[15px]">
                       <span>
-                        <span className="font-semibold text-navy-900">{l.reason}</span>
-                        <span className="block text-xs text-navy-900/50">{formatDate(l.created_at.slice(0, 10))}</span>
+                        <span className="font-semibold text-ink">{l.reason}</span>
+                        <span className="block font-display text-[13px] text-ink/50">{formatDate(l.created_at.slice(0, 10))}</span>
                       </span>
-                      <span className={`font-display text-lg font-extrabold ${l.points >= 0 ? "text-emerald-600" : "text-nss-red"}`}>
+                      <span className={`font-poster text-2xl ${l.points >= 0 ? "text-navy-600" : "text-nss-red"}`}>
                         {l.points >= 0 ? "+" : ""}
                         {l.points}
                       </span>
                     </li>
                   ))}
-                  {revealed.points && !ledger?.length && <li className="py-6 text-center text-sm text-navy-900/50">No points yet — join an event!</li>}
+                  {revealed.points && !ledger?.length && <li className="py-6 font-display text-ink/50">No points yet. Join an event!</li>}
                 </ul>
               </Lockable>
               {batch && (
-                <Link href={`/leaderboard/${batch.label}`} className="mt-4 inline-block text-sm font-bold text-nss-red hover:underline">
-                  View batch {batch.label} leaderboard →
+                <Link href={`/leaderboard/${batch.label}`} className="mt-5 inline-block font-display text-[15px] font-semibold text-nss-red underline-offset-4 hover:underline">
+                  View batch {batch.label} leaderboard ↗
                 </Link>
               )}
             </Panel>
@@ -145,114 +144,104 @@ export default async function DashboardPage() {
         </div>
 
         {upcoming.length > 0 && (
-          <Panel title="Register for upcoming events" icon={CalendarCheck2}>
-            <ul className="divide-y divide-navy-900/5">
-              {upcoming.map((e) => (
-                <li key={e.id} className="flex flex-wrap items-center justify-between gap-3 py-4">
-                  <div>
-                    <Link href={`/events/${e.slug}`} className="font-bold text-navy-900 hover:text-nss-red">
-                      {e.title}
-                    </Link>
-                    <p className="text-xs text-navy-900/50">
-                      {formatDate(e.event_date)} · {e.location} · {e.points} pts
-                    </p>
-                  </div>
-                  <RegisterButton event={e} />
-                </li>
-              ))}
-            </ul>
-          </Panel>
+          <div className="mt-16">
+            <Panel index="04" title="Register for upcoming events">
+              <ul>
+                {upcoming.map((e) => (
+                  <li key={e.id} className="grid items-center gap-3 border-b border-ink/10 py-5 sm:grid-cols-[8rem_1fr_auto] sm:gap-6">
+                    <span className="font-display text-[15px] text-ink/55">{formatDate(e.event_date)}</span>
+                    <div>
+                      <Link href={`/events/${e.slug}`} className="font-serif text-[1.7rem] leading-tight text-ink transition-colors hover:text-nss-red">
+                        {e.title}
+                      </Link>
+                      <p className="font-display text-[14px] text-ink/50">
+                        {e.location} · {e.points} pts
+                      </p>
+                    </div>
+                    <RegisterButton event={e} />
+                  </li>
+                ))}
+              </ul>
+            </Panel>
+          </div>
         )}
       </div>
     </div>
   );
 }
 
-function StatCard({
-  icon: Icon,
-  label,
-  value,
-  locked,
-  accent,
-  prefix = "",
-  suffix = "",
-  empty = false,
-}: {
-  icon: typeof Award;
-  label: string;
-  value: number;
-  locked: boolean;
-  accent: string;
-  prefix?: string;
-  suffix?: string;
-  empty?: boolean;
-}) {
+function StatCard({ label, value, locked, prefix = "", suffix = "", empty = false }: { label: string; value: number; locked: boolean; prefix?: string; suffix?: string; empty?: boolean }) {
   return (
-    <Reveal>
-      <div className="relative overflow-hidden rounded-3xl border border-navy-900/10 bg-white p-6 shadow-[0_20px_50px_-30px_rgba(10,18,53,.45)]">
-        <span className={`grid h-11 w-11 place-items-center rounded-2xl bg-gradient-to-br text-white ${accent}`}>
-          <Icon size={20} />
-        </span>
-        <p className="mt-4 text-xs font-bold uppercase tracking-[0.15em] text-navy-900/45">{label}</p>
-        {locked ? (
-          <p className="mt-1 select-none font-display text-4xl font-extrabold text-navy-900 blur-sm" aria-label="Locked">
-            {prefix}88{suffix}
-          </p>
-        ) : empty ? (
-          <p className="mt-1 font-display text-4xl font-extrabold text-navy-900/30">—</p>
-        ) : (
-          <p className="mt-1 font-display text-4xl font-extrabold text-navy-900">
-            {prefix}
-            <CountUp to={value} suffix={suffix} />
-          </p>
+    <div className="relative border-ink/15 px-4 py-6 odd:border-r lg:border-r lg:px-6 lg:last:border-r-0">
+      <p className="flex items-center justify-between gap-2 font-display text-[14px] font-medium text-ink/55">
+        {label}
+        {locked && (
+          <span className="inline-flex items-center gap-1 text-[12px] font-semibold uppercase tracking-[0.08em] text-nss-red">
+            <Lock size={12} /> Locked
+          </span>
         )}
-        {locked && <span className="absolute right-5 top-5 rounded-full bg-navy-900/8 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-navy-900/55">Locked</span>}
-      </div>
-    </Reveal>
+      </p>
+      {locked ? (
+        <p className="mt-2 select-none font-poster text-[clamp(2.4rem,4vw,3.6rem)] leading-none text-navy-600 blur-[6px]" aria-label="Locked">
+          {prefix}88{suffix}
+        </p>
+      ) : empty ? (
+        <p className="mt-2 font-poster text-[clamp(2.4rem,4vw,3.6rem)] leading-none text-ink/20">—</p>
+      ) : (
+        <p className="mt-2 font-poster text-[clamp(2.4rem,4vw,3.6rem)] leading-none text-navy-600">
+          {prefix}
+          <CountUp to={value} suffix={suffix} />
+        </p>
+      )}
+    </div>
   );
 }
 
-function Panel({ title, icon: Icon, children }: { title: string; icon: typeof Award; children: React.ReactNode }) {
+function Panel({ index, title, children }: { index: string; title: string; children: React.ReactNode }) {
   return (
     <Reveal>
-      <section className="rounded-3xl border border-navy-900/10 bg-white p-6 shadow-[0_20px_50px_-35px_rgba(10,18,53,.45)] sm:p-7">
-        <h2 className="mb-5 flex items-center gap-2 font-display text-xl font-extrabold text-navy-900">
-          <Icon size={20} className="text-nss-red" /> {title}
-        </h2>
+      <section>
+        <div className="h-[3px] bg-ink" />
+        <p className="mt-3 flex items-center gap-2.5 font-display text-[14px] font-medium text-nss-red">
+          <span className="h-2.5 w-2.5 bg-nss-red" /> {index}
+        </p>
+        <h2 className="mb-5 mt-1 font-serif text-[clamp(2rem,3vw,2.8rem)] leading-none text-ink">{title}</h2>
         {children}
       </section>
     </Reveal>
   );
 }
 
-function Row({ k, v }: { k: React.ReactNode; v: string }) {
+function Row({ k, v }: { k: string; v: string }) {
   return (
-    <div className="flex items-center justify-between gap-4 border-b border-navy-900/5 pb-3 last:border-0 last:pb-0">
-      <dt className="text-navy-900/50">{k}</dt>
-      <dd className="truncate text-right font-semibold text-navy-900">{v}</dd>
+    <div className="flex items-center justify-between gap-4 border-b border-ink/10 py-3">
+      <dt className="font-display text-ink/50">{k}</dt>
+      <dd className="truncate text-right font-semibold text-ink">{v}</dd>
     </div>
   );
 }
 
 function ActivityList({ items }: { items: Activity[] }) {
-  if (!items.length) return <p className="py-10 text-center text-sm text-navy-900/50">No activities recorded yet.</p>;
+  if (!items.length) return <p className="py-10 font-display text-ink/50">No activities recorded yet.</p>;
   return (
-    <ol className="relative space-y-4 border-l-2 border-dashed border-navy-900/10 pl-6">
+    <ol>
       {items.map((a) => (
-        <li key={a.id} className="relative">
-          <span className={`absolute -left-[31px] top-1.5 h-3.5 w-3.5 rounded-full ring-4 ring-white ${a.status === "present" ? "bg-emerald-500" : a.status === "excused" ? "bg-accent" : "bg-nss-red"}`} />
-          <div className="flex flex-wrap items-center justify-between gap-2 rounded-2xl bg-paper px-4 py-3">
-            <div>
-              <Link href={`/events/${a.events!.slug}`} className="font-bold text-navy-900 hover:text-nss-red">
-                {a.events!.title}
-              </Link>
-              <p className="text-xs text-navy-900/50">
-                {formatDate(a.events!.event_date)} · {a.events!.category}
-                {a.role && ` · ${a.role}`}
-              </p>
-            </div>
-            <span className="rounded-full bg-white px-3 py-1 text-xs font-bold capitalize text-navy-900/70">{a.status}</span>
+        <li key={a.id} className="grid grid-cols-[6.5rem_1fr_auto] items-baseline gap-4 border-b border-ink/10 py-4">
+          <span className="font-display text-[14px] text-ink/50">{formatDate(a.events!.event_date)}</span>
+          <div className="min-w-0">
+            <Link href={`/events/${a.events!.slug}`} className="font-serif text-[1.45rem] leading-tight text-ink transition-colors hover:text-nss-red">
+              {a.events!.title}
+            </Link>
+            <p className="font-display text-[13px] text-ink/50">
+              {a.events!.category}
+              {a.role && ` · ${a.role}`}
+            </p>
           </div>
+          <span
+            className={`font-display text-[13px] font-semibold uppercase tracking-[0.08em] ${a.status === "present" ? "text-navy-600" : a.status === "excused" ? "text-ink/50" : "text-nss-red"}`}
+          >
+            {a.status}
+          </span>
         </li>
       ))}
     </ol>

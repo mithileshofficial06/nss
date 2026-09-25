@@ -15,32 +15,32 @@ export function EventsManager({ events }: { events: EventItem[] }) {
   const current = editing === "new" ? null : editing;
 
   return (
-    <div className="grid gap-6 xl:grid-cols-[1fr_28rem]">
+    <div className={cn("grid gap-6", editing && "xl:grid-cols-[1fr_28rem]")}>
       <Card
         title={`${events.length} events`}
         actions={
-          <button onClick={() => setEditing("new")} className="inline-flex items-center gap-2 rounded-xl bg-nss-red px-4 py-2.5 text-sm font-bold text-white">
+          <button onClick={() => setEditing("new")} className="inline-flex items-center gap-2 bg-nss-red px-4 py-2.5 text-sm font-bold text-white">
             <Plus size={16} /> New event
           </button>
         }
       >
-        <ul className="divide-y divide-navy-900/5">
+        <ul className="divide-y divide-ink/10">
           {events.map((e) => (
             <li key={e.id} className={cn("flex items-center gap-4 py-3", current?.id === e.id && "bg-paper")}>
-              <div className="relative h-14 w-20 shrink-0 overflow-hidden rounded-xl bg-navy-100">
+              <div className="relative h-14 w-20 shrink-0 overflow-hidden bg-paper">
                 {e.cover_url && <Image src={e.cover_url} alt="" fill sizes="80px" className="object-cover" />}
               </div>
               <button onClick={() => setEditing(e)} className="min-w-0 flex-1 text-left">
-                <p className="truncate font-bold text-navy-900 hover:text-nss-red">{e.title}</p>
-                <p className="text-xs text-navy-900/50">
+                <p className="truncate font-bold text-ink hover:text-nss-red">{e.title}</p>
+                <p className="text-xs text-ink/50">
                   {formatDate(e.event_date)} · {e.category} · {e.points} pts
                 </p>
               </button>
               <div className="hidden items-center gap-2 sm:flex">
-                {isUpcoming(e.event_date) && <span className="rounded-full bg-accent/20 px-2 py-0.5 text-[10px] font-bold uppercase text-navy-900">Upcoming</span>}
-                {!e.is_published && <span className="rounded-full bg-navy-900/10 px-2 py-0.5 text-[10px] font-bold uppercase">Draft</span>}
+                {isUpcoming(e.event_date) && <span className="bg-navy-100 px-2 py-0.5 text-[10px] font-bold uppercase text-navy-800">Upcoming</span>}
+                {!e.is_published && <span className="bg-ink/10 px-2 py-0.5 text-[10px] font-bold uppercase">Draft</span>}
                 {e.register_url ? (
-                  <a href={e.register_url} target="_blank" rel="noreferrer" title="Google Form" className="text-emerald-600">
+                  <a href={e.register_url} target="_blank" rel="noreferrer" title="Google Form" className="text-navy-600">
                     <Link2 size={16} />
                   </a>
                 ) : (
@@ -88,7 +88,7 @@ export function EventsManager({ events }: { events: EventItem[] }) {
             <div className="flex gap-2">
               <SubmitButton className="flex-1">{current ? "Save changes" : "Create event"}</SubmitButton>
               {current && (
-                <a href={`/events/${current.slug}`} target="_blank" className="inline-flex items-center gap-1 rounded-xl border border-navy-900/15 px-4 text-sm font-bold">
+                <a href={`/events/${current.slug}`} target="_blank" className="inline-flex items-center gap-1 border border-ink/15 px-4 text-sm font-bold">
                   View <ExternalLink size={14} />
                 </a>
               )}
@@ -112,8 +112,8 @@ function Text({ name, label: l, defaultValue, ...rest }: { name: string; label: 
 function Published({ initial }: { initial: boolean }) {
   const [v, setV] = useState(initial);
   return (
-    <div className="flex items-center justify-between rounded-xl bg-paper px-4 py-3">
-      <span className="text-sm font-bold text-navy-900">Published on site</span>
+    <div className="flex items-center justify-between bg-paper px-4 py-3">
+      <span className="text-sm font-bold text-ink">Published on site</span>
       <Switch name="is_published" checked={v} onChange={setV} />
     </div>
   );

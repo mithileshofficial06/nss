@@ -16,16 +16,16 @@ export default async function SettingsPage() {
           <SettingsForm settings={settings} action={saveSettings} />
         </Card>
         <Card title="Batches" description="Batches appear in registration, the leaderboard and team pages.">
-          <ul className="divide-y divide-navy-900/5">
+          <ul className="divide-y divide-ink/10">
             {batches.map((b) => (
               <li key={b.id} className="flex items-center justify-between py-3">
                 <span>
-                  <span className="font-display text-lg font-extrabold text-navy-900">{b.label}</span>
-                  <span className="ml-2 text-xs text-navy-900/50">
+                  <span className="font-poster text-lg text-ink">{b.label}</span>
+                  <span className="ml-2 text-xs text-ink/50">
                     {b.start_year}–{b.end_year}
                   </span>
                 </span>
-                <span className="flex items-center gap-2 text-xs text-navy-900/50">
+                <span className="flex items-center gap-2 text-xs text-ink/50">
                   Open for sign-up <LiveSwitch initial={b.is_active} action={setBatchActive.bind(null, b.id)} />
                 </span>
               </li>

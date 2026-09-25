@@ -35,7 +35,7 @@ export default async function PointsPage({ searchParams }: PageProps<"/admin/poi
             <Link
               key={b.id}
               href={`/admin/points?batch=${b.label}`}
-              className={cn("rounded-full border px-4 py-2 text-sm font-bold", b.id === batch.id ? "border-navy-900 bg-navy-900 text-white" : "border-navy-900/15 bg-white text-navy-900/70")}
+              className={cn("border px-4 py-2 text-sm font-bold", b.id === batch.id ? "border-ink bg-ink text-white" : "border-ink/15 bg-white text-ink/70")}
             >
               {b.label}
             </Link>
@@ -45,20 +45,20 @@ export default async function PointsPage({ searchParams }: PageProps<"/admin/poi
 
       <div className="grid gap-6 xl:grid-cols-[1fr_24rem]">
         <Card title={`Batch ${batch.label} standings`} description={`${board.length} students`}>
-          <ol className="divide-y divide-navy-900/5">
+          <ol className="divide-y divide-ink/10">
             {board.map((r) => (
               <li key={r.student_id} className="flex items-center gap-4 py-2.5 text-sm">
-                <span className={cn("grid h-8 w-8 place-items-center rounded-full font-display text-xs font-extrabold", r.rank <= 3 ? "bg-accent text-ink" : "bg-navy-100 text-navy-900")}>{r.rank}</span>
+                <span className={cn("grid h-8 w-8 place-items-center font-poster text-xs", r.rank <= 3 ? "bg-navy-600 text-white" : "bg-paper text-ink")}>{r.rank}</span>
                 <span className="flex-1">
-                  <span className="font-bold text-navy-900">{r.full_name}</span>
-                  <span className="ml-2 text-xs text-navy-900/45">
+                  <span className="font-bold text-ink">{r.full_name}</span>
+                  <span className="ml-2 text-xs text-ink/45">
                     {r.department} · {r.events_attended} events
                   </span>
                 </span>
-                <span className="font-display text-lg font-extrabold text-navy-900">{r.points}</span>
+                <span className="font-poster text-lg text-ink">{r.points}</span>
               </li>
             ))}
-            {!board.length && <li className="py-10 text-center text-sm text-navy-900/50">No students registered in this batch yet.</li>}
+            {!board.length && <li className="py-10 text-center text-sm text-ink/50">No students registered in this batch yet.</li>}
           </ol>
         </Card>
 
@@ -73,22 +73,22 @@ export default async function PointsPage({ searchParams }: PageProps<"/admin/poi
       </div>
 
       <Card className="mt-6" title="Recent points entries">
-        <ul className="divide-y divide-navy-900/5">
+        <ul className="divide-y divide-ink/10">
           {(ledger ?? []).map((l) => (
             <li key={l.id} className="flex items-center gap-4 py-2.5 text-sm">
-              <span className={cn("w-14 text-right font-display font-extrabold", l.points >= 0 ? "text-emerald-600" : "text-nss-red")}>
+              <span className={cn("w-14 text-right font-display font-semibold", l.points >= 0 ? "text-navy-600" : "text-nss-red")}>
                 {l.points > 0 ? "+" : ""}
                 {l.points}
               </span>
               <span className="flex-1">
-                <span className="font-bold text-navy-900">{nameOf.get(l.student_id)}</span>
-                <span className="ml-2 text-navy-900/55">{l.reason}</span>
+                <span className="font-bold text-ink">{nameOf.get(l.student_id)}</span>
+                <span className="ml-2 text-ink/55">{l.reason}</span>
               </span>
-              <span className="text-xs text-navy-900/40">{formatDate(l.created_at.slice(0, 10))}</span>
+              <span className="text-xs text-ink/40">{formatDate(l.created_at.slice(0, 10))}</span>
               <ConfirmButton message="Remove this points entry?" onConfirm={deleteLedgerEntry.bind(null, l.id)} />
             </li>
           ))}
-          {!ledger?.length && <li className="py-8 text-center text-sm text-navy-900/50">No entries yet.</li>}
+          {!ledger?.length && <li className="py-8 text-center text-sm text-ink/50">No entries yet.</li>}
         </ul>
       </Card>
     </>

@@ -18,10 +18,10 @@ export function SettingsForm({ settings, action }: { settings: SiteSettings; act
   return (
     <ActionForm action={action} className="space-y-1">
       {rows.map((r) => (
-        <div key={r.key} className="flex items-center justify-between gap-4 border-b border-navy-900/5 py-3.5">
+        <div key={r.key} className="flex items-center justify-between gap-4 border-b border-ink/10 py-3.5">
           <div>
-            <p className="font-bold text-navy-900">{r.title}</p>
-            <p className="text-xs text-navy-900/50">{r.hint}</p>
+            <p className="font-bold text-ink">{r.title}</p>
+            <p className="text-xs text-ink/50">{r.hint}</p>
           </div>
           <Switch name={r.key} checked={values[r.key]} onChange={(v) => setValues((s) => ({ ...s, [r.key]: v }))} />
         </div>
@@ -29,7 +29,7 @@ export function SettingsForm({ settings, action }: { settings: SiteSettings; act
       <label className="block pt-4">
         <span className={label}>Announcement banner</span>
         <input name="announcement" defaultValue={settings.announcement ?? ""} placeholder="e.g. Blood donation camp this Friday — register now!" className={input} />
-        <span className="mt-1 block text-xs text-navy-900/45">Shown at the top of every public page. Leave empty to hide.</span>
+        <span className="mt-1 block text-xs text-ink/45">Shown at the top of every public page. Leave empty to hide.</span>
       </label>
       <div className="pt-4">
         <SubmitButton>Save settings</SubmitButton>

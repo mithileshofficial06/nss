@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeft, ArrowRight, BookOpen, Check, Hash, Loader2, Lock, Mail, Phone, User, Users } from "lucide-react";
-import { Field, inputCls } from "./auth-shell";
+import { AuthCard, Field, inputCls } from "./auth-shell";
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import type { Batch } from "@/lib/types";
@@ -91,9 +91,10 @@ export function RegisterForm({ batches }: { batches: Batch[] }) {
 
   return (
     <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}>
-      <div className="spin-border overflow-hidden rounded-[2rem] p-8 shadow-[0_40px_120px_-30px_rgba(0,0,0,.8)] sm:p-10">
-        <h1 className="font-display text-3xl font-extrabold tracking-tight">Join NSS LICET</h1>
-        <p className="mt-1 text-sm text-white/55">Create your volunteer account — takes a minute.</p>
+      <AuthCard>
+        <p className="font-display text-[13px] font-semibold uppercase tracking-[0.08em] text-nss-red">New volunteers</p>
+        <h2 className="mt-1 font-serif text-[2.6rem] leading-none text-ink">Sign up</h2>
+        <p className="mt-2 font-display text-[15px] text-ink/55">Create your NSS account. It takes a minute.</p>
 
         {/* stepper */}
         <ol className="mt-7 flex items-center gap-2">
@@ -101,16 +102,16 @@ export function RegisterForm({ batches }: { batches: Batch[] }) {
             <li key={s} className="flex flex-1 items-center gap-2">
               <span
                 className={cn(
-                  "grid h-8 w-8 shrink-0 place-items-center rounded-full text-xs font-bold transition-all duration-500",
-                  i < step ? "bg-accent text-ink" : i === step ? "bg-nss-red text-white ring-4 ring-nss-red/25" : "bg-white/10 text-white/50",
+                  "grid h-8 w-8 shrink-0 place-items-center font-display text-sm font-semibold transition-all duration-500",
+                  i < step ? "bg-navy-600 text-white" : i === step ? "bg-nss-red text-white" : "border border-ink/20 text-ink/40",
                 )}
               >
                 {i < step ? <Check size={15} /> : i + 1}
               </span>
-              <span className={cn("hidden text-xs font-bold sm:block", i === step ? "text-white" : "text-white/45")}>{s}</span>
+              <span className={cn("hidden font-display text-[14px] font-semibold sm:block", i === step ? "text-ink" : "text-ink/40")}>{s}</span>
               {i < steps.length - 1 && (
-                <span className="relative h-0.5 flex-1 overflow-hidden rounded bg-white/10">
-                  <motion.span className="absolute inset-y-0 left-0 bg-accent" animate={{ width: i < step ? "100%" : "0%" }} transition={{ duration: 0.5 }} />
+                <span className="relative h-px flex-1 overflow-hidden bg-ink/15">
+                  <motion.span className="absolute inset-y-0 left-0 bg-navy-600" animate={{ width: i < step ? "100%" : "0%" }} transition={{ duration: 0.5 }} />
                 </span>
               )}
             </li>
@@ -165,7 +166,7 @@ export function RegisterForm({ batches }: { batches: Batch[] }) {
                     </Field>
                   </div>
                   <div>
-                    <span className="mb-1.5 block text-xs font-bold uppercase tracking-[0.15em] text-white/55">Batch</span>
+                    <span className="mb-1.5 block font-display text-[13px] font-semibold uppercase tracking-[0.08em] text-ink/55">Batch</span>
                     <div className="grid grid-cols-3 gap-2 sm:grid-cols-5">
                       {batches.map((b) => (
                         <button
@@ -173,15 +174,15 @@ export function RegisterForm({ batches }: { batches: Batch[] }) {
                           key={b.id}
                           onClick={() => setF((p) => ({ ...p, batch_id: b.id }))}
                           className={cn(
-                            "rounded-xl border py-2.5 text-sm font-bold transition",
-                            f.batch_id === b.id ? "border-accent bg-accent text-ink" : "border-white/12 bg-white/[0.05] text-white/70 hover:border-white/30",
+                            "border py-2.5 font-display text-[15px] font-semibold transition-colors",
+                            f.batch_id === b.id ? "border-navy-600 bg-navy-600 text-white" : "border-ink/20 text-ink/70 hover:border-ink",
                           )}
                         >
                           {b.label}
                         </button>
                       ))}
                     </div>
-                    {errors.batch_id && <span className="mt-1 block text-xs font-semibold text-ember">{errors.batch_id}</span>}
+                    {errors.batch_id && <span className="mt-1 block text-xs font-semibold text-nss-red">{errors.batch_id}</span>}
                   </div>
                   <Field label="Phone" icon={<Phone size={17} />} error={errors.phone}>
                     <input type="tel" value={f.phone} onChange={set("phone")} autoComplete="tel" placeholder="Optional" className={inputCls} />
@@ -189,7 +190,7 @@ export function RegisterForm({ batches }: { batches: Batch[] }) {
                 </>
               )}
               {step === 2 && (
-                <div className="space-y-2 rounded-2xl border border-white/10 bg-white/[0.04] p-5 text-sm">
+                <div className="border-t border-ink/15 text-sm">
                   {[
                     ["Name", f.full_name],
                     ["Email", f.email],
@@ -198,16 +199,16 @@ export function RegisterForm({ batches }: { batches: Batch[] }) {
                     ["Batch", batchLabel],
                     ["Phone", f.phone || "—"],
                   ].map(([k, v]) => (
-                    <div key={k} className="flex justify-between gap-4 border-b border-white/5 py-2 last:border-0">
-                      <span className="text-white/50">{k}</span>
-                      <span className="text-right font-semibold">{v}</span>
+                    <div key={k} className="flex justify-between gap-4 border-b border-ink/10 py-2.5">
+                      <span className="font-display text-ink/50">{k}</span>
+                      <span className="text-right font-semibold text-ink">{v}</span>
                     </div>
                   ))}
-                  <p className="pt-2 text-xs text-white/45">Your attendance, activities and points will appear on your dashboard once the NSS team publishes them.</p>
+                  <p className="pt-3 text-xs text-ink/50">Your attendance, activities and points will appear on your dashboard once the NSS team publishes them.</p>
                 </div>
               )}
               {errors.form && (
-                <p role="alert" className="text-sm font-semibold text-ember">
+                <p role="alert" className="text-sm font-semibold text-nss-red">
                   {errors.form}
                 </p>
               )}
@@ -217,27 +218,27 @@ export function RegisterForm({ batches }: { batches: Batch[] }) {
 
         <div className="mt-6 flex items-center gap-3">
           {step > 0 && (
-            <button type="button" onClick={() => go(-1)} className="flex items-center gap-2 rounded-xl border border-white/15 px-5 py-3.5 text-sm font-bold text-white/80 hover:bg-white/5">
+            <button type="button" onClick={() => go(-1)} className="flex items-center gap-2 border border-ink/20 px-5 py-3.5 font-display text-[16px] font-semibold text-ink transition-colors hover:border-ink">
               <ArrowLeft size={16} /> Back
             </button>
           )}
           {step < 2 ? (
-            <button type="button" onClick={() => go(1)} className="group flex flex-1 items-center justify-center gap-2 rounded-xl bg-nss-red py-3.5 font-bold hover:bg-ember">
+            <button type="button" onClick={() => go(1)} className="group flex flex-1 items-center justify-center gap-2 bg-ink py-3.5 font-display text-[17px] font-semibold text-white transition-colors hover:bg-nss-red">
               Continue <ArrowRight size={18} className="transition group-hover:translate-x-1" />
             </button>
           ) : (
-            <button type="button" disabled={loading} onClick={submit} className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-accent py-3.5 font-bold text-ink disabled:opacity-70">
+            <button type="button" disabled={loading} onClick={submit} className="flex flex-1 items-center justify-center gap-2 bg-nss-red py-3.5 font-display text-[17px] font-semibold text-white transition-colors hover:bg-navy-600 disabled:opacity-70">
               {loading ? <Loader2 className="animate-spin" size={18} /> : <>Create account <Check size={18} /></>}
             </button>
           )}
         </div>
-        <p className="mt-6 text-center text-sm text-white/55">
+        <p className="mt-6 text-center font-display text-[15px] text-ink/60">
           Already registered?{" "}
-          <Link href="/login" className="font-bold text-accent hover:underline">
-            Sign in
+          <Link href="/login" className="font-semibold text-nss-red underline-offset-4 hover:underline">
+            Log in
           </Link>
         </p>
-      </div>
+      </AuthCard>
     </motion.div>
   );
 }

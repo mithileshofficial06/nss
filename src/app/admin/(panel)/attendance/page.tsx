@@ -30,7 +30,7 @@ export default async function AttendancePage({ searchParams }: PageProps<"/admin
           initialPresent={(marked ?? []).map((m) => m.student_id)}
         />
       ) : (
-        <p className="text-navy-900/60">Create an event first.</p>
+        <p className="text-ink/60">Create an event first.</p>
       )}
     </>
   );

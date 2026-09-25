@@ -12,7 +12,7 @@ export function Lockable({ locked, children, label }: { locked: boolean; childre
   if (!locked) return <>{children}</>;
   return (
     <div className="relative">
-      <div aria-hidden className="pointer-events-none select-none blur-md saturate-50">
+      <div aria-hidden className="pointer-events-none select-none blur-md grayscale">
         {children}
       </div>
       <motion.div
@@ -21,14 +21,14 @@ export function Lockable({ locked, children, label }: { locked: boolean; childre
         className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-center"
       >
         <motion.span
-          className="grid h-14 w-14 place-items-center rounded-2xl bg-navy-900 text-white shadow-xl"
+          className="grid h-14 w-14 place-items-center bg-ink text-white"
           animate={{ rotate: [0, -8, 8, -4, 0] }}
           transition={{ duration: 1.2, repeat: Infinity, repeatDelay: 3 }}
         >
           <Lock size={22} />
         </motion.span>
-        <p className="font-display text-lg font-bold text-navy-900">{label} locked</p>
-        <p className="max-w-[16rem] text-xs text-navy-900/60">The NSS team will reveal this once it&apos;s verified.</p>
+        <p className="font-serif text-2xl text-ink">{label} locked</p>
+        <p className="max-w-[16rem] font-display text-[14px] text-ink/60">The NSS team will reveal this once it&apos;s verified.</p>
       </motion.div>
     </div>
   );

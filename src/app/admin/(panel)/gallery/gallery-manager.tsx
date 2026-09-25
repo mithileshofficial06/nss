@@ -59,7 +59,7 @@ export function GalleryManager({ items, events }: { items: GalleryItem[]; events
           </label>
         </div>
         <label
-          className="mt-4 flex cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-navy-900/15 bg-paper py-12 text-navy-900/60 transition hover:border-navy-600"
+          className="mt-4 flex cursor-pointer flex-col items-center justify-center gap-2 border-2 border-dashed border-ink/15 bg-paper py-12 text-ink/60 transition hover:border-navy-600"
           onDragOver={(e) => e.preventDefault()}
           onDrop={(e) => {
             e.preventDefault();
@@ -98,11 +98,11 @@ export function GalleryManager({ items, events }: { items: GalleryItem[]; events
       >
         <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
           {shown.map((g) => (
-            <li key={g.id} className="group relative aspect-square overflow-hidden rounded-2xl bg-navy-100">
+            <li key={g.id} className="group relative aspect-square overflow-hidden bg-paper">
               <Image src={g.image_url} alt={g.caption ?? ""} fill sizes="25vw" className="object-cover" />
-              <div className="absolute inset-x-0 bottom-0 flex items-center justify-between bg-gradient-to-t from-ink/80 to-transparent p-2 text-xs text-white">
+              <div className="absolute inset-x-0 bottom-0 flex items-center justify-between bg-ink/80 p-2 text-xs text-white">
                 <span className="truncate">{g.caption ?? titleOf(g.event_id)}</span>
-                <span className="rounded-lg bg-white opacity-0 transition group-hover:opacity-100">
+                <span className="bg-white opacity-0 transition group-hover:opacity-100">
                   <ConfirmButton message="Delete this photo?" onConfirm={() => deleteGalleryImage(g.id).then(() => router.refresh())} />
                 </span>
               </div>
