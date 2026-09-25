@@ -25,6 +25,7 @@
   --font-serif: var(--font-instrument), ui-serif, Georgia, serif;
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-poster: var(--font-anton), Impact, "Arial Narrow", sans-serif;
+  --font-karrik: var(--font-karrik-src), ui-sans-serif, system-ui, sans-serif;
 
   --animate-spin-slow: spin 28s linear infinite;
   --animate-marquee: marquee 40s linear infinite;

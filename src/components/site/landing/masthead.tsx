@@ -69,11 +69,13 @@ export function Masthead({ nextEvent, signedIn, stats }: { nextEvent: NextEvent;
         <motion.p variants={rise(0.85)} className="mt-6 text-center font-serif text-[clamp(1.6rem,3vw,2.75rem)] leading-tight text-ink">
           Loyola-ICAM College of Engineering <em className="text-navy-600">&amp;</em> Technology
         </motion.p>
+        <motion.p variants={rise(0.88)} className="mt-2 text-center font-display text-[clamp(1rem,1.4vw,1.2rem)] font-medium text-ink/65">
+          Loyola Campus, Nungambakkam, Chennai 600034
+        </motion.p>
 
         {/* Dateline */}
-        <motion.div variants={rise(0.9, 0)} className="mt-6 grid grid-cols-1 items-center gap-2 font-display text-[14px] text-ink/70 sm:grid-cols-3">
-          <span>Loyola Campus, Nungambakkam</span>
-          <span className="hidden sm:block sm:text-center">Chennai, Tamil Nadu</span>
+        <motion.div variants={rise(0.9, 0)} className="mt-6 flex flex-wrap items-center justify-between gap-2 font-display text-[14px] text-ink/70">
+          <span>Autonomous · Tamil Nadu</span>
           <span className="tabular-nums sm:text-right">
             <LiveTime /> &nbsp;<LiveDate />
           </span>
@@ -106,7 +108,7 @@ export function Masthead({ nextEvent, signedIn, stats }: { nextEvent: NextEvent;
   );
 }
 
-/** "NSS LICET" in the emblem's own style — heavy condensed caps, NSS blue and red — between the two marks. */
+/** "NSS LICET" set in Karrik, in the emblem's blue and red, between the two marks. */
 function Wordmark() {
   const words = [
     { text: "NSS", color: "text-navy-600", hover: "hover:text-nss-red" },
@@ -115,7 +117,7 @@ function Wordmark() {
   return (
     <h1
       aria-label="NSS LICET"
-      className="mx-auto mt-8 flex w-fit items-center justify-center gap-[0.12em] font-poster text-[clamp(3.25rem,13.5vw,15rem)] uppercase leading-[0.9] sm:mt-10"
+      className="mx-auto mt-8 flex w-fit items-center justify-center gap-[0.14em] font-karrik text-[clamp(2.3rem,10.5vw,12rem)] uppercase leading-[0.9] tracking-[-0.02em] sm:mt-10"
     >
       <motion.span
         variants={{ hidden: { rotate: -180, scale: 0, opacity: 0 }, show: { rotate: 0, scale: 1, opacity: 1, transition: { duration: 1.2, delay: 0.25, ease } } }}

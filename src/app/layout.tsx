@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Anton, Archivo_Narrow, Inter, Instrument_Serif } from "next/font/google";
+import localFont from "next/font/local";
 import { CustomCursor } from "@/components/ui/custom-cursor";
 import "./globals.css";
 
@@ -7,6 +8,8 @@ const display = Archivo_Narrow({ variable: "--font-archivo-narrow", subsets: ["l
 const serif = Instrument_Serif({ variable: "--font-instrument", subsets: ["latin"], weight: "400", style: ["normal", "italic"] });
 const body = Inter({ variable: "--font-inter", subsets: ["latin"] });
 const poster = Anton({ variable: "--font-anton", subsets: ["latin"], weight: "400" });
+// Karrik by Jean-Baptiste Morizot & Lucas Le Bihan (Velvetyne), SIL OFL 1.1: see ./fonts/Karrik-LICENCE.txt
+const karrik = localFont({ src: "./fonts/Karrik-Regular.woff2", variable: "--font-karrik-src", display: "swap" });
 
 export const metadata: Metadata = {
   title: { default: "NSS LICET — Not Me But You", template: "%s · NSS LICET" },
@@ -17,7 +20,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${display.variable} ${serif.variable} ${body.variable} ${poster.variable} h-full`}>
+    <html lang="en" className={`${display.variable} ${serif.variable} ${body.variable} ${poster.variable} ${karrik.variable} h-full`}>
       <body className="flex min-h-full flex-col">
         <CustomCursor />
         {children}
