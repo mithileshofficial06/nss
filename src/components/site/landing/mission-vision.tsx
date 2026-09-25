@@ -3,49 +3,109 @@
 import Image from "next/image";
 import { useRef } from "react";
 import { motion, useScroll, useTransform, type MotionValue } from "framer-motion";
-import { Compass, Eye, Quote } from "lucide-react";
 import { SectionLabel } from "./section-label";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
 const STATEMENT =
-  "The National Service Scheme is a Government of India programme under the Ministry of Youth Affairs & Sports. At LICET, it is where future engineers learn that the problems worth solving are human ones.";
+  "NSS LICET is the National Service Scheme unit of Loyola-ICAM College of Engineering and Technology — a Government of India programme where future engineers learn that the problems worth solving are human ones.";
 
 const missions = [
-  "Engage students in meaningful service that responds to the real needs of the community.",
-  "Build civic responsibility, empathy and leadership through hands-on volunteering.",
-  "Partner with communities, NGOs and public bodies for lasting, sustainable impact.",
-  "Promote health, environmental and social awareness alongside national integration.",
+  "Serve where the need is real",
+  "Build civic responsibility",
+  "Partner for lasting impact",
+  "Promote health & awareness",
 ];
 
 export function MissionVision() {
   return (
-    <section id="mission" className="relative overflow-hidden bg-paper py-28 sm:py-36">
-      <div aria-hidden className="absolute inset-0 bg-[radial-gradient(circle_at_85%_10%,rgba(46,49,145,.08),transparent_45%)]" />
-      <div className="relative mx-auto max-w-7xl px-5 sm:px-8">
+    <section id="mission" className="bg-white px-5 pb-24 pt-24 sm:px-8 sm:pt-32">
+      <div className="mx-auto max-w-[1440px]">
         <SectionLabel index="01" label="Who we are" />
-        <ScrollStatement text={STATEMENT} />
 
-        <div className="mt-24 grid gap-6 lg:grid-cols-2">
-          <VisionCard />
-          <MissionCard />
+        <div className="mt-10 grid gap-10 lg:grid-cols-[1fr_1.15fr] lg:gap-14">
+          <Portrait />
+
+          <div className="flex flex-col">
+            <ScrollStatement text={STATEMENT} />
+
+            <div className="mt-16 grid gap-12 border-t border-ink/15 pt-8 sm:grid-cols-2 sm:gap-8">
+              <Reveal>
+                <p className="font-display text-[15px] font-medium text-ink/50">Vision</p>
+                <p className="mt-3 font-serif text-[clamp(1.6rem,2.3vw,2.2rem)] leading-[1.12] text-ink">
+                  To develop the personality and character of students through <em className="text-navy-600">voluntary community service</em>.
+                </p>
+              </Reveal>
+              <Reveal delay={0.1}>
+                <p className="font-display text-[15px] font-medium text-ink/50">Mission</p>
+                <ol className="mt-3">
+                  {missions.map((m, i) => (
+                    <motion.li
+                      key={m}
+                      initial={{ opacity: 0, x: -12 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.6, delay: 0.15 + i * 0.08, ease }}
+                      className="group flex items-baseline gap-3 font-display text-[clamp(1.5rem,2.2vw,2.1rem)] font-semibold leading-[1.15] tracking-[-0.02em] text-ink transition-colors hover:text-nss-red"
+                    >
+                      <span className="text-[13px] font-medium text-ink/35 group-hover:text-nss-red">0{i + 1}</span>
+                      {m}
+                    </motion.li>
+                  ))}
+                </ol>
+              </Reveal>
+            </div>
+          </div>
         </div>
 
-        <MottoBand />
+        <MottoCover />
       </div>
     </section>
   );
 }
 
-/** Words fill from faint to full ink as the paragraph scrolls through the viewport. */
+function Reveal({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
+  return (
+    <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-60px" }} transition={{ duration: 0.8, delay, ease }}>
+      {children}
+    </motion.div>
+  );
+}
+
+/** Tall photograph that wipes in and drifts slower than the page while the text scrolls past. */
+function Portrait() {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
+  const y = useTransform(scrollYProgress, [0, 1], ["-8%", "8%"]);
+  return (
+    // The wrapper observes visibility; the photo itself starts fully clipped, so it can't be the observed element
+    <motion.div initial="hidden" whileInView="show" viewport={{ once: true, margin: "-80px" }} className="lg:sticky lg:top-20 lg:self-start">
+      <motion.div
+        ref={ref}
+        variants={{ hidden: { clipPath: "inset(0% 0% 100% 0%)" }, show: { clipPath: "inset(0% 0% 0% 0%)", transition: { duration: 1.3, ease } } }}
+        className="relative aspect-[4/5] overflow-hidden bg-paper"
+      >
+        <motion.div style={{ y }} className="absolute -inset-y-[10%] inset-x-0">
+          <Image src="/images/orientation/orientation-9.webp" alt="An NSS volunteer leading an activity at Orientation Day" fill sizes="(max-width:1024px) 100vw, 45vw" className="object-cover" />
+        </motion.div>
+      </motion.div>
+      <p className="mt-2 flex justify-between font-display text-[14px] text-ink/55">
+        <span>Orientation Day</span>
+        <span>17.09.2026</span>
+      </p>
+    </motion.div>
+  );
+}
+
+/** Large condensed statement; each word inks in as the paragraph scrolls through the viewport. */
 function ScrollStatement({ text }: { text: string }) {
   const ref = useRef<HTMLParagraphElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start 85%", "end 45%"] });
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start 85%", "end 50%"] });
   const words = text.split(" ");
   return (
-    <p ref={ref} className="mt-8 max-w-5xl font-display text-[clamp(1.75rem,3.6vw,3.25rem)] font-semibold leading-[1.18] tracking-[-0.02em] text-navy-900">
+    <p ref={ref} className="font-display text-[clamp(2rem,3.9vw,3.6rem)] font-semibold leading-[1.02] tracking-[-0.025em] text-ink">
       {words.map((w, i) => (
-        <Word key={i} progress={scrollYProgress} range={[i / words.length, (i + 1) / words.length]} highlight={/LICET|human/.test(w)}>
+        <Word key={i} progress={scrollYProgress} range={[i / words.length, (i + 1) / words.length]}>
           {w}
         </Word>
       ))}
@@ -53,107 +113,44 @@ function ScrollStatement({ text }: { text: string }) {
   );
 }
 
-function Word({ children, progress, range, highlight }: { children: string; progress: MotionValue<number>; range: [number, number]; highlight: boolean }) {
-  const opacity = useTransform(progress, range, [0.15, 1]);
+function Word({ children, progress, range }: { children: string; progress: MotionValue<number>; range: [number, number] }) {
+  const opacity = useTransform(progress, range, [0.12, 1]);
+  const accent = /^human/.test(children);
   return (
-    <motion.span style={{ opacity }} className={highlight ? "font-serif font-normal italic text-nss-red" : undefined}>
+    <motion.span style={{ opacity }} className={accent ? "font-serif font-normal italic text-nss-red" : undefined}>
       {children}{" "}
     </motion.span>
   );
 }
 
-function VisionCard() {
-  return (
-    <motion.article
-      initial={{ opacity: 0, x: -60 }}
-      whileInView={{ opacity: 1, x: 0 }}
-      viewport={{ once: true, margin: "-100px" }}
-      transition={{ duration: 1, ease }}
-      whileHover={{ y: -6 }}
-      className="group relative flex flex-col overflow-hidden rounded-[28px] bg-navy-900 p-8 text-white shadow-[0_40px_80px_-40px_rgba(8,12,43,.8)] sm:p-12"
-    >
-      <div aria-hidden className="absolute -right-24 -top-24 h-72 w-72 rounded-full bg-navy-600/60 blur-3xl transition-transform duration-700 group-hover:scale-125" />
-      <Image
-        src="/brand/nss-logo.png"
-        alt=""
-        width={320}
-        height={320}
-        className="pointer-events-none absolute -bottom-20 -right-20 h-72 w-72 opacity-[0.07] transition-transform duration-[1.5s] group-hover:rotate-45"
-      />
-      <div className="relative">
-        <span className="grid h-12 w-12 place-items-center rounded-2xl bg-white/10 ring-1 ring-white/15">
-          <Eye size={22} className="text-accent" />
-        </span>
-        <p className="mt-8 text-[12px] font-semibold uppercase tracking-[0.22em] text-white/50">Our vision</p>
-        <h3 className="mt-4 font-serif text-[clamp(1.9rem,3vw,2.6rem)] leading-[1.15]">
-          To develop the personality and character of students through <em className="text-ember">voluntary community service</em> — shaping citizens who
-          put community before self.
-        </h3>
-      </div>
-      <p className="relative mt-auto flex items-center gap-3 pt-10 text-[13px] text-white/45">
-        <span className="h-px w-8 bg-white/25" />
-        Inspired by the aim of the National Service Scheme
-      </p>
-    </motion.article>
-  );
-}
-
-function MissionCard() {
-  return (
-    <motion.article
-      initial={{ opacity: 0, x: 60 }}
-      whileInView={{ opacity: 1, x: 0 }}
-      viewport={{ once: true, margin: "-100px" }}
-      transition={{ duration: 1, delay: 0.1, ease }}
-      whileHover={{ y: -6 }}
-      className="relative overflow-hidden rounded-[28px] border border-line bg-white p-8 shadow-[0_40px_80px_-50px_rgba(8,12,43,.45)] sm:p-12"
-    >
-      <span className="grid h-12 w-12 place-items-center rounded-2xl bg-nss-red/10">
-        <Compass size={22} className="text-nss-red" />
-      </span>
-      <p className="mt-8 text-[12px] font-semibold uppercase tracking-[0.22em] text-navy-900/50">Our mission</p>
-      <motion.ol
-        initial="hidden"
-        whileInView="show"
-        viewport={{ once: true, margin: "-60px" }}
-        variants={{ show: { transition: { staggerChildren: 0.12, delayChildren: 0.3 } } }}
-        className="mt-6 space-y-5"
-      >
-        {missions.map((m, i) => (
-          <motion.li
-            key={i}
-            variants={{ hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0, transition: { duration: 0.6, ease } } }}
-            className="flex gap-4 border-b border-line pb-5 last:border-0 last:pb-0"
-          >
-            <span className="font-display text-sm font-bold text-nss-red">0{i + 1}</span>
-            <span className="text-[16px] leading-relaxed text-navy-900/80">{m}</span>
-          </motion.li>
-        ))}
-      </motion.ol>
-    </motion.article>
-  );
-}
-
-function MottoBand() {
+/** Red "cover" block for the motto, like a magazine front page. */
+function MottoCover() {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
+  const x = useTransform(scrollYProgress, [0, 1], ["6%", "-6%"]);
+  const imgY = useTransform(scrollYProgress, [0, 1], ["10%", "-10%"]);
   return (
     <motion.div
+      ref={ref}
       initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-80px" }}
       transition={{ duration: 1, ease }}
-      className="relative mt-6 overflow-hidden rounded-[28px] bg-gradient-to-br from-nss-red to-nss-red-dark p-8 text-white sm:p-12"
+      className="relative mt-24 overflow-hidden bg-nss-red text-white"
     >
-      <div aria-hidden className="absolute inset-0 bg-[linear-gradient(115deg,transparent_40%,rgba(255,255,255,.12)_50%,transparent_60%)] bg-[length:250%_100%] animate-shimmer" />
-      <div className="relative grid items-center gap-8 md:grid-cols-[auto_1fr]">
-        <div className="flex items-center gap-4">
-          <Quote size={40} className="shrink-0 opacity-50" />
-          <p className="font-serif text-[clamp(2.25rem,4vw,3.5rem)] leading-none">
-            Not Me, <em>But You</em>
-          </p>
+      <motion.div style={{ y: imgY }} className="absolute bottom-0 right-[6%] hidden h-[115%] w-[34%] mix-blend-luminosity md:block">
+        <Image src="/images/events/blanket-donation-2025.webp" alt="" fill sizes="34vw" className="object-cover object-top opacity-90" />
+      </motion.div>
+      <div className="relative flex min-h-[420px] flex-col justify-between p-6 sm:p-10">
+        <div className="flex justify-between font-display text-[15px] font-medium">
+          <span>The motto</span>
+          <span className="text-white/70">NSS · Est. 1969</span>
         </div>
-        <p className="max-w-2xl text-[15px] leading-relaxed text-white/85 md:border-l md:border-white/25 md:pl-8">
-          The NSS motto reflects the essence of democratic living — the need for selfless service, for appreciating another person&apos;s point of view,
-          and for showing consideration to fellow human beings.
+        <motion.p style={{ x }} className="whitespace-nowrap font-serif text-[clamp(4rem,11vw,10rem)] leading-[0.85] tracking-[-0.03em]">
+          Not me, <em>but you.</em>
+        </motion.p>
+        <p className="max-w-md font-display text-[17px] font-medium leading-snug text-white/90">
+          It reflects the essence of democratic living — selfless service, respect for another&apos;s point of view, and consideration for fellow human beings.
         </p>
       </div>
     </motion.div>
