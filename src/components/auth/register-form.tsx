@@ -1,16 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeft, ArrowRight, BookOpen, Check, Hash, Loader2, Lock, Mail, Phone, User } from "lucide-react";
 import { AuthCard, Field, inputCls } from "./auth-shell";
-import { createClient } from "@/lib/supabase/client";
-import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { registerVolunteer } from "@/app/(auth)/register/actions";
 import type { Batch } from "@/lib/types";
 import { DEPARTMENTS, cn } from "@/lib/utils";
-import { signUpMessage } from "./activate-form";
+import { signInAfterSignUp } from "./activate-form";
 
 type Form = {
   full_name: string;
@@ -26,7 +24,6 @@ type Form = {
 const steps = ["Account", "College", "Review"];
 
 export function RegisterForm({ batches }: { batches: Batch[] }) {
-  const router = useRouter();
   const [step, setStep] = useState(0);
   const [dir, setDir] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -59,31 +56,13 @@ export function RegisterForm({ batches }: { batches: Batch[] }) {
   };
 
   async function submit() {
-    if (!isSupabaseConfigured) return setErrors({ form: "Supabase is not connected yet. Add your keys to .env.local." });
     setLoading(true);
-    const supabase = createClient();
-    const { data, error } = await supabase.auth.signUp({
-      email: f.email.trim(),
-      password: f.password,
-      options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
-        data: {
-          full_name: f.full_name.trim(),
-          register_no: f.register_no.trim().toUpperCase(),
-          department: f.department,
-          batch_id: f.batch_id,
-          phone: f.phone.trim(),
-        },
-      },
-    });
-    if (error) {
+    const res = await registerVolunteer(f).catch(() => ({ ok: false as const, message: "Something went wrong. Please try again." }));
+    if (!res.ok) {
       setLoading(false);
-      const msg = /register_no|duplicate/i.test(error.message) ? "That register number is already registered." : signUpMessage(error.message);
-      return setErrors({ form: msg });
+      return setErrors({ form: res.message });
     }
-    // Registration always ends at the login screen
-    if (data.session) await supabase.auth.signOut();
-    router.push("/login?registered=1");
+    await signInAfterSignUp(f.email, f.password, "registered");
   }
 
   const batchLabel = batches.find((b) => b.id === f.batch_id)?.label;

@@ -13,9 +13,9 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
 
   const notice =
     sp.activated === "1"
-      ? "Account activated! Confirm your email if asked, then log in. Your attendance and points are waiting."
+      ? "Account activated! Log in with the email and password you just chose. Your attendance and points are waiting."
       : sp.registered === "1"
-      ? "Account created! Confirm your email if asked, then sign in."
+      ? "Account created! Log in with the email and password you just chose."
       : sp.confirmed === "1"
         ? "Email confirmed — you can sign in now."
         : undefined;
