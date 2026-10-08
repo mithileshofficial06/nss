@@ -56,6 +56,7 @@ export type Profile = {
   role: "student" | "admin";
   reveal_details: boolean;
   created_at: string;
+  updated_at: string;
 };
 
 export type SiteSettings = {

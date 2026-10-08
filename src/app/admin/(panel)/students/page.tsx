@@ -26,7 +26,7 @@ export default async function StudentsPage() {
 
   return (
     <>
-      <PageTitle title="Students" description={`${students.filter((s) => s.role === "student").length} volunteers, ${students.filter((s) => s.role === "student" && s.email).length} with an account. Click a name to edit their details.`} />
+      <PageTitle title="Students" description={`${students.filter((s) => s.role === "student").length} volunteers, ${students.filter((s) => s.role === "student" && s.email).length} with an account. Select a student to see their details beside the list.`} />
       <StudentsTable students={students} batches={batches} />
       <div className="mt-6">
         <StudentImport />

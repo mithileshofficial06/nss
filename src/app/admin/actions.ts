@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/lib/data";
+import { createAdminClient, isAdminConfigured } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import { CONTENT_KEYS, type ContentKey } from "@/lib/content";
 import { NSS_HOUR, normalizeDepartment, slugify } from "@/lib/utils";
@@ -94,6 +95,16 @@ export async function deleteStudent(id: string) {
   // Removes the profile (and their attendance/points). The auth user row stays until removed in the Supabase dashboard.
   await supabase.from("profiles").delete().eq("id", id);
   revalidatePath("/admin/students");
+}
+
+/** For a student who forgot their password: the admin sets a new one and tells them. */
+export async function setStudentPassword(id: string, password: string): Promise<ActionState> {
+  await requireAdmin();
+  if (!isAdminConfigured) return fail("SUPABASE_SERVICE_ROLE_KEY is not set on the server");
+  if (typeof password !== "string" || password.length < 8) return fail("Password needs at least 8 characters");
+  const { error } = await createAdminClient().auth.admin.updateUserById(id, { password });
+  if (error) return fail(/not found/i.test(error.message) ? "This student hasn't signed up yet, so there's no password to set" : error.message);
+  return ok("Password updated. Share it with the student");
 }
 
 // ---------------------------------------------------------------- events
